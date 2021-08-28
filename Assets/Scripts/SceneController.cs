@@ -6,18 +6,51 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
-    private Scene[] scenes;
     private int sceneIndex;
+
+    public Scene CurrentScene { get => currentScene; }
+    private Scene currentScene;
 
     private void Start()
     {
-        scenes = new Scene[SceneManager.sceneCountInBuildSettings];
-        sceneIndex = 0;
+        sceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        GameController.CurrentGameController.onLoadingNextScene += loadNextScene;
+        GameController.CurrentGameController.onLoadingMainMenuScene += loadMenu;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        currentScene = SceneManager.GetActiveScene();
     }
 
-    internal void loadScene()
+    private void loadNextScene()
     {
-        Debug.Log("Load Scene");
-        SceneManager.LoadScene(++sceneIndex);
+        Debug.Log("Loading next scene...");
+        if (sceneIndex == (SceneManager.sceneCountInBuildSettings - 1))
+        {
+            loadMenu();
+        } else
+        {
+            SceneManager.LoadScene(++sceneIndex);
+        }
+    }
+
+    private void loadMenu()
+    {
+        Debug.Log("Loading Main Menu...");
+        SceneManager.LoadScene(0);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Current scene: " + scene.name);
+        currentScene = scene;
+    }
+
+    private void OnDisable()
+    {
+        GameController.CurrentGameController.onLoadingNextScene -= loadNextScene;
+        GameController.CurrentGameController.onLoadingMainMenuScene -= loadMenu;
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
