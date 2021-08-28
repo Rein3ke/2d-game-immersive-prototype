@@ -4,13 +4,8 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    // Cursor
-    [SerializeField]
-    private Texture2D cursorTexture;
-    [SerializeField]
-    private CursorMode cursorMode = CursorMode.Auto;
-
     private SceneController sceneController;
+    private CursorController cursorController;
 
     private void Awake()
     {
@@ -21,9 +16,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         sceneController = GetComponent<SceneController>();
-
-        Vector2 hotSpot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2);
-        Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+        cursorController = GetComponent<CursorController>();
     }
 
     public void loadNextScene()

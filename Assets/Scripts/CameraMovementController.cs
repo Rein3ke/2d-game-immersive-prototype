@@ -6,6 +6,10 @@ public class CameraMovementController : MonoBehaviour
 {
     [SerializeField]
     private Transform transformToFollow;
+
+    [SerializeField]
+    private bool followCursor = false;
+
     private Vector3 offset;
     
     // Start is called before the first frame update
@@ -17,6 +21,12 @@ public class CameraMovementController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = transformToFollow.position + offset;
+        if (followCursor)
+        {
+            // transform.position = Input.mousePosition + offset;
+        } else
+        {
+            transform.position = transformToFollow.position + offset;
+        }
     }
 }
