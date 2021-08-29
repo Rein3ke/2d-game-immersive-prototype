@@ -46,7 +46,7 @@ public class PlayerUIController : MonoBehaviour
 
     private void setPlayerHealthText()
     {
-        playerHealthText.text = "Life: " + GameController.CurrentGameController.PlayerHealth + " HP";
+        playerHealthText.text = "Life: " + GameController.CurrentGameController.CurrentPlayerHealth + " HP";
     }
 
     private void OnDisable()

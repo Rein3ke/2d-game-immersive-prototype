@@ -5,28 +5,46 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    private static GameController _currentGameController;
     public static GameController CurrentGameController { get => _currentGameController; }
+
+    public bool IsGameOver
+    {
+        get => isGameOver;
+    }
+    public float CurrentPlayerHealth
+    {
+        get => currentPlayerHealth;
+        set
+        {
+            // Handle Health & Game Over (Player Death)
+            currentPlayerHealth = Mathf.Clamp(value, 0.0f, 100.0f);
+            PlayerHealthChange();
+
+            if (CurrentPlayerHealth <= 0.0f)
+            {
+                PlayerDeath();
+                isGameOver = true;
+            }
+        }
+    }
+
+    public InputController InputController
+    {
+        get => _inputController;
+    }
+
+    private static GameController _currentGameController;
 
     private SceneController sceneController;
     private CursorController cursorController;
+    private InputController _inputController;
+    private float currentPlayerHealth   = 0.0f;
+    private bool isGameOver = false;
 
     [SerializeField]
     private GameObject playerUIPrefab;
     [SerializeField]
-    private float playerHealth = 100.0f;
-    private bool isGameOver = false;
-
-    public float PlayerHealth
-    {
-        get => playerHealth;
-        set
-        {
-            playerHealth = Mathf.Clamp(value, 0.0f, 100.0f);
-            PlayerHealthChange();
-        }
-    }
-
+    private float maxPlayerHealth       = 100.0f;
 
     private void Awake()
     {
@@ -42,28 +60,23 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        sceneController = GetComponent<SceneController>();
-        cursorController = GetComponent<CursorController>();
+        sceneController     = GetComponent<SceneController>();
+        cursorController    = GetComponent<CursorController>();
+        _inputController     = GetComponent<InputController>();
 
+        currentPlayerHealth = maxPlayerHealth;
+
+        // Instantiate Player UI if current scene isn't "Main Menu"
         if (!sceneController.CurrentScene.name.Equals("Menu")) { Instantiate(playerUIPrefab); }
+
+        _inputController.onSpacebarPressed += spacebarPressed;
     }
 
-    private void Update()
+    private void spacebarPressed()
     {
-        if(Input.GetKey(KeyCode.Space) && !isGameOver)
+        if(!isGameOver)
         {
-            PlayerHealth -= 10;
-        }
-
-        if (Input.GetKey(KeyCode.N) && !isGameOver)
-        {
-            LoadingNextScene();
-        }
-
-        if (PlayerHealth <= 0.0f && !isGameOver)
-        {
-            PlayerDeath();
-            isGameOver = true;
+            // CurrentPlayerHealth -= 10;
         }
     }
 
@@ -116,5 +129,11 @@ public class GameController : MonoBehaviour
             Debug.Log("Event: Loading main menu scene!");
             onLoadingMainMenuScene();
         }
+    }
+
+    // Events End
+    private void OnDisable()
+    {
+        _inputController.onSpacebarPressed -= spacebarPressed;
     }
 }

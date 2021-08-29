@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7358070666220765242}
   - component: {fileID: 7358070666220765236}
   - component: {fileID: 8362528330895848341}
+  - component: {fileID: 1837888535409803981}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -73,3 +74,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursorTexture: {fileID: 2800000, guid: e8747703e54058546ac48420fe916236, type: 3}
   cursorMode: 0
+--- !u!114 &1837888535409803981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7358070666220765241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa139772e05495a41951bddc015eaada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
