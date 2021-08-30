@@ -44,9 +44,9 @@ public class PlayerUIController : MonoBehaviour
         gameOverPanel.SetActive(!gameOverPanel.activeSelf);
     }
 
-    private void setPlayerHealthText()
+    private void setPlayerHealthText(float playerHealth)
     {
-        playerHealthText.text = "Life: " + GameController.CurrentGameController.CurrentPlayerHealth + " HP";
+        playerHealthText.text = "Life: " + playerHealth + " HP";
     }
 
     private void OnDisable()

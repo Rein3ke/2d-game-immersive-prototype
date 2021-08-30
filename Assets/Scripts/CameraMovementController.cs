@@ -5,12 +5,27 @@ using UnityEngine;
 
 public class CameraMovementController : MonoBehaviour
 {
+    private static CameraMovementController _instance;
+    public static CameraMovementController Instance
+    {
+        get => _instance;
+    }
+
     [SerializeField]
     private float yOffset = 0.5f;
     [SerializeField]
     private float movementSpeed = 4.0f;
+    [SerializeField]
+    private LayerMask layerMask;
 
     private bool isDown = false;
+    private bool isGameOver = false;
+
+    private void Awake()
+    {
+        if (_instance == null) _instance = this;
+        else Debug.LogError("Too many camera controllers!");
+    }
 
     private void Start()
     {
@@ -18,11 +33,13 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onSpacebarLeft += goUp;
         GameController.CurrentGameController.InputController.onLeftPressed += goLeft;
         GameController.CurrentGameController.InputController.onRightPressed += goRight;
+        GameController.CurrentGameController.InputController.onLeftMousePressed += handleLeftMouseButton;
+        GameController.CurrentGameController.onPlayerDeath += setIsGameOver;
     }
 
     private void goDown()
     {
-        if (isDown) return;
+        if (isGameOver || isDown) return;
 
         Vector3 currentPosition = transform.position;
         transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, -yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
@@ -31,7 +48,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void goUp()
     {
-        if (!isDown) return;
+        if (isGameOver || !isDown) return;
 
         Vector3 currentPosition = transform.position;
         transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
@@ -40,6 +57,8 @@ public class CameraMovementController : MonoBehaviour
 
     private void goLeft()
     {
+        if (isGameOver) return;
+
         if (isDown)
         {
             transform.position += Vector3.left * (movementSpeed / 3) * Time.deltaTime;
@@ -51,6 +70,8 @@ public class CameraMovementController : MonoBehaviour
 
     private void goRight()
     {
+        if (isGameOver) return;
+
         if (isDown)
         {
             transform.position += Vector3.right * (movementSpeed / 3) * Time.deltaTime;
@@ -61,11 +82,38 @@ public class CameraMovementController : MonoBehaviour
         }
     }
 
+    private void handleLeftMouseButton()
+    {
+        Vector2 mousePosition = Input.mousePosition;
+
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
+
+        if (hit2D.collider != null) {
+            RayCastHit(hit2D);
+        }
+    }
+
+    private void setIsGameOver() => isGameOver = true;
+
+    public delegate void RayCastCallback(RaycastHit2D hit);
+    public event RayCastCallback onRayCastHit;
+    public void RayCastHit(RaycastHit2D hit)
+    {
+        if (onRayCastHit != null)
+        {
+            onRayCastHit(hit);
+        }
+    }
+
     private void OnDisable()
     {
         GameController.CurrentGameController.InputController.onSpacebarPressed  -= goDown;
         GameController.CurrentGameController.InputController.onSpacebarLeft     -= goUp;
         GameController.CurrentGameController.InputController.onLeftPressed      -= goLeft;
         GameController.CurrentGameController.InputController.onRightPressed     -= goRight;
+        GameController.CurrentGameController.InputController.onLeftMousePressed -= handleLeftMouseButton;
+        GameController.CurrentGameController.onPlayerDeath                      -= setIsGameOver;
     }
 }

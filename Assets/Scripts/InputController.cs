@@ -25,6 +25,10 @@ public class InputController : MonoBehaviour
         {
             RightPressed();
         }
+        if (Input.GetMouseButtonDown(0))
+        {
+            LeftMousePressed();
+        }
     }
 
     public event Action onSpacebarPressed;
@@ -60,6 +64,15 @@ public class InputController : MonoBehaviour
         if (onRightPressed != null)
         {
             onRightPressed();
+        }
+    }
+
+    public event Action onLeftMousePressed;
+    public void LeftMousePressed()
+    {
+        if (onLeftMousePressed != null)
+        {
+            onLeftMousePressed();
         }
     }
 }

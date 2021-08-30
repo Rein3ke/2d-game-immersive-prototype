@@ -55,20 +55,22 @@ public class GameController : MonoBehaviour
         {
             _currentGameController = this;
         }
+
+        // Set all controller
+        sceneController     = GetComponent<SceneController>();
+        cursorController    = GetComponent<CursorController>();
+        _inputController    = GetComponent<InputController>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        sceneController     = GetComponent<SceneController>();
-        cursorController    = GetComponent<CursorController>();
-        _inputController     = GetComponent<InputController>();
-
-        currentPlayerHealth = maxPlayerHealth;
+        CurrentPlayerHealth = maxPlayerHealth;
 
         // Instantiate Player UI if current scene isn't "Main Menu"
         if (!sceneController.CurrentScene.name.Equals("Menu")) { Instantiate(playerUIPrefab); }
 
+        // Event Subscribtion
         _inputController.onSpacebarPressed += spacebarPressed;
     }
 
@@ -76,7 +78,7 @@ public class GameController : MonoBehaviour
     {
         if(!isGameOver)
         {
-            // CurrentPlayerHealth -= 10;
+            CurrentPlayerHealth -= 10;
         }
     }
 
@@ -91,13 +93,13 @@ public class GameController : MonoBehaviour
     }
 
     // Events
-
-    public event Action onPlayerHealthChange;
+    public delegate void PlayerHealthCallback(float playerHealth);
+    public event PlayerHealthCallback onPlayerHealthChange;
     public void PlayerHealthChange()
     {
         if (onPlayerHealthChange != null)
         {
-            onPlayerHealthChange();
+            onPlayerHealthChange(currentPlayerHealth);
         }
     }
 
