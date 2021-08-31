@@ -7,8 +7,11 @@ public class InteractableObjectController : MonoBehaviour
 {
     [SerializeField]
     private bool playDissolveAnimation;
+    [SerializeField]
+    private bool playAnimatorAnimation;
 
     private SpriteRenderer spriteRenderer;
+    private Animator animator;
 
     private bool isHit;
 
@@ -16,6 +19,9 @@ public class InteractableObjectController : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+
+        if (animator != null) playAnimatorAnimation = true;
 
         CameraMovementController.Instance.onRayCastHit += handleHit;
     }
@@ -30,6 +36,10 @@ public class InteractableObjectController : MonoBehaviour
             if (playDissolveAnimation)
             {
                 StartCoroutine("Fade");
+            }
+            if (playAnimatorAnimation)
+            {
+                animator.SetBool("isHit", true);
             }
         }
     }

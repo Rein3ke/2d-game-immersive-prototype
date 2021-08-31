@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7358070666220765236}
   - component: {fileID: 8362528330895848341}
   - component: {fileID: 1837888535409803981}
+  - component: {fileID: 4379107270902890938}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -47,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerUIPrefab: {fileID: 5772418944547589451, guid: fd82ff379026ad448b3b690736dece08, type: 3}
-  playerHealth: 100
+  maxPlayerHealth: 100
 --- !u!114 &7358070666220765236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,5 +85,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa139772e05495a41951bddc015eaada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4379107270902890938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7358070666220765241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e29f88b14d13904b8aa7179de3fca29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
