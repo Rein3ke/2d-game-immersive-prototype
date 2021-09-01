@@ -1722,8 +1722,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5f997af595b2b4bbbe779d930e9202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playDissolveAnimation: 1
-  playAnimatorAnimation: 0
+  playDestroyAnimation: 1
+  playAnimatorAnimation: 1
+  playHitSound: 0
 --- !u!95 &90832208
 Animator:
   serializedVersion: 3
@@ -10740,7 +10741,7 @@ GameObject:
   - component: {fileID: 1017759311}
   m_Layer: 0
   m_Name: ChestPrefab
-  m_TagString: Untagged
+  m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16516,8 +16517,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5f997af595b2b4bbbe779d930e9202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playDissolveAnimation: 1
-  playAnimatorAnimation: 0
+  playDestroyAnimation: 1
+  playAnimatorAnimation: 1
+  playHitSound: 0
 --- !u!95 &1757949238
 Animator:
   serializedVersion: 3
@@ -19480,8 +19482,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5f997af595b2b4bbbe779d930e9202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playDissolveAnimation: 0
+  playDestroyAnimation: 0
   playAnimatorAnimation: 0
+  playHitSound: 0
 --- !u!1 &2099731283
 GameObject:
   m_ObjectHideFlags: 0

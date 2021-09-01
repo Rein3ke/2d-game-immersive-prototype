@@ -6,12 +6,15 @@ using UnityEngine;
 public class InteractableObjectController : MonoBehaviour
 {
     [SerializeField]
-    private bool playDissolveAnimation;
+    private bool playDestroyAnimation;
     [SerializeField]
     private bool playAnimatorAnimation;
+    [SerializeField]
+    private bool playHitSound;
 
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private AudioSource audioSource;
 
     private bool isHit;
 
@@ -20,27 +23,25 @@ public class InteractableObjectController : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-
-        if (animator != null) playAnimatorAnimation = true;
-
-        CameraMovementController.Instance.onRayCastHit += handleHit;
+        audioSource = GetComponent<AudioSource>();
     }
 
-    private void handleHit(RaycastHit2D hit)
+    public void handleHit()
     {
-        if (hit.collider.gameObject.Equals(this.gameObject) && !isHit)
-        {
-            Debug.Log(name + " got hit!");
-            isHit = true;
+        Debug.Log(name + " got hit!");
+        isHit = true;
 
-            if (playDissolveAnimation)
-            {
-                StartCoroutine("Fade");
-            }
-            if (playAnimatorAnimation)
-            {
-                animator.SetBool("isHit", true);
-            }
+        if (playDestroyAnimation)
+        {
+            StartCoroutine("Fade");
+        }
+        if (playAnimatorAnimation)
+        {
+            animator.SetBool("isHit", true);
+        }
+        if (playHitSound)
+        {
+            audioSource.Play();
         }
     }
 
@@ -54,18 +55,18 @@ public class InteractableObjectController : MonoBehaviour
             yield return null;
         }
 
-        Destroy(this.gameObject);
+        GameObject parent = gameObject.transform.parent.gameObject;
+        if (parent.CompareTag("InteractableObject")) Destroy(parent.gameObject);
+        else Destroy(gameObject);
     }
 
     private void OnDestroy()
     {
         StopAllCoroutines();
-        CameraMovementController.Instance.onRayCastHit -= handleHit;
     }
 
     private void OnDisable()
     {
         StopAllCoroutines();
-        CameraMovementController.Instance.onRayCastHit -= handleHit;
     }
 }

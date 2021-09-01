@@ -35,8 +35,8 @@ public class GameController : MonoBehaviour
 
     private static GameController _currentGameController;
 
-    private SceneController sceneController;
-    private CursorController cursorController;
+    private SceneController _sceneController;
+    private CursorController _cursorController;
     private InputController _inputController;
     private float currentPlayerHealth   = 0.0f;
     private bool isGameOver = false;
@@ -57,21 +57,36 @@ public class GameController : MonoBehaviour
         }
 
         // Set all controller
-        sceneController     = GetComponent<SceneController>();
-        cursorController    = GetComponent<CursorController>();
+        _sceneController     = GetComponent<SceneController>();
+        _cursorController    = GetComponent<CursorController>();
         _inputController    = GetComponent<InputController>();
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         CurrentPlayerHealth = maxPlayerHealth;
 
         // Instantiate Player UI if current scene isn't "Main Menu"
-        if (!sceneController.CurrentScene.name.Equals("Menu")) { Instantiate(playerUIPrefab); }
+        if (!_sceneController.CurrentScene.name.Equals("Menu")) { Instantiate(playerUIPrefab); }
 
         // Event Subscribtion
-        _inputController.onSpacebarPressed += spacebarPressed;
+        _inputController.onSpacebarPressed              += spacebarPressed;
+        CameraMovementController.Instance.onRayCastHit  += handleRayCastHit;
+    }
+
+    /**
+     * Handles the subscribed raycast hit (comes from an active camera controller)
+     */
+    private void handleRayCastHit(RaycastHit2D hit)
+    {
+        Collider2D hitCollider = hit.collider;
+        switch (hitCollider.tag)
+        {
+            case "InteractableObject":
+                hitCollider.gameObject.GetComponent<InteractableObjectController>().handleHit();
+                break;
+        }
     }
 
     private void spacebarPressed()
@@ -136,6 +151,7 @@ public class GameController : MonoBehaviour
     // Events End
     private void OnDisable()
     {
-        _inputController.onSpacebarPressed -= spacebarPressed;
+        _inputController.onSpacebarPressed              -= spacebarPressed;
+        CameraMovementController.Instance.onRayCastHit  -= handleRayCastHit;
     }
 }
