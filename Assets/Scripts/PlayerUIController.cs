@@ -11,6 +11,8 @@ public class PlayerUIController : MonoBehaviour
     [SerializeField]
     private Text playerHealthText;
     [SerializeField]
+    private Text playerAmmoText;
+    [SerializeField]
     private GameObject gameOverPanel;
     [SerializeField]
     private Button gameOverButton;
@@ -32,6 +34,12 @@ public class PlayerUIController : MonoBehaviour
         // Subscribe to events
         GameController.CurrentGameController.onPlayerHealthChange += setPlayerHealthText;
         GameController.CurrentGameController.onPlayerDeath += toggleGameOverPanel;
+        GunController.Instance.onAmmunitionChange += setPlayerAmmunition;
+    }
+
+    private void setPlayerAmmunition(int ammo)
+    {
+        playerAmmoText.text = "Ammo: " + ammo;
     }
 
     private void GameOverButtonClicked()
@@ -53,5 +61,6 @@ public class PlayerUIController : MonoBehaviour
     {
         GameController.CurrentGameController.onPlayerHealthChange -= setPlayerHealthText;
         GameController.CurrentGameController.onPlayerDeath -= toggleGameOverPanel;
+        GunController.Instance.onAmmunitionChange -= setPlayerAmmunition;
     }
 }

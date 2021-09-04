@@ -6,17 +6,21 @@ using UnityEngine;
 public class InteractableObjectController : MonoBehaviour
 {
     [SerializeField]
+    private Sprite sprite;
+    [SerializeField]
     private bool playDestroyAnimation;
     [SerializeField]
     private bool playAnimatorAnimation;
     [SerializeField]
     private bool playHitSound;
+    [SerializeField]
+    private bool changeTexture;
 
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private AudioSource audioSource;
 
-    private bool isHit;
+    private bool isHit = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,12 +32,14 @@ public class InteractableObjectController : MonoBehaviour
 
     public void handleHit()
     {
+        if (isHit) return;
+
         Debug.Log(name + " got hit!");
         isHit = true;
 
         if (playDestroyAnimation)
         {
-            StartCoroutine("Fade");
+            StartCoroutine(Fade());
         }
         if (playAnimatorAnimation)
         {
@@ -43,21 +49,26 @@ public class InteractableObjectController : MonoBehaviour
         {
             audioSource.Play();
         }
+        if (changeTexture)
+        {
+            spriteRenderer.sprite = sprite;
+        }
     }
 
     IEnumerator Fade()
     {
+        Color c;
         for (float ft = 1f; ft >= 0; ft -= 0.5f * Time.deltaTime)
         {
-            Color c = spriteRenderer.color;
+            c = spriteRenderer.color;
             c.a = ft;
             spriteRenderer.color = c;
+            yield return null;
         }
 
         GameObject parent = gameObject.transform.parent.gameObject;
         if (parent.CompareTag("InteractableObject")) Destroy(parent.gameObject);
         else Destroy(gameObject);
-
         yield return null;
     }
 

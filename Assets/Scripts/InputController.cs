@@ -29,6 +29,10 @@ public class InputController : MonoBehaviour
         {
             LeftMousePressed();
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            KeyRPressed();
+        }
     }
 
     public event Action onSpacebarPressed;
@@ -73,6 +77,15 @@ public class InputController : MonoBehaviour
         if (onLeftMousePressed != null)
         {
             onLeftMousePressed();
+        }
+    }
+
+    public event Action onKeyR;
+    public void KeyRPressed()
+    {
+        if (onKeyR != null)
+        {
+            onKeyR();
         }
     }
 }

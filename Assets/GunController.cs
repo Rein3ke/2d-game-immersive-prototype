@@ -10,6 +10,22 @@ public class GunController : MonoBehaviour
     private float spreadFactor = 40f;
     [SerializeField]
     private float audioPitchFactor = 0.25f;
+    [SerializeField]
+    private AudioClip gunShotAudioClip;
+    [SerializeField]
+    private AudioClip gunRealoadAudioClip;
+    [SerializeField]
+    private int maxAmmo = 8;
+
+    private int _ammo;
+    public int Ammo
+    {
+        get => _ammo;
+        set {
+            _ammo = Mathf.Clamp(value, 0, maxAmmo);
+            AmmunitionChange(_ammo);
+        }
+    }
 
     private static GunController _instance;
     public static GunController Instance
@@ -31,12 +47,16 @@ public class GunController : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
 
+        Ammo = maxAmmo;
+
         GameController.CurrentGameController.InputController.onLeftMousePressed += handleLeftMouseButton;
+        GameController.CurrentGameController.InputController.onKeyR += handleRKey;
     }
 
     private void handleLeftMouseButton()
     {
-        if (!isGunReady) return;
+        if (!isGunReady || Ammo == 0) return;
+        Debug.Log(Ammo);
 
         Vector3 mousePosition = Input.mousePosition;
 
@@ -47,8 +67,7 @@ public class GunController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
-        audioSource.pitch = 1.0f + Random.Range(-audioPitchFactor, audioPitchFactor);
-        audioSource.Play();
+        playAudioClip(gunShotAudioClip, true);
 
         RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
 
@@ -57,9 +76,39 @@ public class GunController : MonoBehaviour
             RayCastHit(hit2D);
         }
 
+        Ammo--;
+
         isGunReady = false;
 
-        StartCoroutine(WaitForCooldown());
+        StartCoroutine(WaitForCooldown(.8f));
+    }
+
+    private float playAudioClip(AudioClip clip, bool pitch)
+    {
+        float clipLength = clip.length;
+
+        if (pitch)
+        {
+            audioSource.pitch = 1.0f + Random.Range(-audioPitchFactor, audioPitchFactor);
+        } else
+        {
+            audioSource.pitch = 1.0f;
+        }
+
+        audioSource.clip = clip;
+
+        audioSource.Play();
+        return clipLength;
+    }
+
+    private void handleRKey()
+    {
+        if (Ammo < maxAmmo)
+        {
+            isGunReady = false;
+            Ammo = maxAmmo;
+            StartCoroutine(WaitForCooldown(playAudioClip(gunRealoadAudioClip, false)));
+        }
     }
 
     public delegate void RayCastCallback(RaycastHit2D hit);
@@ -72,14 +121,25 @@ public class GunController : MonoBehaviour
         }
     }
 
+    public delegate void AmmunitionChangeCallback(int ammo);
+    public event AmmunitionChangeCallback onAmmunitionChange;
+    public void AmmunitionChange(int ammo)
+    {
+        if (onAmmunitionChange != null)
+        {
+            onAmmunitionChange(ammo);
+        }
+    }
+
     private void OnDisable()
     {
         GameController.CurrentGameController.InputController.onLeftMousePressed -= handleLeftMouseButton;
+        GameController.CurrentGameController.InputController.onKeyR -= handleRKey;
     }
 
-    private IEnumerator WaitForCooldown()
+    private IEnumerator WaitForCooldown(float cooldown)
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(cooldown);
         isGunReady = true;
     }
 }
