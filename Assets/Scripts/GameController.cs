@@ -71,8 +71,8 @@ public class GameController : MonoBehaviour
         if (!_sceneController.CurrentScene.name.Equals("Menu")) { Instantiate(playerUIPrefab); }
 
         // Event Subscribtion
-        _inputController.onSpacebarPressed              += spacebarPressed;
-        CameraMovementController.Instance.onRayCastHit  += handleRayCastHit;
+        _inputController.onSpacebarPressed  += spacebarPressed;
+        GunController.Instance.onRayCastHit += handleRayCastHit;
     }
 
     /**
@@ -151,7 +151,7 @@ public class GameController : MonoBehaviour
     // Events End
     private void OnDisable()
     {
-        _inputController.onSpacebarPressed              -= spacebarPressed;
-        CameraMovementController.Instance.onRayCastHit  -= handleRayCastHit;
+        _inputController.onSpacebarPressed  -= spacebarPressed;
+        GunController.Instance.onRayCastHit -= handleRayCastHit;
     }
 }

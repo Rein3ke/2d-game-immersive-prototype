@@ -11,12 +11,20 @@ public class CameraMovementController : MonoBehaviour
         get => _instance;
     }
 
+    private Vector3 cameraPosition;
+    public Vector3 CameraPosition
+    {
+        get => cameraPosition;
+        set
+        {
+            transform.position = value;
+        }
+    }
+
     [SerializeField]
     private float yOffset = 0.5f;
     [SerializeField]
     private float movementSpeed = 4.0f;
-    [SerializeField]
-    private LayerMask layerMask;
 
     private bool isDown = false;
     private bool isGameOver = false;
@@ -33,7 +41,6 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onSpacebarLeft += goUp;
         GameController.CurrentGameController.InputController.onLeftPressed += goLeft;
         GameController.CurrentGameController.InputController.onRightPressed += goRight;
-        GameController.CurrentGameController.InputController.onLeftMousePressed += handleLeftMouseButton;
         GameController.CurrentGameController.onPlayerDeath += setIsGameOver;
     }
 
@@ -66,6 +73,8 @@ public class CameraMovementController : MonoBehaviour
         {
             transform.position += Vector3.left * movementSpeed * Time.deltaTime;
         }
+
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -5f, 5f), transform.position.y, transform.position.z);
     }
 
     private void goRight()
@@ -80,32 +89,11 @@ public class CameraMovementController : MonoBehaviour
         {
             transform.position += Vector3.right * movementSpeed * Time.deltaTime;
         }
-    }
 
-    private void handleLeftMouseButton()
-    {
-        Vector2 mousePosition = Input.mousePosition;
-
-        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
-
-        if (hit2D.collider != null) {
-            RayCastHit(hit2D);
-        }
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -5f, 5f), transform.position.y, transform.position.z);
     }
 
     private void setIsGameOver() => isGameOver = true;
-
-    public delegate void RayCastCallback(RaycastHit2D hit);
-    public event RayCastCallback onRayCastHit;
-    public void RayCastHit(RaycastHit2D hit)
-    {
-        if (onRayCastHit != null)
-        {
-            onRayCastHit(hit);
-        }
-    }
 
     private void OnDisable()
     {
@@ -113,7 +101,6 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onSpacebarLeft     -= goUp;
         GameController.CurrentGameController.InputController.onLeftPressed      -= goLeft;
         GameController.CurrentGameController.InputController.onRightPressed     -= goRight;
-        GameController.CurrentGameController.InputController.onLeftMousePressed -= handleLeftMouseButton;
         GameController.CurrentGameController.onPlayerDeath                      -= setIsGameOver;
     }
 }

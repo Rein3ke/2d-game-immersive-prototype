@@ -52,12 +52,13 @@ public class InteractableObjectController : MonoBehaviour
             Color c = spriteRenderer.color;
             c.a = ft;
             spriteRenderer.color = c;
-            yield return null;
         }
 
         GameObject parent = gameObject.transform.parent.gameObject;
         if (parent.CompareTag("InteractableObject")) Destroy(parent.gameObject);
         else Destroy(gameObject);
+
+        yield return null;
     }
 
     private void OnDestroy()
