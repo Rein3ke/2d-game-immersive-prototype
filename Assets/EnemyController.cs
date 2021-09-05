@@ -13,6 +13,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private bool playDestroyAnimation;
     [SerializeField]
+    private bool playHitSound;
+    [SerializeField]
     private float walkSpeed = 3.0f;
     [SerializeField]
     private AudioClip shootingAudioClip;
@@ -20,14 +22,20 @@ public class EnemyController : MonoBehaviour
     private float spreadFactor = 40f;
     [SerializeField]
     private LayerMask layerMask;
+    [SerializeField]
+    private AudioClip spawnAudioClip;
+    [SerializeField]
+    private AudioClip deathAudioClip;
     private bool isHit;
     private SpriteRenderer spriteRenderer;
     private SoundController soundController;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponentInChildren<Animator>();
         soundController = GameController.CurrentGameController.SoundController;
 
         _count++;
@@ -39,6 +47,7 @@ public class EnemyController : MonoBehaviour
             Debug.Log("Cover: " + randomCoverIndex + " : " + covers.Length);
             Vector3 position = covers[randomCoverIndex].transform.position;
             StartCoroutine(GoToPosition(position));
+            soundController.playAudio(spawnAudioClip, false);
         } else
         {
             Debug.LogError("No cover found!");
@@ -59,11 +68,12 @@ public class EnemyController : MonoBehaviour
         Vector3 localDirection = transform.InverseTransformDirection(currentPosition - targetPosition);
         if (localDirection.x < 0) spriteRenderer.flipX = true;
 
-
         float elapsedTime = 0;
         float waitTime = walkSpeed;
 
         StopCoroutine(Shoot());
+
+        animator.SetBool("isRunning", true);
 
         while (elapsedTime < waitTime && !isHit)
         {
@@ -71,6 +81,8 @@ public class EnemyController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
+        animator.SetBool("isRunning", false);
 
         StartCoroutine(Shoot());
         yield return null;
@@ -111,12 +123,12 @@ public class EnemyController : MonoBehaviour
         playerPosition.y += Random.Range(-spreadFactor, spreadFactor);
         playerPosition.z += Random.Range(-spreadFactor, spreadFactor);
 
-        Ray ray = Camera.main.ScreenPointToRay(playerPosition);
-        Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), Vector3.forward);
+        Debug.DrawRay(ray.origin, ray.direction, Color.red, 2f);
 
         soundController.playAudio(shootingAudioClip, true);
 
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
+        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 100.0f, layerMask);
 
         if (hit2D.collider != null)
         {
@@ -136,19 +148,13 @@ public class EnemyController : MonoBehaviour
         if (playDestroyAnimation)
         {
             StartCoroutine(Fade());
-        }
-        /*if (playAnimatorAnimation)
-        {
-            animator.SetBool("isHit", true);
+            animator.SetBool("isDead", true);
         }
         if (playHitSound)
         {
-            audioSource.Play();
+            soundController.playAudio(deathAudioClip, false);
         }
-        if (changeTexture)
-        {
-            spriteRenderer.sprite = sprite;
-        }*/
+
         EnemyDeath();
     }
 

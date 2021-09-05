@@ -18,7 +18,7 @@ TagManager:
   - UI
   - InteractableObject
   - Enemy
-  - Decoration
+  - Cover
   - Player
   - 
   - 

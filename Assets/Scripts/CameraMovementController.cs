@@ -11,16 +11,6 @@ public class CameraMovementController : MonoBehaviour
         get => _instance;
     }
 
-    private Vector3 cameraPosition;
-    public Vector3 CameraPosition
-    {
-        get => cameraPosition;
-        set
-        {
-            transform.position = value;
-        }
-    }
-
     [SerializeField]
     private float yOffset = 0.5f;
     [SerializeField]

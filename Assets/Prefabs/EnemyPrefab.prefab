@@ -72,8 +72,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playDestroyAnimation: 1
+  playHitSound: 1
   walkSpeed: 2
   shootingAudioClip: {fileID: 8300000, guid: f24086be63d22aa4fbec8054dce66b90, type: 3}
+  spreadFactor: 40
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 768
+  spawnAudioClip: {fileID: 8300000, guid: e13847dd3bd2a1e499cfb17f686dffac, type: 3}
+  deathAudioClip: {fileID: 8300000, guid: c096ac49f1b8c80479e74145740804dd, type: 3}
 --- !u!1 &10792796793212649
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,6 +91,7 @@ GameObject:
   m_Component:
   - component: {fileID: 10792796793212651}
   - component: {fileID: 10792796793212648}
+  - component: {fileID: 2125535010859621537}
   m_Layer: 7
   m_Name: Graphic
   m_TagString: Untagged
@@ -156,3 +164,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &2125535010859621537
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10792796793212649}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 007bdc0c011c92d4393b02159a9adaaf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

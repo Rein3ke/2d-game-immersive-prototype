@@ -29,7 +29,6 @@ public class SoundController : MonoBehaviour
         }
 
         audioSource.clip = clip;
-
         audioSource.PlayOneShot(clip);
         return clipLength;
     }
