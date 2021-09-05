@@ -9,8 +9,6 @@ public class GunController : MonoBehaviour
     [SerializeField]
     private float spreadFactor = 40f;
     [SerializeField]
-    private float audioPitchFactor = 0.25f;
-    [SerializeField]
     private AudioClip gunShotAudioClip;
     [SerializeField]
     private AudioClip gunRealoadAudioClip;
@@ -33,7 +31,8 @@ public class GunController : MonoBehaviour
         get => _instance;
     }
 
-    private AudioSource audioSource;
+    private SoundController soundController;
+
     private bool isGunReady = true;
 
     // Start is called before the first frame update
@@ -45,7 +44,7 @@ public class GunController : MonoBehaviour
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        soundController = GameController.CurrentGameController.SoundController;
 
         Ammo = maxAmmo;
 
@@ -56,7 +55,6 @@ public class GunController : MonoBehaviour
     private void handleLeftMouseButton()
     {
         if (!isGunReady || Ammo == 0) return;
-        Debug.Log(Ammo);
 
         Vector3 mousePosition = Input.mousePosition;
 
@@ -67,7 +65,7 @@ public class GunController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
-        playAudioClip(gunShotAudioClip, true);
+        soundController.playAudio(gunShotAudioClip, true);
 
         RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
 
@@ -83,31 +81,13 @@ public class GunController : MonoBehaviour
         StartCoroutine(WaitForCooldown(.8f));
     }
 
-    private float playAudioClip(AudioClip clip, bool pitch)
-    {
-        float clipLength = clip.length;
-
-        if (pitch)
-        {
-            audioSource.pitch = 1.0f + Random.Range(-audioPitchFactor, audioPitchFactor);
-        } else
-        {
-            audioSource.pitch = 1.0f;
-        }
-
-        audioSource.clip = clip;
-
-        audioSource.Play();
-        return clipLength;
-    }
-
     private void handleRKey()
     {
         if (Ammo < maxAmmo)
         {
             isGunReady = false;
             Ammo = maxAmmo;
-            StartCoroutine(WaitForCooldown(playAudioClip(gunRealoadAudioClip, false)));
+            StartCoroutine(WaitForCooldown(soundController.playAudio(gunRealoadAudioClip, false)));
         }
     }
 

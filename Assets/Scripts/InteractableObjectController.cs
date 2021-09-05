@@ -15,10 +15,12 @@ public class InteractableObjectController : MonoBehaviour
     private bool playHitSound;
     [SerializeField]
     private bool changeTexture;
+    [SerializeField]
+    private AudioClip hitSoundClip;
 
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-    private AudioSource audioSource;
+    private SoundController soundController;
 
     private bool isHit = false;
 
@@ -27,7 +29,7 @@ public class InteractableObjectController : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
+        soundController = GameController.CurrentGameController.SoundController;
     }
 
     public void handleHit()
@@ -47,7 +49,7 @@ public class InteractableObjectController : MonoBehaviour
         }
         if (playHitSound)
         {
-            audioSource.Play();
+            soundController.playAudio(hitSoundClip, true);
         }
         if (changeTexture)
         {

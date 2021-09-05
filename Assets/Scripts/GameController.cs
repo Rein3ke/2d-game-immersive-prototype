@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
@@ -32,19 +33,33 @@ public class GameController : MonoBehaviour
     {
         get => _inputController;
     }
+    public SoundController SoundController
+    {
+        get => _soundController;
+    }
 
     private static GameController _currentGameController;
 
     private SceneController _sceneController;
     private CursorController _cursorController;
     private InputController _inputController;
-    private float currentPlayerHealth   = 0.0f;
-    private bool isGameOver = false;
+    private SoundController _soundController;
+
 
     [SerializeField]
     private GameObject playerUIPrefab;
     [SerializeField]
-    private float maxPlayerHealth       = 100.0f;
+    private GameObject enemyPrefab;
+    [SerializeField]
+    private float maxPlayerHealth = 100.0f;
+    [SerializeField]
+    private int maxEnemies = 2;
+
+    private float currentPlayerHealth = 0.0f;
+    private bool isPlayerbehindCover = false;
+    private bool isGameOver = false;
+    private bool isGameRunning = false;
+    private GameObject enemySpawnPosition;
 
     private void Awake()
     {
@@ -57,22 +72,51 @@ public class GameController : MonoBehaviour
         }
 
         // Set all controller
-        _sceneController     = GetComponent<SceneController>();
-        _cursorController    = GetComponent<CursorController>();
-        _inputController    = GetComponent<InputController>();
+        _sceneController = GetComponent<SceneController>();
+        _cursorController = GetComponent<CursorController>();
+        _inputController = GetComponent<InputController>();
+        _soundController = GetComponent<SoundController>();
     }
 
     // Start is called before the first frame update
     private void Start()
     {
         CurrentPlayerHealth = maxPlayerHealth;
+        enemySpawnPosition = GameObject.FindGameObjectWithTag("Spawn_Enemy");
 
-        // Instantiate Player UI if current scene isn't "Main Menu"
-        if (!_sceneController.CurrentScene.name.Equals("Menu")) { Instantiate(playerUIPrefab); }
+        // Instantiate Player UI and start game if current scene isn't "Main Menu"
+        if (!_sceneController.CurrentScene.name.Equals("Menu")) {
+            Instantiate(playerUIPrefab);
+            isGameRunning = true;
+            isGameOver = false;
+            StartCoroutine(SpawnEnemies());
+        }
 
         // Event Subscribtion
         _inputController.onSpacebarPressed  += spacebarPressed;
+        _inputController.onSpacebarLeft += spacebarLeft;
+
         GunController.Instance.onRayCastHit += handleRayCastHit;
+    }
+
+    private IEnumerator SpawnEnemies()
+    {
+        while (isGameRunning && !isGameOver)
+        {
+            float waitForSeconds = Random.Range(5f, 10f);
+            if (EnemyController.Count < maxEnemies)
+            {
+                GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition.transform.position, Quaternion.identity, null);
+                enemy.GetComponent<EnemyController>().onEnemyDeath += handleEnemyDeath;
+            }
+            yield return new WaitForSeconds(waitForSeconds);
+        }
+        yield return null;
+    }
+
+    private void handleEnemyDeath(GameObject enemy)
+    {
+        enemy.GetComponent<EnemyController>().onEnemyDeath -= handleEnemyDeath;
     }
 
     /**
@@ -86,15 +130,23 @@ public class GameController : MonoBehaviour
             case "InteractableObject":
                 hitCollider.gameObject.GetComponent<InteractableObjectController>().handleHit();
                 break;
+            case "Enemy":
+                hitCollider.gameObject.GetComponent<EnemyController>().handleHit();
+                break;
         }
     }
 
     private void spacebarPressed()
     {
-        if(!isGameOver)
-        {
-            CurrentPlayerHealth -= 10;
-        }
+        if (isGameOver) return;
+
+        isPlayerbehindCover = true;
+    }
+    private void spacebarLeft()
+    {
+        if (isGameOver) return;
+
+        isPlayerbehindCover = false;
     }
 
     public void loadNextScene()
