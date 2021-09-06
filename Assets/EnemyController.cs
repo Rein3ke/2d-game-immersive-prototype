@@ -19,13 +19,14 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private AudioClip shootingAudioClip;
     [SerializeField]
-    private float spreadFactor = 40f;
+    private float spreadFactor = 4f;
     [SerializeField]
     private LayerMask layerMask;
     [SerializeField]
     private AudioClip spawnAudioClip;
     [SerializeField]
     private AudioClip deathAudioClip;
+
     private bool isHit;
     private SpriteRenderer spriteRenderer;
     private SoundController soundController;
@@ -44,7 +45,6 @@ public class EnemyController : MonoBehaviour
         if (covers.Length > 0)
         {
             int randomCoverIndex = Random.Range(0, covers.Length);
-            Debug.Log("Cover: " + randomCoverIndex + " : " + covers.Length);
             Vector3 position = covers[randomCoverIndex].transform.position;
             StartCoroutine(GoToPosition(position));
             soundController.playAudio(spawnAudioClip, false);
@@ -88,7 +88,7 @@ public class EnemyController : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator Fade()
+    private IEnumerator FadeOut()
     {
         StopCoroutine(Shoot());
 
@@ -109,45 +109,23 @@ public class EnemyController : MonoBehaviour
     {
         while(!isHit)
         {
-            shootSalve();
+            
             yield return new WaitForSeconds(3f);
         }
         yield return null;
-    }
-
-    private void shootSalve()
-    {
-        Vector3 playerPosition = Camera.main.transform.position;
-
-        playerPosition.x += Random.Range(-spreadFactor, spreadFactor);
-        playerPosition.y += Random.Range(-spreadFactor, spreadFactor);
-        playerPosition.z += Random.Range(-spreadFactor, spreadFactor);
-
-        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), Vector3.forward);
-        Debug.DrawRay(ray.origin, ray.direction, Color.red, 2f);
-
-        soundController.playAudio(shootingAudioClip, true);
-
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 100.0f, layerMask);
-
-        if (hit2D.collider != null)
-        {
-            Debug.Log(hit2D.collider.name);
-        }
     }
 
     internal void handleHit()
     {
         if (isHit) return;
 
-        Debug.Log(name + " got hit!");
         isHit = true;
 
         StopAllCoroutines();
 
         if (playDestroyAnimation)
         {
-            StartCoroutine(Fade());
+            StartCoroutine(FadeOut());
             animator.SetBool("isDead", true);
         }
         if (playHitSound)

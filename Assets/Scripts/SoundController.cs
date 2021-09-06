@@ -7,17 +7,18 @@ public class SoundController : MonoBehaviour
     [SerializeField]
     private float audioPitchFactor = 0.25f;
 
-    private AudioSource audioSource;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
-
     public float playAudio(AudioClip clip, bool pitch)
     {
         float clipLength = clip.length;
+        StartCoroutine(PlayAudioClip(clip, pitch));
+        return clipLength;
+    }
+
+    private IEnumerator PlayAudioClip(AudioClip audioClip, bool pitch)
+    {
+        AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = audioClip;
+        float clipLength = audioClip.length;
 
         if (pitch)
         {
@@ -28,8 +29,9 @@ public class SoundController : MonoBehaviour
             audioSource.pitch = 1.0f;
         }
 
-        audioSource.clip = clip;
-        audioSource.PlayOneShot(clip);
-        return clipLength;
+        audioSource.PlayOneShot(audioClip);
+        yield return new WaitForSeconds(clipLength);
+        Destroy(audioSource);
+        yield return null;
     }
 }

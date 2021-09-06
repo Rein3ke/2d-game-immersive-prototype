@@ -75,7 +75,7 @@ MonoBehaviour:
   playHitSound: 1
   walkSpeed: 2
   shootingAudioClip: {fileID: 8300000, guid: f24086be63d22aa4fbec8054dce66b90, type: 3}
-  spreadFactor: 40
+  spreadFactor: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 768
