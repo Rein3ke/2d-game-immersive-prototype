@@ -52,6 +52,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 10792795520325551, guid: c1e98a694ac7cf5498666d412818f2c1, type: 3}
   maxPlayerHealth: 100
   maxEnemies: 2
+  playerSettings: {fileID: 11400000, guid: 61a8198c7481d03439a5e1ba6434fe9c, type: 2}
 --- !u!114 &7358070666220765236
 MonoBehaviour:
   m_ObjectHideFlags: 0

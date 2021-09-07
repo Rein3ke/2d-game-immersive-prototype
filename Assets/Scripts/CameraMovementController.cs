@@ -11,32 +11,38 @@ public class CameraMovementController : MonoBehaviour
         get => _instance;
     }
 
+    // Value that determines how far the camera can move down.
     [SerializeField]
     private float yOffset = 0.5f;
+
+    // Value that determines how fast the camera can move horizontally.
     [SerializeField]
     private float movementSpeed = 4.0f;
 
     private bool isDown = false;
-    private bool isGameOver = false;
+    private bool isActive = true;
 
     private void Awake()
     {
         if (_instance == null) _instance = this;
-        else Debug.LogError("Too many camera controllers!");
+        else Debug.LogError("Error: Only one CameraController should be active at runtime.");
     }
 
     private void Start()
     {
+        // Subscribed Events: Input
         GameController.CurrentGameController.InputController.onSpacebarPressed += goDown;
         GameController.CurrentGameController.InputController.onSpacebarLeft += goUp;
         GameController.CurrentGameController.InputController.onLeftPressed += goLeft;
         GameController.CurrentGameController.InputController.onRightPressed += goRight;
-        GameController.CurrentGameController.onPlayerDeath += setIsGameOver;
+
+        // Subscribed Events: Game State
+        GameController.CurrentGameController.onPlayerDeath += OnPlayerDeath;
     }
 
     private void goDown()
     {
-        if (isGameOver || isDown) return;
+        if (!isActive || isDown) return;
 
         Vector3 currentPosition = transform.position;
         transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, -yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
@@ -45,7 +51,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void goUp()
     {
-        if (isGameOver || !isDown) return;
+        if (!isActive || !isDown) return;
 
         Vector3 currentPosition = transform.position;
         transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
@@ -54,7 +60,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void goLeft()
     {
-        if (isGameOver) return;
+        if (!isActive) return;
 
         if (isDown)
         {
@@ -69,7 +75,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void goRight()
     {
-        if (isGameOver) return;
+        if (!isActive) return;
 
         if (isDown)
         {
@@ -83,7 +89,8 @@ public class CameraMovementController : MonoBehaviour
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -5f, 5f), transform.position.y, transform.position.z);
     }
 
-    private void setIsGameOver() => isGameOver = true;
+    // When the GameOver state is reached, the camera should no longer be able to move.
+    private void OnPlayerDeath() => isActive = false;
 
     private void OnDisable()
     {
@@ -91,6 +98,6 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onSpacebarLeft     -= goUp;
         GameController.CurrentGameController.InputController.onLeftPressed      -= goLeft;
         GameController.CurrentGameController.InputController.onRightPressed     -= goRight;
-        GameController.CurrentGameController.onPlayerDeath                      -= setIsGameOver;
+        GameController.CurrentGameController.onPlayerDeath                      -= OnPlayerDeath;
     }
 }

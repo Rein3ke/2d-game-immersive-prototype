@@ -392,6 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080f9e1221e2d1642b0cd77f2de6a75d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerSettings: {fileID: 11400000, guid: 61a8198c7481d03439a5e1ba6434fe9c, type: 2}
   playerHealthText: {fileID: 5772418945034533571}
   playerAmmoText: {fileID: 213436435425561187}
   gameOverPanel: {fileID: 3562024589561102039}

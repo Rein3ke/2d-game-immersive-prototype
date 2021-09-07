@@ -19,6 +19,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private float spreadFactor = 4f;
     [SerializeField]
+    private float causedDamage = 5f;
+    [SerializeField]
     private LayerMask layerMask;
     // Audio
     [SerializeField]
@@ -34,7 +36,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private AudioClip bulletImpactPlayerAudioClip;
 
-    private bool isHit;
+    private bool isHit = false;
+    private bool isActive = true;
     private SpriteRenderer spriteRenderer;
     private SoundController soundController;
     private Animator animator;
@@ -54,11 +57,13 @@ public class EnemyController : MonoBehaviour
             int randomCoverIndex = Random.Range(0, covers.Length);
             Vector3 position = covers[randomCoverIndex].transform.position;
             StartCoroutine(GoToPosition(position));
-            soundController.playAudio(spawnAudioClip, .5f, false);
+            soundController.playAudio(spawnAudioClip, .3f, true);
         } else
         {
             Debug.LogError("No cover found!");
         }
+
+        GameController.CurrentGameController.onPlayerDeath += OnPlayerDeath;
     }
 
     private IEnumerator GoToPosition(Vector3 position)
@@ -114,9 +119,9 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        while(!isHit)
+        while(!isHit && isActive)
         {
-            soundController.playAudio(shootingAudioClip, .2f, true);
+            soundController.playAudio(shootingAudioClip, .1f, true);
 
             GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
             GameObject hitObject = PerformRayCast(playerGameObject.transform.position, true);
@@ -137,6 +142,7 @@ public class EnemyController : MonoBehaviour
                         break;
                     case "Player":
                         soundController.playAudio(bulletImpactPlayerAudioClip, true);
+                        PlayerHit(causedDamage);
                         break;
                 }
             }
@@ -187,10 +193,15 @@ public class EnemyController : MonoBehaviour
         }
         if (playHitSound)
         {
-            soundController.playAudio(deathAudioClip, .5f, false);
+            soundController.playAudio(deathAudioClip, .3f, false);
         }
 
         EnemyDeath();
+    }
+
+    private void OnPlayerDeath()
+    {
+        isActive = false;
     }
 
     public delegate void EnemyDeathCallback(GameObject gameObject);
@@ -203,8 +214,19 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    public delegate void PlayerHitCallback(float damagePoints);
+    public event PlayerHitCallback onPlayerHit;
+    public void PlayerHit(float damagePoints)
+    {
+        if (onPlayerHit != null)
+        {
+            onPlayerHit(damagePoints);
+        }
+    }
+
     private void OnDestroy()
     {
         _count--;
+        GameController.CurrentGameController.onPlayerDeath -= OnPlayerDeath;
     }
 }

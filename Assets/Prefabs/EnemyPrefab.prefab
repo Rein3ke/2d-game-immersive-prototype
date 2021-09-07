@@ -75,6 +75,7 @@ MonoBehaviour:
   playHitSound: 1
   walkSpeed: 2
   spreadFactor: 0.75
+  causedDamage: 5
   layerMask:
     serializedVersion: 2
     m_Bits: 768

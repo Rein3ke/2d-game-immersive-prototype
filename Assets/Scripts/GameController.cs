@@ -12,23 +12,9 @@ public class GameController : MonoBehaviour
     {
         get => isGameOver;
     }
-    public float CurrentPlayerHealth
-    {
-        get => currentPlayerHealth;
-        set
-        {
-            // Handle Health & Game Over (Player Death)
-            currentPlayerHealth = Mathf.Clamp(value, 0.0f, 100.0f);
-            PlayerHealthChange();
+    private bool isGameOver = false;
 
-            if (CurrentPlayerHealth <= 0.0f)
-            {
-                PlayerDeath();
-                isGameOver = true;
-            }
-        }
-    }
-
+    // Public access for the input and sound controller
     public InputController InputController
     {
         get => _inputController;
@@ -38,13 +24,14 @@ public class GameController : MonoBehaviour
         get => _soundController;
     }
 
+    // Own instance of GameController
     private static GameController _currentGameController;
 
+    // All Controllers
     private SceneController _sceneController;
     private CursorController _cursorController;
     private InputController _inputController;
     private SoundController _soundController;
-
 
     [SerializeField]
     private GameObject playerUIPrefab;
@@ -54,11 +41,11 @@ public class GameController : MonoBehaviour
     private float maxPlayerHealth = 100.0f;
     [SerializeField]
     private int maxEnemies = 2;
+    [SerializeField]
+    private PlayerSettings playerSettings;
 
-    private float currentPlayerHealth = 0.0f;
-    private bool isPlayerbehindCover = false;
-    private bool isGameOver = false;
     private bool isGameRunning = false;
+    private bool isPlayerbehindCover = false;
     private GameObject enemySpawnPosition;
 
     private void Awake()
@@ -81,50 +68,80 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        CurrentPlayerHealth = maxPlayerHealth;
+        // Get Enemy Spawn Position (as GameObject)
         enemySpawnPosition = GameObject.FindGameObjectWithTag("Spawn_Enemy");
 
         // Instantiate Player UI and start game if current scene isn't "Main Menu"
         if (!_sceneController.CurrentScene.name.Equals("Menu")) {
             Instantiate(playerUIPrefab);
+
             isGameRunning = true;
             isGameOver = false;
+
+            playerSettings.playerHealth = playerSettings.playerMaxHealth;
+            PlayerHealthChange();
+
             StartCoroutine(SpawnEnemies());
+        } else
+        {
+            isGameRunning = false;
         }
 
         // Event Subscribtion
         _inputController.onSpacebarPressed  += spacebarPressed;
         _inputController.onSpacebarLeft += spacebarLeft;
-
-        GunController.Instance.onRayCastHit += handleRayCastHit;
+        GunController.Instance.onRayCastHit += OnRaycastHit;
     }
 
+    // Coroutine: When the game is running and it's not Game Over, start spawning enemies.
     private IEnumerator SpawnEnemies()
     {
         while (isGameRunning && !isGameOver)
         {
-            float waitForSeconds = Random.Range(5f, 10f);
-            if (EnemyController.Count < maxEnemies)
+            float waitForSeconds = Random.Range(2f, 8f);
+            yield return new WaitForSeconds(waitForSeconds);
+
+            // Do not spawn more enemies once the maximum number of enemies is reached.
+            if (EnemyController.Count < maxEnemies && (isGameRunning && !isGameOver))
             {
                 GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition.transform.position, Quaternion.identity, null);
-                enemy.GetComponent<EnemyController>().onEnemyDeath += handleEnemyDeath;
+                enemy.GetComponent<EnemyController>().onEnemyDeath += OnEnemyDeath;
+                enemy.GetComponent<EnemyController>().onPlayerHit += OnPlayerHit;
             }
-            yield return new WaitForSeconds(waitForSeconds);
         }
         yield return null;
     }
 
-    private void handleEnemyDeath(GameObject enemy)
+    // Player & Game Logic
+
+    // Subscribed Event: Handle the case when an enemy dies.
+    private void OnEnemyDeath(GameObject enemy)
     {
-        enemy.GetComponent<EnemyController>().onEnemyDeath -= handleEnemyDeath;
+        enemy.GetComponent<EnemyController>().onEnemyDeath -= OnEnemyDeath;
+        enemy.GetComponent<EnemyController>().onPlayerHit -= OnPlayerHit;
     }
 
-    /**
-     * Handles the subscribed raycast hit (comes from an active camera controller)
-     */
-    private void handleRayCastHit(RaycastHit2D hit)
+    private void OnPlayerHit(float damage)
     {
-        Collider2D hitCollider = hit.collider;
+        playerSettings.playerHealth -= damage;
+        PlayerHealthChange();
+        CheckIsPlayerDead();
+    }
+
+    private void CheckIsPlayerDead()
+    {
+        if (playerSettings.playerHealth <= 0.0f)
+        {
+            PlayerDeath();
+            isGameOver = true;
+        }
+    }
+
+
+    // Processes the subscribed raycast hit and forwards the actual hit command. (Comes from an active camera controller)
+    private void OnRaycastHit(RaycastHit2D hitObject)
+    {
+        Collider2D hitCollider = hitObject.collider;
         switch (hitCollider.tag)
         {
             case "InteractableObject":
@@ -160,13 +177,12 @@ public class GameController : MonoBehaviour
     }
 
     // Events
-    public delegate void PlayerHealthCallback(float playerHealth);
-    public event PlayerHealthCallback onPlayerHealthChange;
+    public event Action onPlayerHealthChange;
     public void PlayerHealthChange()
     {
         if (onPlayerHealthChange != null)
         {
-            onPlayerHealthChange(currentPlayerHealth);
+            onPlayerHealthChange();
         }
     }
 
@@ -204,6 +220,6 @@ public class GameController : MonoBehaviour
     private void OnDisable()
     {
         _inputController.onSpacebarPressed  -= spacebarPressed;
-        GunController.Instance.onRayCastHit -= handleRayCastHit;
+        GunController.Instance.onRayCastHit -= OnRaycastHit;
     }
 }

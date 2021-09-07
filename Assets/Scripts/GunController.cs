@@ -1,29 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GunController : MonoBehaviour
 {
     [SerializeField]
     private LayerMask layerMask;
     [SerializeField]
-    private float spreadFactor = 40f;
-    [SerializeField]
     private AudioClip gunShotAudioClip;
     [SerializeField]
     private AudioClip gunRealoadAudioClip;
     [SerializeField]
-    private int maxAmmo = 8;
-
-    private int _ammo;
-    public int Ammo
-    {
-        get => _ammo;
-        set {
-            _ammo = Mathf.Clamp(value, 0, maxAmmo);
-            AmmunitionChange(_ammo);
-        }
-    }
+    private PlayerSettings playerSettings;
 
     private static GunController _instance;
     public static GunController Instance
@@ -32,35 +22,35 @@ public class GunController : MonoBehaviour
     }
 
     private SoundController soundController;
-
     private bool isGunReady = true;
 
     // Start is called before the first frame update
     void Awake()
     {
         if (_instance == null) _instance = this;
-        else Debug.LogError("Too many gun controllers!");
+        else Debug.LogError("Error: Too many active gun controllers!");
     }
 
     private void Start()
     {
         soundController = GameController.CurrentGameController.SoundController;
 
-        Ammo = maxAmmo;
+        GameController.CurrentGameController.InputController.onLeftMousePressed += OnLeftMouseButton;
+        GameController.CurrentGameController.InputController.onKeyR += OnRKey;
 
-        GameController.CurrentGameController.InputController.onLeftMousePressed += handleLeftMouseButton;
-        GameController.CurrentGameController.InputController.onKeyR += handleRKey;
+        playerSettings.playerAmmunition = playerSettings.playerMaxAmmunition;
+        AmmunitionChange();
     }
 
-    private void handleLeftMouseButton()
+    private void OnLeftMouseButton()
     {
-        if (!isGunReady || Ammo == 0) return;
+        if (!isGunReady || playerSettings.playerAmmunition == 0) return;
 
         Vector3 mousePosition = Input.mousePosition;
 
-        mousePosition.x += Random.Range(-spreadFactor, spreadFactor);
-        mousePosition.y += Random.Range(-spreadFactor, spreadFactor);
-        mousePosition.z += Random.Range(-spreadFactor, spreadFactor);
+        mousePosition.x += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
+        mousePosition.y += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
+        mousePosition.z += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
 
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
@@ -74,19 +64,20 @@ public class GunController : MonoBehaviour
             RayCastHit(hit2D);
         }
 
-        Ammo--;
+        playerSettings.playerAmmunition--;
+        AmmunitionChange();
 
         isGunReady = false;
 
         StartCoroutine(WaitForCooldown(.8f));
     }
 
-    private void handleRKey()
+    private void OnRKey()
     {
-        if (Ammo < maxAmmo)
+        if (playerSettings.playerAmmunition < playerSettings.playerMaxAmmunition)
         {
             isGunReady = false;
-            Ammo = maxAmmo;
+            playerSettings.playerAmmunition = playerSettings.playerMaxAmmunition;
             StartCoroutine(WaitForCooldown(soundController.playAudio(gunRealoadAudioClip, false)));
         }
     }
@@ -101,20 +92,19 @@ public class GunController : MonoBehaviour
         }
     }
 
-    public delegate void AmmunitionChangeCallback(int ammo);
-    public event AmmunitionChangeCallback onAmmunitionChange;
-    public void AmmunitionChange(int ammo)
+    public event Action onAmmunitionChange;
+    public void AmmunitionChange()
     {
         if (onAmmunitionChange != null)
         {
-            onAmmunitionChange(ammo);
+            onAmmunitionChange();
         }
     }
 
     private void OnDisable()
     {
-        GameController.CurrentGameController.InputController.onLeftMousePressed -= handleLeftMouseButton;
-        GameController.CurrentGameController.InputController.onKeyR -= handleRKey;
+        GameController.CurrentGameController.InputController.onLeftMousePressed -= OnLeftMouseButton;
+        GameController.CurrentGameController.InputController.onKeyR -= OnRKey;
     }
 
     private IEnumerator WaitForCooldown(float cooldown)
