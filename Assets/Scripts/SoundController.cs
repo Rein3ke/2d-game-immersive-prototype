@@ -10,11 +10,17 @@ public class SoundController : MonoBehaviour
     public float playAudio(AudioClip clip, bool pitch)
     {
         float clipLength = clip.length;
-        StartCoroutine(PlayAudioClip(clip, pitch));
+        StartCoroutine(PlayAudioClip(clip, 1.0f, pitch));
+        return clipLength;
+    }
+    public float playAudio(AudioClip clip, float volume, bool pitch)
+    {
+        float clipLength = clip.length;
+        StartCoroutine(PlayAudioClip(clip, Mathf.Clamp(volume, 0.0f, 1.0f), pitch));
         return clipLength;
     }
 
-    private IEnumerator PlayAudioClip(AudioClip audioClip, bool pitch)
+    private IEnumerator PlayAudioClip(AudioClip audioClip, float volume, bool pitch)
     {
         AudioSource audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = audioClip;
@@ -29,6 +35,7 @@ public class SoundController : MonoBehaviour
             audioSource.pitch = 1.0f;
         }
 
+        audioSource.volume = volume; 
         audioSource.PlayOneShot(audioClip);
         yield return new WaitForSeconds(clipLength);
         Destroy(audioSource);

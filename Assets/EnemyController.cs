@@ -17,15 +17,22 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private float walkSpeed = 3.0f;
     [SerializeField]
-    private AudioClip shootingAudioClip;
-    [SerializeField]
     private float spreadFactor = 4f;
     [SerializeField]
     private LayerMask layerMask;
+    // Audio
+    [SerializeField]
+    private AudioClip shootingAudioClip;
     [SerializeField]
     private AudioClip spawnAudioClip;
     [SerializeField]
     private AudioClip deathAudioClip;
+    [SerializeField]
+    private AudioClip missedBulletAudioClip;
+    [SerializeField]
+    private AudioClip bulletImpactCoverAudioClip;
+    [SerializeField]
+    private AudioClip bulletImpactPlayerAudioClip;
 
     private bool isHit;
     private SpriteRenderer spriteRenderer;
@@ -47,7 +54,7 @@ public class EnemyController : MonoBehaviour
             int randomCoverIndex = Random.Range(0, covers.Length);
             Vector3 position = covers[randomCoverIndex].transform.position;
             StartCoroutine(GoToPosition(position));
-            soundController.playAudio(spawnAudioClip, false);
+            soundController.playAudio(spawnAudioClip, .5f, false);
         } else
         {
             Debug.LogError("No cover found!");
@@ -109,10 +116,60 @@ public class EnemyController : MonoBehaviour
     {
         while(!isHit)
         {
-            
+            soundController.playAudio(shootingAudioClip, .2f, true);
+
+            GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
+            GameObject hitObject = PerformRayCast(playerGameObject.transform.position, true);
+
+            if (hitObject == null)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    soundController.playAudio(missedBulletAudioClip, true);
+                }
+            }
+            else
+            {
+                switch (hitObject.tag)
+                {
+                    case "Decoration":
+                        soundController.playAudio(bulletImpactCoverAudioClip, true);
+                        break;
+                    case "Player":
+                        soundController.playAudio(bulletImpactPlayerAudioClip, true);
+                        break;
+                }
+            }
+
             yield return new WaitForSeconds(3f);
         }
         yield return null;
+    }
+
+    private GameObject PerformRayCast(Vector3 targetPosition, bool enableAccuracy)
+    {
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
+        
+        if (enableAccuracy)
+        {
+            targetPosition = new Vector3(
+                targetPosition.x + Random.Range(-spreadFactor, spreadFactor),
+                targetPosition.y + Random.Range(-spreadFactor, spreadFactor),
+                targetPosition.z + Random.Range(-spreadFactor, spreadFactor)
+                );
+        }
+        
+        Vector3 direction = targetPosition - origin;
+        Ray ray = new Ray(origin, direction);
+        Debug.DrawRay(ray.origin, ray.direction, Color.red, 2f);
+        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 50f, layerMask);
+
+        if (hit2D.collider != null)
+        {
+            Debug.Log(hit2D.collider.name);
+            return hit2D.collider.gameObject;
+        }
+        else return null;
     }
 
     internal void handleHit()
@@ -130,7 +187,7 @@ public class EnemyController : MonoBehaviour
         }
         if (playHitSound)
         {
-            soundController.playAudio(deathAudioClip, false);
+            soundController.playAudio(deathAudioClip, .5f, false);
         }
 
         EnemyDeath();
