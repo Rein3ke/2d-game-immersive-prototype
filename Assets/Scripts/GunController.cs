@@ -23,6 +23,7 @@ public class GunController : MonoBehaviour
 
     private SoundController soundController;
     private bool isGunReady = true;
+    private bool isActive = true;
 
     // Start is called before the first frame update
     void Awake()
@@ -37,14 +38,12 @@ public class GunController : MonoBehaviour
 
         GameController.CurrentGameController.InputController.onLeftMousePressed += OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyR += OnRKey;
-
-        playerSettings.playerAmmunition = playerSettings.playerMaxAmmunition;
-        AmmunitionChange();
+        GameController.CurrentGameController.onGameEnd += OnPlayerDeath;
     }
 
     private void OnLeftMouseButton()
     {
-        if (!isGunReady || playerSettings.playerAmmunition == 0) return;
+        if (!isGunReady || playerSettings.playerAmmunition == 0 || !isActive) return;
 
         Vector3 mousePosition = Input.mousePosition;
 
@@ -53,7 +52,7 @@ public class GunController : MonoBehaviour
         mousePosition.z += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
 
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-        Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
+        //Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
         soundController.playAudio(gunShotAudioClip, true);
 
@@ -74,12 +73,21 @@ public class GunController : MonoBehaviour
 
     private void OnRKey()
     {
+        if (!isActive) return;
         if (playerSettings.playerAmmunition < playerSettings.playerMaxAmmunition)
         {
             isGunReady = false;
+
             playerSettings.playerAmmunition = playerSettings.playerMaxAmmunition;
+            AmmunitionChange();
+
             StartCoroutine(WaitForCooldown(soundController.playAudio(gunRealoadAudioClip, false)));
         }
+    }
+
+    private void OnPlayerDeath()
+    {
+        isActive = false;
     }
 
     public delegate void RayCastCallback(RaycastHit2D hit);
@@ -105,6 +113,7 @@ public class GunController : MonoBehaviour
     {
         GameController.CurrentGameController.InputController.onLeftMousePressed -= OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyR -= OnRKey;
+        GameController.CurrentGameController.onGameEnd -= OnPlayerDeath;
     }
 
     private IEnumerator WaitForCooldown(float cooldown)

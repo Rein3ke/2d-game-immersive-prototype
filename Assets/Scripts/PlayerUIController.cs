@@ -13,9 +13,11 @@ public class PlayerUIController : MonoBehaviour
     [SerializeField]
     private Text playerAmmoText;
     [SerializeField]
+    private Text playerScoreText;
+    [SerializeField]
     private GameObject gameOverPanel;
     [SerializeField]
-    private Button gameOverButton;
+    private GameObject gameWonPanel;
 
     private Canvas canvas;
     private Camera mainCamera;
@@ -23,6 +25,7 @@ public class PlayerUIController : MonoBehaviour
     private void Start()
     {
         gameOverPanel.SetActive(false);
+        gameWonPanel.SetActive(false);
 
         // Bind UI to main camera
         canvas = GetComponent<Canvas>();
@@ -36,35 +39,20 @@ public class PlayerUIController : MonoBehaviour
             Debug.LogError("Error: No camera was found!");
         }
 
-        gameOverButton.onClick.AddListener(OnGameOverButtonClicked);
-
         // Subscribe to events
         GameController.CurrentGameController.onPlayerHealthChange += OnPlayerHealthChange;
-        GameController.CurrentGameController.onPlayerDeath += toggleGameOverPanel;
+        GameController.CurrentGameController.onScoreChange += OnScoreChange;
+        GameController.CurrentGameController.onGameEnd += OnPlayerDeath;
         GunController.Instance.onAmmunitionChange += OnAmmunitionChange;
 
         // Set values from player settings
         OnAmmunitionChange();
     }
 
-    private void OnAmmunitionChange()
-    {
-        SetTextfieldText(playerAmmoText, "Ammo: " + playerSettings.playerAmmunition + "/" + playerSettings.playerMaxAmmunition);
-    }
 
-    private void OnGameOverButtonClicked()
+    private void TogglePanel(GameObject panel)
     {
-        GameController.CurrentGameController.loadMenu();
-    }
-
-    private void toggleGameOverPanel()
-    {
-        gameOverPanel.SetActive(!gameOverPanel.activeSelf);
-    }
-
-    private void OnPlayerHealthChange()
-    {
-        SetTextfieldText(playerHealthText, "Life: " + Mathf.Clamp(playerSettings.playerHealth, 0.0f, playerSettings.playerMaxHealth) + " HP");
+        panel.SetActive(!panel.activeSelf);
     }
 
     private void SetTextfieldText(Text element, string content)
@@ -72,10 +60,39 @@ public class PlayerUIController : MonoBehaviour
         element.text = content;
     }
 
+    #region Event Handling
+    private void OnAmmunitionChange()
+    {
+        SetTextfieldText(playerAmmoText, "Ammo: " + playerSettings.playerAmmunition + "/" + playerSettings.playerMaxAmmunition);
+    }
+
+    public void LoadMenu()
+    {
+        GameController.CurrentGameController.loadMenu();
+    }
+
+    private void OnPlayerDeath()
+    {
+        TogglePanel(gameOverPanel);
+    }
+
+    private void OnPlayerHealthChange()
+    {
+        SetTextfieldText(playerHealthText, "Life: " + Mathf.Clamp(playerSettings.playerHealth, 0.0f, playerSettings.playerMaxHealth) + " HP");
+    }
+
+    private void OnScoreChange()
+    {
+        SetTextfieldText(playerScoreText, "Score: " + playerSettings.score);
+    }
+    #endregion
+
+
     private void OnDisable()
     {
         GameController.CurrentGameController.onPlayerHealthChange -= OnPlayerHealthChange;
-        GameController.CurrentGameController.onPlayerDeath -= toggleGameOverPanel;
+        GameController.CurrentGameController.onScoreChange -= OnScoreChange;
+        GameController.CurrentGameController.onGameEnd -= OnPlayerDeath;
         GunController.Instance.onAmmunitionChange -= OnAmmunitionChange;
     }
 }

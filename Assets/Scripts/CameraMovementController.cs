@@ -37,7 +37,7 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onRightPressed += goRight;
 
         // Subscribed Events: Game State
-        GameController.CurrentGameController.onPlayerDeath += OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd += OnPlayerDeath;
     }
 
     private void goDown()
@@ -98,6 +98,6 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onSpacebarLeft     -= goUp;
         GameController.CurrentGameController.InputController.onLeftPressed      -= goLeft;
         GameController.CurrentGameController.InputController.onRightPressed     -= goRight;
-        GameController.CurrentGameController.onPlayerDeath                      -= OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd                      -= OnPlayerDeath;
     }
 }

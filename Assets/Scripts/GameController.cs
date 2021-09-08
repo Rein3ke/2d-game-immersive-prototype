@@ -6,7 +6,14 @@ using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
+    public enum Phase
+    {
+        DEFAULT, BLUR, PARTICLES, VISION
+    }
+
+    // Own instance of GameController
     public static GameController CurrentGameController { get => _currentGameController; }
+    private static GameController _currentGameController;
 
     public bool IsGameOver
     {
@@ -24,9 +31,6 @@ public class GameController : MonoBehaviour
         get => _soundController;
     }
 
-    // Own instance of GameController
-    private static GameController _currentGameController;
-
     // All Controllers
     private SceneController _sceneController;
     private CursorController _cursorController;
@@ -36,17 +40,14 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject playerUIPrefab;
     [SerializeField]
-    private GameObject enemyPrefab;
-    [SerializeField]
-    private float maxPlayerHealth = 100.0f;
-    [SerializeField]
-    private int maxEnemies = 2;
-    [SerializeField]
     private PlayerSettings playerSettings;
+    [SerializeField]
+    private GameSettings gameSettings;
 
     private bool isGameRunning = false;
-    private bool isPlayerbehindCover = false;
     private GameObject enemySpawnPosition;
+    private int killedEnemies = 0;
+    private Phase currentPhase = Phase.DEFAULT;
 
     private void Awake()
     {
@@ -78,9 +79,6 @@ public class GameController : MonoBehaviour
             isGameRunning = true;
             isGameOver = false;
 
-            playerSettings.playerHealth = playerSettings.playerMaxHealth;
-            PlayerHealthChange();
-
             StartCoroutine(SpawnEnemies());
         } else
         {
@@ -88,8 +86,6 @@ public class GameController : MonoBehaviour
         }
 
         // Event Subscribtion
-        _inputController.onSpacebarPressed  += spacebarPressed;
-        _inputController.onSpacebarLeft += spacebarLeft;
         GunController.Instance.onRayCastHit += OnRaycastHit;
     }
 
@@ -98,12 +94,13 @@ public class GameController : MonoBehaviour
     {
         while (isGameRunning && !isGameOver)
         {
-            float waitForSeconds = Random.Range(2f, 8f);
+            float waitForSeconds = Random.Range(gameSettings.enemySpawnMinimumCooldown, gameSettings.enemySpawnMaximumCooldown);
             yield return new WaitForSeconds(waitForSeconds);
 
             // Do not spawn more enemies once the maximum number of enemies is reached.
-            if (EnemyController.Count < maxEnemies && (isGameRunning && !isGameOver))
+            if (EnemyController.Count < gameSettings.maxEnemies && (isGameRunning && !isGameOver))
             {
+                GameObject enemyPrefab = gameSettings.enemyPrefabs[Random.Range(0, gameSettings.enemyPrefabs.Count)];
                 GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition.transform.position, Quaternion.identity, null);
                 enemy.GetComponent<EnemyController>().onEnemyDeath += OnEnemyDeath;
                 enemy.GetComponent<EnemyController>().onPlayerHit += OnPlayerHit;
@@ -115,10 +112,21 @@ public class GameController : MonoBehaviour
     // Player & Game Logic
 
     // Subscribed Event: Handle the case when an enemy dies.
-    private void OnEnemyDeath(GameObject enemy)
+    private void OnEnemyDeath(GameObject enemy, float score)
     {
+        killedEnemies++;
+        AddToScore(score);
+
         enemy.GetComponent<EnemyController>().onEnemyDeath -= OnEnemyDeath;
         enemy.GetComponent<EnemyController>().onPlayerHit -= OnPlayerHit;
+    }
+
+    private void AddToScore(float value)
+    {
+        playerSettings.score += value;
+        ScoreChange();
+
+        CheckForWinConditions();
     }
 
     private void OnPlayerHit(float damage)
@@ -132,7 +140,7 @@ public class GameController : MonoBehaviour
     {
         if (playerSettings.playerHealth <= 0.0f)
         {
-            PlayerDeath();
+            GameEnd();
             isGameOver = true;
         }
     }
@@ -153,17 +161,17 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void spacebarPressed()
+    private bool CheckForWinConditions()
     {
-        if (isGameOver) return;
-
-        isPlayerbehindCover = true;
-    }
-    private void spacebarLeft()
-    {
-        if (isGameOver) return;
-
-        isPlayerbehindCover = false;
+        if ((playerSettings.score >= gameSettings.ScoreToBeAchieved) || (killedEnemies > gameSettings.EnemiesToKill))
+        {
+            isGameRunning = false;
+            GameWon();
+            return true;
+        } else
+        {
+            return false;
+        }
     }
 
     public void loadNextScene()
@@ -176,7 +184,7 @@ public class GameController : MonoBehaviour
         LoadingMainMenuScene();
     }
 
-    // Events
+    #region Events
     public event Action onPlayerHealthChange;
     public void PlayerHealthChange()
     {
@@ -186,13 +194,22 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public event Action onPlayerDeath;
-    public void PlayerDeath()
+    public event Action onGameEnd;
+    public void GameEnd()
     {
-        if (onPlayerDeath != null)
+        if (onGameEnd != null)
         {
             Debug.Log("Event: Player death!");
-            onPlayerDeath();
+            onGameEnd();
+        }
+    }
+
+    public event Action onScoreChange;
+    public void ScoreChange()
+    {
+        if (onScoreChange != null)
+        {
+            onScoreChange();
         }
     }
 
@@ -216,10 +233,18 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Events End
+    public event Action onGameWon;
+    public void GameWon()
+    {
+        if (onGameWon != null)
+        {
+            onGameWon();
+        }
+    }
+    #endregion
+
     private void OnDisable()
     {
-        _inputController.onSpacebarPressed  -= spacebarPressed;
         GunController.Instance.onRayCastHit -= OnRaycastHit;
     }
 }

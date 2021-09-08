@@ -9,6 +9,7 @@ TagManager:
   - Decoration
   - Spawn_Enemy
   - Cover
+  - Position_Cover
   layers:
   - Default
   - TransparentFX
