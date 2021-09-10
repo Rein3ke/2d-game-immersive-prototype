@@ -122,7 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5f997af595b2b4bbbe779d930e9202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactableObjectSettings: {fileID: 11400000, guid: 4ec76d6e695229c4cbadbc5f509fe401, type: 2}
+  _interactableObjectSettings: {fileID: 11400000, guid: 4ec76d6e695229c4cbadbc5f509fe401, type: 2}
+  _playDestroyAnimation: 0
 --- !u!1 &6026852420753943434
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,10 +8,7 @@ public class GunController : MonoBehaviour
 {
     [SerializeField]
     private LayerMask layerMask;
-    [SerializeField]
-    private AudioClip gunShotAudioClip;
-    [SerializeField]
-    private AudioClip gunRealoadAudioClip;
+    
     [SerializeField]
     private PlayerSettings playerSettings;
 
@@ -42,15 +39,15 @@ public class GunController : MonoBehaviour
         GameController.CurrentGameController.onGameWon += OnGameEnd;
     }
 
-    private IEnumerator WaitForCooldown(float cooldown)
-    {
-        yield return new WaitForSeconds(cooldown);
-        isGunReady = true;
-    }
-
     private void OnLeftMouseButton()
     {
-        if (!isGunReady || playerSettings.playerAmmunition == 0 || !isActive) return;
+        if (!isActive) return;
+        if (!isGunReady) return;
+        if (playerSettings.playerAmmunition == 0)
+        {
+            soundController.playAudio(playerSettings.gunEmptyAudioClip, false);
+            return;
+        }
 
         Vector3 mousePosition = Input.mousePosition;
 
@@ -61,7 +58,7 @@ public class GunController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
-        soundController.playAudio(gunShotAudioClip, true);
+        soundController.playAudio(playerSettings.gunShotAudioClip, true);
 
         RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
 
@@ -83,13 +80,29 @@ public class GunController : MonoBehaviour
         if (!isActive) return;
         if (playerSettings.playerAmmunition < playerSettings.playerMaxAmmunition)
         {
-            isGunReady = false;
-
-            playerSettings.playerAmmunition = playerSettings.playerMaxAmmunition;
-            AmmunitionChange();
-
-            StartCoroutine(WaitForCooldown(soundController.playAudio(gunRealoadAudioClip, false)));
+            StartCoroutine(Reload());
         }
+    }
+
+    private IEnumerator Reload()
+    {
+        isGunReady = false;
+        while(playerSettings.playerAmmunition < playerSettings.playerMaxAmmunition)
+        {
+            playerSettings.playerAmmunition++;
+            AmmunitionChange();
+            soundController.playAudio(playerSettings.gunReloadAudioClip, false);
+            yield return new WaitForSeconds(playerSettings.playerReloadTime / playerSettings.playerMaxAmmunition);
+        }
+        soundController.playAudio(playerSettings.gunPostReloadAudioClip, false);
+        isGunReady = true;
+        yield return false;
+    }
+
+    private IEnumerator WaitForCooldown(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+        isGunReady = true;
     }
 
     private void OnGameEnd()

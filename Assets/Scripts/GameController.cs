@@ -17,25 +17,25 @@ public class GameController : MonoBehaviour
 
     public bool IsGameOver
     {
-        get => isGameOver;
+        get => _isGameOver;
     }
-    private bool isGameOver = false;
+    private bool _isGameOver = false;
 
     // Public access for the input and sound controller
     public InputController InputController
     {
         get => _inputController;
     }
+    private InputController _inputController;
     public SoundController SoundController
     {
         get => _soundController;
     }
+    private SoundController _soundController;
 
     // All Controllers
     private SceneController _sceneController;
     private CursorController _cursorController;
-    private InputController _inputController;
-    private SoundController _soundController;
 
     [SerializeField]
     private GameObject playerUIPrefab;
@@ -53,7 +53,7 @@ public class GameController : MonoBehaviour
     {
         if (_currentGameController != null && _currentGameController != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         } else
         {
             _currentGameController = this;
@@ -74,10 +74,11 @@ public class GameController : MonoBehaviour
 
         // Instantiate Player UI and start game if current scene isn't "Main Menu"
         if (!_sceneController.CurrentScene.name.Equals("Menu")) {
-            Instantiate(playerUIPrefab);
+            Instantiate(playerUIPrefab, new Vector3(0f, 0f, -20f), Quaternion.identity);
 
             _isGameRunning = true;
-            isGameOver = false;
+            _isGameOver = false;
+            playerSettings.OnEnable();
 
             StartCoroutine(SpawnEnemies());
         } else
@@ -86,19 +87,19 @@ public class GameController : MonoBehaviour
         }
 
         // Event Subscribtion
-        GunController.Instance.onRayCastHit += OnRaycastHit;
+        if (GunController.Instance != null) GunController.Instance.onRayCastHit += OnRaycastHit;
     }
 
     // Coroutine: When the game is running and it's not Game Over, start spawning enemies.
     private IEnumerator SpawnEnemies()
     {
-        while (_isGameRunning && !isGameOver)
+        while (_isGameRunning && !_isGameOver)
         {
             float waitForSeconds = Random.Range(gameSettings.enemySpawnMinimumCooldown, gameSettings.enemySpawnMaximumCooldown);
             yield return new WaitForSeconds(waitForSeconds);
 
             // Do not spawn more enemies once the maximum number of enemies is reached.
-            if (EnemyController.Count < gameSettings.maxEnemies && (_isGameRunning && !isGameOver))
+            if (EnemyController.Count < gameSettings.maxEnemies && (_isGameRunning && !_isGameOver))
             {
                 GameObject enemyPrefab = gameSettings.enemyPrefabs[Random.Range(0, gameSettings.enemyPrefabs.Count)];
                 GameObject enemy = Instantiate(enemyPrefab, _enemySpawnPosition.transform.position, Quaternion.identity, null);
@@ -141,7 +142,7 @@ public class GameController : MonoBehaviour
         if (playerSettings.playerHealth <= 0.0f)
         {
             GameEnd();
-            isGameOver = true;
+            _isGameOver = true;
         }
     }
 
@@ -245,6 +246,6 @@ public class GameController : MonoBehaviour
 
     private void OnDisable()
     {
-        GunController.Instance.onRayCastHit -= OnRaycastHit;
+        if (GunController.Instance != null) GunController.Instance.onRayCastHit -= OnRaycastHit;
     }
 }

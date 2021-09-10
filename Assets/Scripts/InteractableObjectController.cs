@@ -6,7 +6,7 @@ using UnityEngine;
 public class InteractableObjectController : MonoBehaviour
 {
     [SerializeField]
-    InteractableObjectSettings interactableObjectSettings;
+    InteractableObjectSettings _interactableObjectSettings;
     [SerializeField]
     private bool _playDestroyAnimation = false;
 
@@ -26,18 +26,18 @@ public class InteractableObjectController : MonoBehaviour
         _gameController = GameController.CurrentGameController;
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        if (interactableObjectSettings.animationController != null)
+        if (_interactableObjectSettings.animationController != null)
         {
             _animator = gameObject.AddComponent<Animator>();
-            _animator.runtimeAnimatorController = interactableObjectSettings.animationController;
+            _animator.runtimeAnimatorController = _interactableObjectSettings.animationController;
             _playAnimatorAnimation = true;
         }
-        if (interactableObjectSettings.hitSoundClip != null)
+        if (_interactableObjectSettings.hitSoundClip != null)
         {
             _soundController = GameController.CurrentGameController.SoundController;
             _playHitSound = true;
         }
-        if (interactableObjectSettings.sprite != null)
+        if (_interactableObjectSettings.sprite != null)
         {
             _changeTexture = true;
         }
@@ -49,6 +49,8 @@ public class InteractableObjectController : MonoBehaviour
 
         _isHit = true;
 
+        _gameController.AddToScore(_interactableObjectSettings.score);
+
         if (_playDestroyAnimation)
         {
             StartCoroutine(Fade());
@@ -59,11 +61,11 @@ public class InteractableObjectController : MonoBehaviour
         }
         if (_playHitSound)
         {
-            _soundController.playAudio(interactableObjectSettings.hitSoundClip, true);
+            _soundController.playAudio(_interactableObjectSettings.hitSoundClip, true);
         }
         if (_changeTexture)
         {
-            _spriteRenderer.sprite = interactableObjectSettings.sprite;
+            _spriteRenderer.sprite = _interactableObjectSettings.sprite;
         }
     }
 

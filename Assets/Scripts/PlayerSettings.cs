@@ -20,6 +20,13 @@ public class PlayerSettings : ScriptableObject, ISerializationCallbackReceiver
     [Header("Gun Stats")]
     public float playerMaxAmmunition;
     public float playerGunSpreadFactor;
+    public float playerReloadTime;
+    [Header("Gun Sounds")]
+    public AudioClip gunShotAudioClip;
+    public AudioClip gunEmptyAudioClip;
+    [Space(8)]
+    public AudioClip gunReloadAudioClip;
+    public AudioClip gunPostReloadAudioClip;
 
     public void OnAfterDeserialize()
     {
@@ -30,5 +37,12 @@ public class PlayerSettings : ScriptableObject, ISerializationCallbackReceiver
 
     public void OnBeforeSerialize()
     {
+    }
+
+    public void OnEnable()
+    {
+        playerHealth = playerMaxHealth;
+        playerAmmunition = playerMaxAmmunition;
+        score = 0.0f;
     }
 }

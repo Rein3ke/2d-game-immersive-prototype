@@ -20,6 +20,7 @@ public class EnemyController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private SoundController _soundController;
     private Animator _animator;
+    private BoxCollider2D _boxCollider2D;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,9 @@ public class EnemyController : MonoBehaviour
 
         _spriteRenderer.sprite = _enemySettings.sprite;
         _spriteRenderer.color = _enemySettings.color;
+
+        _boxCollider2D = GetComponentInChildren<BoxCollider2D>();
+        if (_boxCollider2D == null) Debug.LogError("Error: BoxCollider2D not found!");
 
         _animator = GetComponentInChildren<Animator>();
         if (_animator == null) Debug.LogError("Error: Animator not found!");
@@ -44,7 +48,7 @@ public class EnemyController : MonoBehaviour
         GameController.CurrentGameController.onGameEnd += OnGameEnd;
         GameController.CurrentGameController.onGameWon += OnGameEnd;
 
-        FindAndGoToPosition();
+        StartCoroutine(EnemyBehaviour());
     }
 
     private void EnemySettingsErrorCheck()
@@ -52,7 +56,7 @@ public class EnemyController : MonoBehaviour
         if (_enemySettings.switchPositionTime <= 0) Debug.LogWarning("Warning: SwitchPositionTime not set!");
     }
 
-    private void FindAndGoToPosition()
+    private void StartEnemyBehaviour()
     {
         GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
         if (covers.Length > 0)
@@ -68,6 +72,30 @@ public class EnemyController : MonoBehaviour
         {
             Debug.LogError("Error: No cover found!");
         }
+    }
+
+    private IEnumerator EnemyBehaviour()
+    {
+        // Play Spawn Sound (Random)
+        PlayAudio(_enemySettings.spawnSounds, .3f, true);
+
+        while (_isActive && !_isHit)
+        {
+            GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
+            if (covers.Length > 0)
+            {
+                int randomCoverIndex = Random.Range(0, covers.Length);
+                Vector3 position = covers[randomCoverIndex].transform.position;
+
+                StartCoroutine(GoToPosition(position));
+            }
+            else
+            {
+                Debug.LogError("Error: No cover found!");
+            }
+            yield return new WaitForSeconds(20f);
+        }
+        yield return null;
     }
 
     private IEnumerator GoToPosition(Vector3 position)
@@ -107,7 +135,11 @@ public class EnemyController : MonoBehaviour
     private void FlipSpriteBasedOnDirection(Vector3 currentPosition, Vector3 targetPosition)
     {
         Vector3 localDirection = transform.InverseTransformDirection(currentPosition - targetPosition);
-        if (localDirection.x < 0) _spriteRenderer.flipX = true;
+        if (localDirection.x < 0)
+        {
+            _spriteRenderer.flipX = true;
+            _boxCollider2D.offset *= new Vector3(-1, 1, 1);
+        }
     }
 
     private IEnumerator FadeOut()
