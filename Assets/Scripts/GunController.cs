@@ -38,7 +38,14 @@ public class GunController : MonoBehaviour
 
         GameController.CurrentGameController.InputController.onLeftMousePressed += OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyR += OnRKey;
-        GameController.CurrentGameController.onGameEnd += OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd += OnGameEnd;
+        GameController.CurrentGameController.onGameWon += OnGameEnd;
+    }
+
+    private IEnumerator WaitForCooldown(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+        isGunReady = true;
     }
 
     private void OnLeftMouseButton()
@@ -52,7 +59,7 @@ public class GunController : MonoBehaviour
         mousePosition.z += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
 
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-        //Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
+        Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
         soundController.playAudio(gunShotAudioClip, true);
 
@@ -85,11 +92,12 @@ public class GunController : MonoBehaviour
         }
     }
 
-    private void OnPlayerDeath()
+    private void OnGameEnd()
     {
         isActive = false;
     }
 
+    #region Events
     public delegate void RayCastCallback(RaycastHit2D hit);
     public event RayCastCallback onRayCastHit;
     public void RayCastHit(RaycastHit2D hit)
@@ -108,17 +116,14 @@ public class GunController : MonoBehaviour
             onAmmunitionChange();
         }
     }
+    #endregion
 
     private void OnDisable()
     {
         GameController.CurrentGameController.InputController.onLeftMousePressed -= OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyR -= OnRKey;
-        GameController.CurrentGameController.onGameEnd -= OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd -= OnGameEnd;
+        GameController.CurrentGameController.onGameWon -= OnGameEnd;
     }
 
-    private IEnumerator WaitForCooldown(float cooldown)
-    {
-        yield return new WaitForSeconds(cooldown);
-        isGunReady = true;
-    }
 }

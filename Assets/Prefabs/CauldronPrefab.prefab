@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 2899685442878541394}
   - component: {fileID: 2899685442878541397}
   - component: {fileID: 2899685442878541396}
-  - component: {fileID: 2899685442878541399}
   m_Layer: 6
-  m_Name: Cauldron
+  m_Name: Graphic
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,31 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5f997af595b2b4bbbe779d930e9202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  playDestroyAnimation: 1
-  playAnimatorAnimation: 1
-  playHitSound: 1
-  changeTexture: 0
-  hitSoundClip: {fileID: 8300000, guid: 9d8dfec9536e4c74d9078e24f0a7aff7, type: 3}
---- !u!95 &2899685442878541399
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2899685442878541392}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 23fc0cdbbc780d144866922ca6a388ec, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  interactableObjectSettings: {fileID: 11400000, guid: 63fa738624768de4e8dba09b4f2b3f2e, type: 2}
+  _playDestroyAnimation: 1
 --- !u!1 &2899685443459365556
 GameObject:
   m_ObjectHideFlags: 0

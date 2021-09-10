@@ -43,9 +43,8 @@ GameObject:
   - component: {fileID: 5578398290311685749}
   - component: {fileID: 5578398290311685750}
   - component: {fileID: 5578398290311685751}
-  - component: {fileID: 5578398290311685736}
   m_Layer: 6
-  m_Name: Chest
+  m_Name: Graphic
   m_TagString: InteractableObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,28 +153,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5f997af595b2b4bbbe779d930e9202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300006, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
-  playDestroyAnimation: 1
-  playAnimatorAnimation: 1
-  playHitSound: 1
-  changeTexture: 1
-  hitSoundClip: {fileID: 8300000, guid: 0e653c0839c19f74ba5dce23e07e5957, type: 3}
---- !u!95 &5578398290311685736
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5578398290311685747}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9968d2054b325494d9fdcb3dd4e910f8, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  interactableObjectSettings: {fileID: 11400000, guid: 422739e61a66e6148b33f7acf154cfb9, type: 2}
+  _playDestroyAnimation: 1

@@ -6,71 +6,83 @@ using UnityEngine;
 public class InteractableObjectController : MonoBehaviour
 {
     [SerializeField]
-    private Sprite sprite;
+    InteractableObjectSettings interactableObjectSettings;
     [SerializeField]
-    private bool playDestroyAnimation;
-    [SerializeField]
-    private bool playAnimatorAnimation;
-    [SerializeField]
-    private bool playHitSound;
-    [SerializeField]
-    private bool changeTexture;
-    [SerializeField]
-    private AudioClip hitSoundClip;
+    private bool _playDestroyAnimation = false;
 
-    private SpriteRenderer spriteRenderer;
-    private Animator animator;
-    private SoundController soundController;
+    private bool _playAnimatorAnimation = false;
+    private bool _playHitSound = false;
+    private bool _changeTexture = false;
+    private bool _isHit = false;
 
-    private bool isHit = false;
+    private Animator _animator;
+    private SpriteRenderer _spriteRenderer;
+    private SoundController _soundController;
+    private GameController _gameController;
 
     // Start is called before the first frame update
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
-        soundController = GameController.CurrentGameController.SoundController;
+        _gameController = GameController.CurrentGameController;
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (interactableObjectSettings.animationController != null)
+        {
+            _animator = gameObject.AddComponent<Animator>();
+            _animator.runtimeAnimatorController = interactableObjectSettings.animationController;
+            _playAnimatorAnimation = true;
+        }
+        if (interactableObjectSettings.hitSoundClip != null)
+        {
+            _soundController = GameController.CurrentGameController.SoundController;
+            _playHitSound = true;
+        }
+        if (interactableObjectSettings.sprite != null)
+        {
+            _changeTexture = true;
+        }
     }
 
     public void handleHit()
     {
-        if (isHit) return;
+        if (_isHit) return;
 
-        Debug.Log(name + " got hit!");
-        isHit = true;
+        _isHit = true;
 
-        if (playDestroyAnimation)
+        if (_playDestroyAnimation)
         {
             StartCoroutine(Fade());
         }
-        if (playAnimatorAnimation)
+        if (_playAnimatorAnimation)
         {
-            animator.SetBool("isHit", true);
+            _animator.SetBool("isHit", true);
         }
-        if (playHitSound)
+        if (_playHitSound)
         {
-            soundController.playAudio(hitSoundClip, true);
+            _soundController.playAudio(interactableObjectSettings.hitSoundClip, true);
         }
-        if (changeTexture)
+        if (_changeTexture)
         {
-            spriteRenderer.sprite = sprite;
+            _spriteRenderer.sprite = interactableObjectSettings.sprite;
         }
     }
 
     IEnumerator Fade()
     {
-        Color c;
-        for (float ft = 1f; ft >= 0; ft -= 0.5f * Time.deltaTime)
+        Color color;
+        for (float alphaValue = 1f; alphaValue >= 0; alphaValue -= 0.5f * Time.deltaTime)
         {
-            c = spriteRenderer.color;
-            c.a = ft;
-            spriteRenderer.color = c;
+            color = _spriteRenderer.color;
+            color.a = alphaValue;
+            _spriteRenderer.color = color;
             yield return null;
         }
 
         GameObject parent = gameObject.transform.parent.gameObject;
+
         if (parent.CompareTag("InteractableObject")) Destroy(parent.gameObject);
         else Destroy(gameObject);
+
         yield return null;
     }
 

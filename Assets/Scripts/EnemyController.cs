@@ -11,43 +11,63 @@ public class EnemyController : MonoBehaviour
     private static int _count = 0;
 
     [SerializeField]
-    private EnemySettings enemySettings;
+    private EnemySettings _enemySettings;
     [SerializeField]
-    private LayerMask layerMask;
+    private LayerMask _layerMask;
 
-    private bool isHit = false;
-    private bool isActive = true;
-    private SpriteRenderer spriteRenderer;
-    private SoundController soundController;
-    private Animator animator;
+    private bool _isHit = false;
+    private bool _isActive = true;
+    private SpriteRenderer _spriteRenderer;
+    private SoundController _soundController;
+    private Animator _animator;
 
     // Start is called before the first frame update
     void Start()
     {
         // Set Sprite Renderer
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        spriteRenderer.sprite = enemySettings.sprite;
-        spriteRenderer.color = enemySettings.color;
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (_spriteRenderer == null) Debug.LogError("Error: SpriteRenderer not found!");
 
-        animator = GetComponentInChildren<Animator>();
-        soundController = GameController.CurrentGameController.SoundController;
+        _spriteRenderer.sprite = _enemySettings.sprite;
+        _spriteRenderer.color = _enemySettings.color;
+
+        _animator = GetComponentInChildren<Animator>();
+        if (_animator == null) Debug.LogError("Error: Animator not found!");
+
+        _soundController = GameController.CurrentGameController.SoundController;
+        if (_soundController == null) Debug.LogError("Error: SoundController not found!");
+
+        EnemySettingsErrorCheck();
 
         _count++;
 
+        GameController.CurrentGameController.onGameEnd += OnGameEnd;
+        GameController.CurrentGameController.onGameWon += OnGameEnd;
+
+        FindAndGoToPosition();
+    }
+
+    private void EnemySettingsErrorCheck()
+    {
+        if (_enemySettings.switchPositionTime <= 0) Debug.LogWarning("Warning: SwitchPositionTime not set!");
+    }
+
+    private void FindAndGoToPosition()
+    {
         GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
         if (covers.Length > 0)
         {
             int randomCoverIndex = Random.Range(0, covers.Length);
             Vector3 position = covers[randomCoverIndex].transform.position;
+
             StartCoroutine(GoToPosition(position));
             // Play Spawn Sound (Random)
-            PlayAudio(enemySettings.spawnSounds, .3f, true);
-        } else
-        {
-            Debug.LogError("No cover found!");
+            PlayAudio(_enemySettings.spawnSounds, .3f, true);
         }
-
-        GameController.CurrentGameController.onGameEnd += OnPlayerDeath;
+        else
+        {
+            Debug.LogError("Error: No cover found!");
+        }
     }
 
     private IEnumerator GoToPosition(Vector3 position)
@@ -60,28 +80,34 @@ public class EnemyController : MonoBehaviour
             position.z
             );
 
-        // Flip sprite based on the x value
-        Vector3 localDirection = transform.InverseTransformDirection(currentPosition - targetPosition);
-        if (localDirection.x < 0) spriteRenderer.flipX = true;
+        FlipSpriteBasedOnDirection(currentPosition, targetPosition);
 
         float elapsedTime = 0;
-        float waitTime = enemySettings.walkSpeed;
+        float switchPositionTime = _enemySettings.switchPositionTime;
 
         StopCoroutine(Shoot());
 
-        animator.SetBool("isRunning", true);
+        _animator.SetBool("isRunning", true);
 
-        while (elapsedTime < waitTime && !isHit)
+        // True as long as the required time is not reached.
+        while ((elapsedTime < switchPositionTime) && !_isHit)
         {
-            transform.position = Vector3.Lerp(currentPosition, targetPosition, (elapsedTime / waitTime));
+            transform.position = Vector3.Lerp(currentPosition, targetPosition, (elapsedTime / switchPositionTime));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        animator.SetBool("isRunning", false);
+        _animator.SetBool("isRunning", false);
 
         StartCoroutine(Shoot());
         yield return null;
+    }
+
+    // Flip sprite based on the x value
+    private void FlipSpriteBasedOnDirection(Vector3 currentPosition, Vector3 targetPosition)
+    {
+        Vector3 localDirection = transform.InverseTransformDirection(currentPosition - targetPosition);
+        if (localDirection.x < 0) _spriteRenderer.flipX = true;
     }
 
     private IEnumerator FadeOut()
@@ -91,9 +117,9 @@ public class EnemyController : MonoBehaviour
         Color c;
         for (float ft = 1f; ft >= 0; ft -= 0.5f * Time.deltaTime)
         {
-            c = spriteRenderer.color;
+            c = _spriteRenderer.color;
             c.a = ft;
-            spriteRenderer.color = c;
+            _spriteRenderer.color = c;
             yield return null;
         }
 
@@ -103,49 +129,34 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        while(!isHit && isActive)
+        while(!_isHit && _isActive)
         {
-            PlayAudio(enemySettings.shootingSounds, .1f, true);
+            PlayAudio(_enemySettings.shootingSounds, .1f, true);
 
             GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
             GameObject hitObject = PerformRayCast(playerGameObject.transform.position, true);
 
             if (hitObject == null)
             {
-                PlayAudio(enemySettings.hitNothingSounds, .3f, true);
+                PlayAudio(_enemySettings.hitNothingSounds, .3f, true);
             }
             else
             {
                 switch (hitObject.tag)
                 {
                     case "Cover":
-                        PlayAudio(enemySettings.hitObjectSounds, 1.0f, true);
+                        PlayAudio(_enemySettings.hitObjectSounds, 1.0f, true);
                         break;
                     case "Player":
-                        PlayAudio(enemySettings.hitPlayerSounds, 1.0f, true);
-                        PlayerHit(enemySettings.damage);
+                        PlayAudio(_enemySettings.hitPlayerSounds, 1.0f, true);
+                        PlayerHit(_enemySettings.damage);
                         break;
                 }
             }
 
-            yield return new WaitForSeconds(enemySettings.shootingInterval);
+            yield return new WaitForSeconds(_enemySettings.shootingInterval);
         }
         yield return null;
-    }
-
-    private void DrawLine(Vector3 start, Vector3 end, Color color, float duration = 1f)
-    {
-        GameObject line = new GameObject();
-        line.transform.position = start;
-        LineRenderer lr = line.AddComponent<LineRenderer>();
-        lr.material = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit"));
-        lr.startColor = color;
-        lr.endColor = color;
-        lr.startWidth = .01f;
-        lr.endWidth = .1f;
-        lr.SetPosition(0, start);
-        lr.SetPosition(1, end);
-        Destroy(line, duration);
     }
 
     private GameObject PerformRayCast(Vector3 targetPosition, bool enableAccuracy)
@@ -155,16 +166,16 @@ public class EnemyController : MonoBehaviour
         if (enableAccuracy)
         {
             targetPosition = new Vector3(
-                targetPosition.x + Random.Range(-enemySettings.spreadFactor, enemySettings.spreadFactor),
-                targetPosition.y + Random.Range(-enemySettings.spreadFactor, enemySettings.spreadFactor),
-                targetPosition.z + Random.Range(-enemySettings.spreadFactor, enemySettings.spreadFactor)
+                targetPosition.x + Random.Range(-_enemySettings.spreadFactor, _enemySettings.spreadFactor),
+                targetPosition.y + Random.Range(-_enemySettings.spreadFactor, _enemySettings.spreadFactor),
+                targetPosition.z + Random.Range(-_enemySettings.spreadFactor, _enemySettings.spreadFactor)
                 );
         }
         
         Vector3 direction = targetPosition - origin;
         Ray ray = new Ray(origin, direction);
         Debug.DrawRay(ray.origin, ray.direction, Color.red, 2f);
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 50f, layerMask);
+        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 50f, _layerMask);
 
         if (hit2D.collider != null)
         {
@@ -183,36 +194,37 @@ public class EnemyController : MonoBehaviour
         }
 
         AudioClip randomAudioClip = audioClipList[Random.Range(0, audioClipList.Count)];
-        soundController.playAudio(randomAudioClip, volume, pitch);
+        _soundController.playAudio(randomAudioClip, volume, pitch);
     }
 
     public void handleHit()
     {
-        if (isHit) return;
+        if (_isHit) return;
 
-        isHit = true;
+        _isHit = true;
         StopAllCoroutines();
 
         StartCoroutine(FadeOut());
-        animator.SetBool("isDead", true);
+        _animator.SetBool("isDead", true);
         
-        PlayAudio(enemySettings.deathSounds, 1f, true);
+        PlayAudio(_enemySettings.deathSounds, 1f, true);
 
         EnemyDeath();
     }
 
-    private void OnPlayerDeath()
+    private void OnGameEnd()
     {
-        isActive = false;
+        _isActive = false;
     }
 
+    #region Events
     public delegate void EnemyDeathCallback(GameObject gameObject, float score);
     public event EnemyDeathCallback onEnemyDeath;
     public void EnemyDeath()
     {
         if (onEnemyDeath != null)
         {
-            onEnemyDeath(gameObject, enemySettings.scoreForGettingKilled);
+            onEnemyDeath(gameObject, _enemySettings.scoreForGettingKilled);
         }
     }
 
@@ -225,10 +237,12 @@ public class EnemyController : MonoBehaviour
             onPlayerHit(damagePoints);
         }
     }
+    #endregion
 
     private void OnDestroy()
     {
         _count--;
-        GameController.CurrentGameController.onGameEnd -= OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd -= OnGameEnd;
+        GameController.CurrentGameController.onGameWon -= OnGameEnd;
     }
 }

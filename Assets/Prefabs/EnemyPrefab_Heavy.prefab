@@ -71,8 +71,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0baee2057faffcf459c268c842798cf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemySettings: {fileID: 11400000, guid: 644392bf83ca9e142b6a06aec57a8529, type: 2}
-  layerMask:
+  _enemySettings: {fileID: 11400000, guid: 644392bf83ca9e142b6a06aec57a8529, type: 2}
+  _layerMask:
     serializedVersion: 2
     m_Bits: 768
 --- !u!1 &10792796793212649

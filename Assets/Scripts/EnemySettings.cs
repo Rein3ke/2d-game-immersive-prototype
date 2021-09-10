@@ -9,7 +9,7 @@ public class EnemySettings : ScriptableObject, ISerializationCallbackReceiver
     public float scoreForGettingKilled;
     [Header("Enemy Behaviour")]
     [Range(1f, 3f)]
-    public float walkSpeed;
+    public float switchPositionTime;
     [Range(0f, 1.5f)]
     public float spreadFactor;
     [Range(5f, 15f)]

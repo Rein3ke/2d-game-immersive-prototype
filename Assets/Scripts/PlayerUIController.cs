@@ -42,13 +42,14 @@ public class PlayerUIController : MonoBehaviour
         // Subscribe to events
         GameController.CurrentGameController.onPlayerHealthChange += OnPlayerHealthChange;
         GameController.CurrentGameController.onScoreChange += OnScoreChange;
-        GameController.CurrentGameController.onGameEnd += OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd += OnGameEnd;
+        GameController.CurrentGameController.onGameWon += OnGameWon;
         GunController.Instance.onAmmunitionChange += OnAmmunitionChange;
 
         // Set values from player settings
         OnAmmunitionChange();
+        OnPlayerHealthChange();
     }
-
 
     private void TogglePanel(GameObject panel)
     {
@@ -61,19 +62,24 @@ public class PlayerUIController : MonoBehaviour
     }
 
     #region Event Handling
-    private void OnAmmunitionChange()
-    {
-        SetTextfieldText(playerAmmoText, "Ammo: " + playerSettings.playerAmmunition + "/" + playerSettings.playerMaxAmmunition);
-    }
-
     public void LoadMenu()
     {
         GameController.CurrentGameController.loadMenu();
     }
 
-    private void OnPlayerDeath()
+    private void OnGameWon()
+    {
+        TogglePanel(gameWonPanel);
+    }
+
+    private void OnGameEnd()
     {
         TogglePanel(gameOverPanel);
+    }
+
+    private void OnAmmunitionChange()
+    {
+        SetTextfieldText(playerAmmoText, "Ammo: " + playerSettings.playerAmmunition + "/" + playerSettings.playerMaxAmmunition);
     }
 
     private void OnPlayerHealthChange()
@@ -92,7 +98,8 @@ public class PlayerUIController : MonoBehaviour
     {
         GameController.CurrentGameController.onPlayerHealthChange -= OnPlayerHealthChange;
         GameController.CurrentGameController.onScoreChange -= OnScoreChange;
-        GameController.CurrentGameController.onGameEnd -= OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd -= OnGameEnd;
+        GameController.CurrentGameController.onGameWon -= OnGameWon;
         GunController.Instance.onAmmunitionChange -= OnAmmunitionChange;
     }
 }

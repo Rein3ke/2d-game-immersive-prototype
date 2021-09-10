@@ -308,7 +308,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2773386325568807604
 RectTransform:
   m_ObjectHideFlags: 0
@@ -980,7 +980,7 @@ MonoBehaviour:
   playerAmmoText: {fileID: 213436435425561187}
   playerScoreText: {fileID: 4776061926032752345}
   gameOverPanel: {fileID: 3562024589561102039}
-  gameWonPanel: {fileID: 0}
+  gameWonPanel: {fileID: 1429839006956879685}
 --- !u!1 &5772418944470114505
 GameObject:
   m_ObjectHideFlags: 0

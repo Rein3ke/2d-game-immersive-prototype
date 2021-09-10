@@ -37,7 +37,9 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onRightPressed += goRight;
 
         // Subscribed Events: Game State
-        GameController.CurrentGameController.onGameEnd += OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd += OnGameEnd;
+        GameController.CurrentGameController.onGameWon += OnGameEnd;
+
     }
 
     private void goDown()
@@ -90,7 +92,7 @@ public class CameraMovementController : MonoBehaviour
     }
 
     // When the GameOver state is reached, the camera should no longer be able to move.
-    private void OnPlayerDeath() => isActive = false;
+    private void OnGameEnd() => isActive = false;
 
     private void OnDisable()
     {
@@ -98,6 +100,7 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onSpacebarLeft     -= goUp;
         GameController.CurrentGameController.InputController.onLeftPressed      -= goLeft;
         GameController.CurrentGameController.InputController.onRightPressed     -= goRight;
-        GameController.CurrentGameController.onGameEnd                      -= OnPlayerDeath;
+        GameController.CurrentGameController.onGameEnd -= OnGameEnd;
+        GameController.CurrentGameController.onGameWon -= OnGameEnd;
     }
 }

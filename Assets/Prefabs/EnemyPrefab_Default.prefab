@@ -71,21 +71,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0baee2057faffcf459c268c842798cf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemySettings: {fileID: 11400000, guid: e952f68bab4331e409de95e21a3262b2, type: 2}
-  playDestroyAnimation: 1
-  playHitSound: 1
-  walkSpeed: 2
-  spreadFactor: 0.75
-  causedDamage: 5
-  layerMask:
+  _enemySettings: {fileID: 11400000, guid: e952f68bab4331e409de95e21a3262b2, type: 2}
+  _layerMask:
     serializedVersion: 2
     m_Bits: 768
-  shootingAudioClip: {fileID: 8300000, guid: f24086be63d22aa4fbec8054dce66b90, type: 3}
-  spawnAudioClip: {fileID: 8300000, guid: e13847dd3bd2a1e499cfb17f686dffac, type: 3}
-  deathAudioClip: {fileID: 8300000, guid: c096ac49f1b8c80479e74145740804dd, type: 3}
-  missedBulletAudioClip: {fileID: 8300000, guid: e901daf6f9ff75b4987eb9d5b0a3946c, type: 3}
-  bulletImpactCoverAudioClip: {fileID: 8300000, guid: fe25dd0453eac5440b1ef07a02bf4e4e, type: 3}
-  bulletImpactPlayerAudioClip: {fileID: 8300000, guid: 13f9a27e7e1139c49a12d0fdc6c6fcdb, type: 3}
 --- !u!1 &10792796793212649
 GameObject:
   m_ObjectHideFlags: 0

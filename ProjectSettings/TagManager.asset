@@ -10,6 +10,7 @@ TagManager:
   - Spawn_Enemy
   - Cover
   - Position_Cover
+  - InteractableObject_Position
   layers:
   - Default
   - TransparentFX

@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5ed7e32bbd28c84cbe25c2c0c0f1d24, type: 3}
-  m_Name: EnemySetting_Default
+  m_Name: EnemySetting_Heavy
   m_EditorClassIdentifier: 
-  scoreForGettingKilled: 100
-  walkSpeed: 2
+  scoreForGettingKilled: 200
+  switchPositionTime: 3
   spreadFactor: 0.75
-  damage: 5
-  shootingInterval: 3
-  sprite: {fileID: -7955409947029270996, guid: e99b9bd13149d1a4bb1d07ca792ec006, type: 3}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  damage: 10
+  shootingInterval: 5
+  sprite: {fileID: -172072789634274603, guid: e99b9bd13149d1a4bb1d07ca792ec006, type: 3}
+  color: {r: 1, g: 0.6273585, b: 0.6273585, a: 1}
   spawnSounds:
   - {fileID: 8300000, guid: c096ac49f1b8c80479e74145740804dd, type: 3}
   - {fileID: 8300000, guid: e13847dd3bd2a1e499cfb17f686dffac, type: 3}
   - {fileID: 8300000, guid: e5507c7d66506e043b6694b1b03f991e, type: 3}
   shootingSounds:
-  - {fileID: 8300000, guid: f24086be63d22aa4fbec8054dce66b90, type: 3}
+  - {fileID: 8300000, guid: 6b811067434a07849b513a2dcc3a8241, type: 3}
   deathSounds:
   - {fileID: 8300000, guid: fe8d0db763f8a1949b842e14bfba94ce, type: 3}
   hitPlayerSounds:

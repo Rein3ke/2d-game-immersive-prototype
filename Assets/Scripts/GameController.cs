@@ -44,8 +44,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameSettings gameSettings;
 
-    private bool isGameRunning = false;
-    private GameObject enemySpawnPosition;
+    private bool _isGameRunning = false;
+    private GameObject _enemySpawnPosition;
     private int killedEnemies = 0;
     private Phase currentPhase = Phase.DEFAULT;
 
@@ -70,19 +70,19 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         // Get Enemy Spawn Position (as GameObject)
-        enemySpawnPosition = GameObject.FindGameObjectWithTag("Spawn_Enemy");
+        _enemySpawnPosition = GameObject.FindGameObjectWithTag("Spawn_Enemy");
 
         // Instantiate Player UI and start game if current scene isn't "Main Menu"
         if (!_sceneController.CurrentScene.name.Equals("Menu")) {
             Instantiate(playerUIPrefab);
 
-            isGameRunning = true;
+            _isGameRunning = true;
             isGameOver = false;
 
             StartCoroutine(SpawnEnemies());
         } else
         {
-            isGameRunning = false;
+            _isGameRunning = false;
         }
 
         // Event Subscribtion
@@ -92,16 +92,16 @@ public class GameController : MonoBehaviour
     // Coroutine: When the game is running and it's not Game Over, start spawning enemies.
     private IEnumerator SpawnEnemies()
     {
-        while (isGameRunning && !isGameOver)
+        while (_isGameRunning && !isGameOver)
         {
             float waitForSeconds = Random.Range(gameSettings.enemySpawnMinimumCooldown, gameSettings.enemySpawnMaximumCooldown);
             yield return new WaitForSeconds(waitForSeconds);
 
             // Do not spawn more enemies once the maximum number of enemies is reached.
-            if (EnemyController.Count < gameSettings.maxEnemies && (isGameRunning && !isGameOver))
+            if (EnemyController.Count < gameSettings.maxEnemies && (_isGameRunning && !isGameOver))
             {
                 GameObject enemyPrefab = gameSettings.enemyPrefabs[Random.Range(0, gameSettings.enemyPrefabs.Count)];
-                GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition.transform.position, Quaternion.identity, null);
+                GameObject enemy = Instantiate(enemyPrefab, _enemySpawnPosition.transform.position, Quaternion.identity, null);
                 enemy.GetComponent<EnemyController>().onEnemyDeath += OnEnemyDeath;
                 enemy.GetComponent<EnemyController>().onPlayerHit += OnPlayerHit;
             }
@@ -121,7 +121,7 @@ public class GameController : MonoBehaviour
         enemy.GetComponent<EnemyController>().onPlayerHit -= OnPlayerHit;
     }
 
-    private void AddToScore(float value)
+    public void AddToScore(float value)
     {
         playerSettings.score += value;
         ScoreChange();
@@ -165,7 +165,7 @@ public class GameController : MonoBehaviour
     {
         if ((playerSettings.score >= gameSettings.ScoreToBeAchieved) || (killedEnemies > gameSettings.EnemiesToKill))
         {
-            isGameRunning = false;
+            _isGameRunning = false;
             GameWon();
             return true;
         } else
