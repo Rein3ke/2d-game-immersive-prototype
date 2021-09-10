@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 328bdbe28f6cc1b43a9c2f8df6173a15, type: 3}
   m_Name: PlayerSetting_Default
   m_EditorClassIdentifier: 
-  playerHealth: 100
   playerMaxHealth: 100
-  playerAmmunition: 8
   playerMaxAmmunition: 8
   playerGunSpreadFactor: 20
+  playerReloadTime: 4
+  gunShotAudioClip: {fileID: 8300000, guid: 6b811067434a07849b513a2dcc3a8241, type: 3}
+  gunEmptyAudioClip: {fileID: 8300000, guid: c916261c98638da41bbf728b57295666, type: 3}
+  gunReloadAudioClip: {fileID: 8300000, guid: dc49d4da6d0433145902192eec626f91, type: 3}
+  gunPostReloadAudioClip: {fileID: 8300000, guid: c2069b82dff85054f8525628c3439cd1, type: 3}

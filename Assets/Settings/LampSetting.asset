@@ -15,3 +15,4 @@ MonoBehaviour:
   sprite: {fileID: 21300020, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
   hitSoundClip: {fileID: 8300000, guid: 9d8dfec9536e4c74d9078e24f0a7aff7, type: 3}
   animationController: {fileID: 0}
+  score: 50

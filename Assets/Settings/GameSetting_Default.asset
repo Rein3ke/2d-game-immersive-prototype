@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemiesToKill: 25
   ScoreToBeAchieved: 1000
-  maxEnemies: 1
+  maxEnemies: 6
   enemySpawnMinimumCooldown: 4
   enemySpawnMaximumCooldown: 6
   enemyPrefabs:
