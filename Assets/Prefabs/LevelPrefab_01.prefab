@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 703931722339383679}
   m_Layer: 8
   m_Name: Wall
-  m_TagString: Cover
+  m_TagString: Decoration_Foreground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 703931722350861836}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -138,7 +138,7 @@ Transform:
   m_LocalScale: {x: 1.25, y: 1.25, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 14
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931722350861836
 SpriteRenderer:
@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 703931722490814487}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -336,7 +336,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 13
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931722490814487
 SpriteRenderer:
@@ -746,7 +746,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 7
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931722669324044
 SpriteRenderer:
@@ -1587,7 +1587,7 @@ GameObject:
   - component: {fileID: 703931722969125977}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -1943,7 +1943,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 8
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931723095802649
 SpriteRenderer:
@@ -2008,7 +2008,7 @@ GameObject:
   - component: {fileID: 703931723099980975}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -2254,7 +2254,7 @@ GameObject:
   - component: {fileID: 703931723161268283}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -2271,7 +2271,7 @@ Transform:
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 15
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931723161268283
 SpriteRenderer:
@@ -2336,7 +2336,7 @@ GameObject:
   - component: {fileID: 703931723226754712}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -2681,7 +2681,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 9
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931723312848609
 SpriteRenderer:
@@ -2746,7 +2746,7 @@ GameObject:
   - component: {fileID: 703931723334496089}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -2828,7 +2828,7 @@ GameObject:
   - component: {fileID: 703931723347890569}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Decoration
+  m_TagString: Decoration_Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -3582,7 +3582,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 11
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931723660804429
 SpriteRenderer:
@@ -4057,7 +4057,7 @@ GameObject:
   - component: {fileID: 703931723700306727}
   m_Layer: 0
   m_Name: Bush
-  m_TagString: Decoration
+  m_TagString: Decoration_Foreground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -4074,7 +4074,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723986371734}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931723700306727
 SpriteRenderer:
@@ -4320,7 +4320,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 10
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931723754138324
 SpriteRenderer:
@@ -4407,15 +4407,15 @@ Transform:
   - {fileID: 703931723099980960}
   - {fileID: 703931723347890570}
   - {fileID: 703931722969125978}
+  - {fileID: 703931722490814504}
+  - {fileID: 703931722350861837}
+  - {fileID: 703931723161268284}
   - {fileID: 703931722669324045}
   - {fileID: 703931723095802650}
   - {fileID: 703931723312848610}
   - {fileID: 703931723754138325}
   - {fileID: 703931723660804430}
   - {fileID: 703931724001848834}
-  - {fileID: 703931722490814504}
-  - {fileID: 703931722350861837}
-  - {fileID: 703931723161268284}
   m_Father: {fileID: 703931724085408772}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4760,7 +4760,7 @@ GameObject:
   - component: {fileID: 703931723902198100}
   m_Layer: 8
   m_Name: Wall
-  m_TagString: Cover
+  m_TagString: Decoration_Foreground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -4869,7 +4869,7 @@ GameObject:
   - component: {fileID: 703931723916643114}
   m_Layer: 8
   m_Name: Wall
-  m_TagString: Cover
+  m_TagString: Decoration_Foreground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -4886,7 +4886,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723986371734}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931723916643115
 SpriteRenderer:
@@ -5074,9 +5074,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 703931723916643116}
   - {fileID: 703931723700306744}
   - {fileID: 703931724435057824}
+  - {fileID: 703931723916643116}
   - {fileID: 703931723902198101}
   - {fileID: 703931722339383664}
   m_Father: {fileID: 703931723756828624}
@@ -5111,7 +5111,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723756828624}
-  m_RootOrder: 12
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931724001848833
 SpriteRenderer:
@@ -6359,7 +6359,7 @@ GameObject:
   - component: {fileID: 703931724435057839}
   m_Layer: 0
   m_Name: Bush
-  m_TagString: Decoration
+  m_TagString: Decoration_Foreground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -6376,7 +6376,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 703931723986371734}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &703931724435057839
 SpriteRenderer:

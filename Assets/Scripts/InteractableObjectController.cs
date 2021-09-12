@@ -16,6 +16,10 @@ public class InteractableObjectController : MonoBehaviour
     private bool _isHit = false;
 
     private Animator _animator;
+    public SpriteRenderer SpriteRenderer
+    {
+        get => _spriteRenderer;
+    }
     private SpriteRenderer _spriteRenderer;
     private SoundController _soundController;
     private Level _level;

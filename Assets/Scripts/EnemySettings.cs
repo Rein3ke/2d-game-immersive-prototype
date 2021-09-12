@@ -16,6 +16,7 @@ public class EnemySettings : ScriptableObject, ISerializationCallbackReceiver
     public float damage;
     public float shootingInterval;
     [Header("Appearance")]
+    public Material material;
     public Sprite sprite;
     public Color color;
     [Space(8)]

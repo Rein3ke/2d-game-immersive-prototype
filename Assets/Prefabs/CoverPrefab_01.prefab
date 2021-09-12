@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 7840435764186200107}
   m_Layer: 0
   m_Name: Bush
-  m_TagString: Untagged
+  m_TagString: Decoration
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 6299301858144882682}
   m_Layer: 8
   m_Name: Cover
-  m_TagString: Cover
+  m_TagString: Decoration
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

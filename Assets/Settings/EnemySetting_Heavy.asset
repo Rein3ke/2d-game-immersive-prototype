@@ -17,6 +17,7 @@ MonoBehaviour:
   spreadFactor: 0.75
   damage: 10
   shootingInterval: 5
+  material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   sprite: {fileID: -172072789634274603, guid: e99b9bd13149d1a4bb1d07ca792ec006, type: 3}
   color: {r: 1, g: 0.6273585, b: 0.6273585, a: 1}
   spawnSounds:

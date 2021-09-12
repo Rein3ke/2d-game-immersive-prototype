@@ -11,6 +11,8 @@ TagManager:
   - Cover
   - Position_Cover
   - InteractableObject_Position
+  - Decoration_Foreground
+  - Decoration_Background
   layers:
   - Default
   - TransparentFX

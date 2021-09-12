@@ -19,4 +19,9 @@ public class GameAssets : MonoBehaviour
     public GameObject levelPrefab_01;
     public PlayerSettings playerSettings_default;
     public GameSettings gameSettings_default;
+    public Material defaultMaterial;
+    public Material blur;
+    public Material blur_foreground;
+    public Material blur_background;
+    public Material blur_interactables;
 }

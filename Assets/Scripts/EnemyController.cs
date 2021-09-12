@@ -10,6 +10,11 @@ public class EnemyController : MonoBehaviour
     }
     private static int _count = 0;
 
+    public EnemySettings EnemySettings
+    {
+        get => _enemySettings;
+    }
+
     [SerializeField]
     private EnemySettings _enemySettings;
     [SerializeField]
@@ -18,6 +23,10 @@ public class EnemyController : MonoBehaviour
     private GameController _gameController;
 
     private bool _isHit = false;
+    public SpriteRenderer SpriteRenderer
+    {
+        get => _spriteRenderer;
+    }
     private SpriteRenderer _spriteRenderer;
     private SoundController _soundController;
     private Animator _animator;
@@ -32,6 +41,7 @@ public class EnemyController : MonoBehaviour
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (_spriteRenderer == null) Debug.LogError("Error: SpriteRenderer not found!");
 
+        _spriteRenderer.material = _enemySettings.material;
         _spriteRenderer.sprite = _enemySettings.sprite;
         _spriteRenderer.color = _enemySettings.color;
 
@@ -162,7 +172,7 @@ public class EnemyController : MonoBehaviour
             {
                 switch (hitObject.tag)
                 {
-                    case "Cover":
+                    case "Decoration_Foreground":
                         PlayAudio(_enemySettings.hitObjectSounds, 1.0f, true);
                         break;
                     case "Player":

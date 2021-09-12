@@ -23,8 +23,6 @@ public class Level : MonoBehaviour
     }
     private bool _isGameRunning;
     private GameObject _activeLevelPrefab;
-    [SerializeField]
-    private bool debugging;
 
     private void Awake()
     {

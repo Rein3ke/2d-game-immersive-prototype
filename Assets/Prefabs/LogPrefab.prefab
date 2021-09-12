@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2502117730959720942}
   m_Layer: 8
   m_Name: LogPrefab
-  m_TagString: Cover
+  m_TagString: Decoration
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

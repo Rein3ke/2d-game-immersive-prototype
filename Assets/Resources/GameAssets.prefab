@@ -47,3 +47,8 @@ MonoBehaviour:
   levelPrefab_01: {fileID: 703931724085408773, guid: 5bbef22edb911bb42b8c9051da462b5b, type: 3}
   playerSettings_default: {fileID: 11400000, guid: 61a8198c7481d03439a5e1ba6434fe9c, type: 2}
   gameSettings_default: {fileID: 11400000, guid: 987873a4b91865a469903308b66dcb41, type: 2}
+  defaultMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  blur: {fileID: 2100000, guid: c6398d05db8fc8b46beafc093e84da66, type: 2}
+  blur_foreground: {fileID: 2100000, guid: 19ea76b99b55a4b43a944f2e48fcf65f, type: 2}
+  blur_background: {fileID: 2100000, guid: 65c684d412b8cda4991deb1c051d2209, type: 2}
+  blur_interactables: {fileID: 2100000, guid: c708d169d24936143a6a585449e587b9, type: 2}
