@@ -36,17 +36,8 @@ public class GameController : MonoBehaviour
     // All Controllers
     private SceneController _sceneController;
     private CursorController _cursorController;
+    private Level _level;
 
-    [SerializeField]
-    private GameObject playerUIPrefab;
-    [SerializeField]
-    private PlayerSettings playerSettings;
-    [SerializeField]
-    private GameSettings gameSettings;
-
-    private bool _isGameRunning = false;
-    private GameObject _enemySpawnPosition;
-    private int killedEnemies = 0;
     private Phase currentPhase = Phase.DEFAULT;
 
     private void Awake()
@@ -64,14 +55,15 @@ public class GameController : MonoBehaviour
         _cursorController = GetComponent<CursorController>();
         _inputController = GetComponent<InputController>();
         _soundController = GetComponent<SoundController>();
+        _level = GetComponent<Level>();
     }
 
     // Start is called before the first frame update
     private void Start()
     {
         // Get Enemy Spawn Position (as GameObject)
-        _enemySpawnPosition = GameObject.FindGameObjectWithTag("Spawn_Enemy");
-
+        // _enemySpawnPosition = GameObject.FindGameObjectWithTag("Spawn_Enemy");
+        /*
         // Instantiate Player UI and start game if current scene isn't "Main Menu"
         if (!_sceneController.CurrentScene.name.Equals("Menu")) {
             Instantiate(playerUIPrefab, new Vector3(0f, 0f, -20f), Quaternion.identity);
@@ -85,67 +77,29 @@ public class GameController : MonoBehaviour
         {
             _isGameRunning = false;
         }
-
+        */
         // Event Subscribtion
-        if (GunController.Instance != null) GunController.Instance.onRayCastHit += OnRaycastHit;
-    }
-
-    // Coroutine: When the game is running and it's not Game Over, start spawning enemies.
-    private IEnumerator SpawnEnemies()
-    {
-        while (_isGameRunning && !_isGameOver)
+        if (_sceneController.CurrentScene.name.Equals("Level"))
         {
-            float waitForSeconds = Random.Range(gameSettings.enemySpawnMinimumCooldown, gameSettings.enemySpawnMaximumCooldown);
-            yield return new WaitForSeconds(waitForSeconds);
-
-            // Do not spawn more enemies once the maximum number of enemies is reached.
-            if (EnemyController.Count < gameSettings.maxEnemies && (_isGameRunning && !_isGameOver))
+            switch(currentPhase)
             {
-                GameObject enemyPrefab = gameSettings.enemyPrefabs[Random.Range(0, gameSettings.enemyPrefabs.Count)];
-                GameObject enemy = Instantiate(enemyPrefab, _enemySpawnPosition.transform.position, Quaternion.identity, null);
-                enemy.GetComponent<EnemyController>().onEnemyDeath += OnEnemyDeath;
-                enemy.GetComponent<EnemyController>().onPlayerHit += OnPlayerHit;
+                case Phase.DEFAULT:
+                    _level.BuildLevel(GameAssets.i.levelPrefab_01, currentPhase);
+                    break;
             }
+            _level.StartLevel();
         }
-        yield return null;
-    }
 
-    // Player & Game Logic
-
-    // Subscribed Event: Handle the case when an enemy dies.
-    private void OnEnemyDeath(GameObject enemy, float score)
-    {
-        killedEnemies++;
-        AddToScore(score);
-
-        enemy.GetComponent<EnemyController>().onEnemyDeath -= OnEnemyDeath;
-        enemy.GetComponent<EnemyController>().onPlayerHit -= OnPlayerHit;
+        if (GunController.Instance != null) GunController.Instance.onRayCastHit += OnRaycastHit;
     }
 
     public void AddToScore(float value)
     {
-        playerSettings.score += value;
+        GameAssets.i.playerSettings_default.score += value;
         ScoreChange();
 
         CheckForWinConditions();
     }
-
-    private void OnPlayerHit(float damage)
-    {
-        playerSettings.playerHealth -= damage;
-        PlayerHealthChange();
-        CheckIsPlayerDead();
-    }
-
-    private void CheckIsPlayerDead()
-    {
-        if (playerSettings.playerHealth <= 0.0f)
-        {
-            GameEnd();
-            _isGameOver = true;
-        }
-    }
-
 
     // Processes the subscribed raycast hit and forwards the actual hit command. (Comes from an active camera controller)
     private void OnRaycastHit(RaycastHit2D hitObject)
@@ -164,9 +118,8 @@ public class GameController : MonoBehaviour
 
     private bool CheckForWinConditions()
     {
-        if ((playerSettings.score >= gameSettings.ScoreToBeAchieved) || (killedEnemies > gameSettings.EnemiesToKill))
+        if (GameAssets.i.playerSettings_default.score >= GameAssets.i.gameSettings_default.ScoreToBeAchieved)
         {
-            _isGameRunning = false;
             GameWon();
             return true;
         } else
@@ -186,15 +139,6 @@ public class GameController : MonoBehaviour
     }
 
     #region Events
-    public event Action onPlayerHealthChange;
-    public void PlayerHealthChange()
-    {
-        if (onPlayerHealthChange != null)
-        {
-            onPlayerHealthChange();
-        }
-    }
-
     public event Action onGameEnd;
     public void GameEnd()
     {

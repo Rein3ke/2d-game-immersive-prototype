@@ -40,7 +40,7 @@ public class PlayerUIController : MonoBehaviour
         }
 
         // Subscribe to events
-        GameController.CurrentGameController.onPlayerHealthChange += OnPlayerHealthChange;
+        Level.i.onPlayerHealthChange += OnPlayerHealthChange;
         GameController.CurrentGameController.onScoreChange += OnScoreChange;
         GameController.CurrentGameController.onGameEnd += OnGameEnd;
         GameController.CurrentGameController.onGameWon += OnGameWon;
@@ -96,7 +96,7 @@ public class PlayerUIController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameController.CurrentGameController.onPlayerHealthChange -= OnPlayerHealthChange;
+        Level.i.onPlayerHealthChange -= OnPlayerHealthChange;
         GameController.CurrentGameController.onScoreChange -= OnScoreChange;
         GameController.CurrentGameController.onGameEnd -= OnGameEnd;
         GameController.CurrentGameController.onGameWon -= OnGameWon;

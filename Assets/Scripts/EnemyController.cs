@@ -15,8 +15,10 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private LayerMask _layerMask;
 
+    private GameController _gameController;
+
     private bool _isHit = false;
-    private bool _isActive = true;
+    private bool _isGameRunning = true;
     private SpriteRenderer _spriteRenderer;
     private SoundController _soundController;
     private Animator _animator;
@@ -25,6 +27,8 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _gameController = GameController.CurrentGameController;
+
         // Set Sprite Renderer
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (_spriteRenderer == null) Debug.LogError("Error: SpriteRenderer not found!");
@@ -38,15 +42,15 @@ public class EnemyController : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         if (_animator == null) Debug.LogError("Error: Animator not found!");
 
-        _soundController = GameController.CurrentGameController.SoundController;
+        _soundController = _gameController.SoundController;
         if (_soundController == null) Debug.LogError("Error: SoundController not found!");
 
         EnemySettingsErrorCheck();
 
         _count++;
 
-        GameController.CurrentGameController.onGameEnd += OnGameEnd;
-        GameController.CurrentGameController.onGameWon += OnGameEnd;
+        _gameController.onGameEnd += OnGameEnd;
+        _gameController.onGameWon += OnGameEnd;
 
         StartCoroutine(EnemyBehaviour());
     }
@@ -79,7 +83,7 @@ public class EnemyController : MonoBehaviour
         // Play Spawn Sound (Random)
         PlayAudio(_enemySettings.spawnSounds, .3f, true);
 
-        while (_isActive && !_isHit)
+        while (_isGameRunning && !_isHit)
         {
             GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
             if (covers.Length > 0)
@@ -138,7 +142,11 @@ public class EnemyController : MonoBehaviour
         if (localDirection.x < 0)
         {
             _spriteRenderer.flipX = true;
-            _boxCollider2D.offset *= new Vector3(-1, 1, 1);
+            _boxCollider2D.offset = new Vector2(_boxCollider2D.offset.x * -1, _boxCollider2D.offset.y);
+        } else
+        {
+            _spriteRenderer.flipX = false;
+            _boxCollider2D.offset = new Vector2(Mathf.Abs(_boxCollider2D.offset.x), _boxCollider2D.offset.y);
         }
     }
 
@@ -161,7 +169,7 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        while(!_isHit && _isActive)
+        while(!_isHit && _isGameRunning)
         {
             PlayAudio(_enemySettings.shootingSounds, .1f, true);
 
@@ -246,7 +254,7 @@ public class EnemyController : MonoBehaviour
 
     private void OnGameEnd()
     {
-        _isActive = false;
+        _isGameRunning = false;
     }
 
     #region Events

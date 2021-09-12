@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3869226946364656973}
   - component: {fileID: 3869226946364656974}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,8 +148,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 448
-  gunShotAudioClip: {fileID: 8300000, guid: 6b811067434a07849b513a2dcc3a8241, type: 3}
-  gunRealoadAudioClip: {fileID: 8300000, guid: af9fe5a69f2af98459cc6d8b8fd6a032, type: 3}
   playerSettings: {fileID: 11400000, guid: 61a8198c7481d03439a5e1ba6434fe9c, type: 2}
 --- !u!1 &3869226946531396290
 GameObject:
