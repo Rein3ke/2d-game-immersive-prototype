@@ -15,8 +15,16 @@ public class Level : MonoBehaviour
     private GameSettings _gameSettings;
     private PlayerSettings _playerSettings;
     private GameController _gameController;
+    private MaterialChangeController _materialChangeController;
 
+    public bool IsGameRunning
+    {
+        get => _isGameRunning;
+    }
     private bool _isGameRunning;
+    private GameObject _activeLevelPrefab;
+    [SerializeField]
+    private bool debugging;
 
     private void Awake()
     {
@@ -27,21 +35,67 @@ public class Level : MonoBehaviour
     private void Start()
     {
         _gameController = GameController.CurrentGameController;
-        _gameController.onGameEnd += OnGameEnd;
-        _gameController.onGameWon += OnGameEnd;
+        _materialChangeController = GetComponent<MaterialChangeController>();
+        if (_materialChangeController == null) Debug.LogError("Error: No MaterialChangeController found!");
     }
 
-    public void BuildLevel(GameObject levelPrefab, GameController.Phase phase)
+    public void BuildLevel(GameObject levelPrefab, GameController.State state)
     {
-        Instantiate(levelPrefab);
-        Instantiate(GameAssets.i.playerUIPrefab, new Vector3(0f, 0f, -20f), Quaternion.identity);
+        ResetLevel();
 
-        switch (phase)
+        _activeLevelPrefab = Instantiate(levelPrefab);
+
+        PlayerUIController playerUIController = FindObjectOfType<PlayerUIController>();
+        if (FindObjectOfType<PlayerUIController>() == null)
         {
-            case GameController.Phase.DEFAULT:
+             playerUIController = Instantiate(GameAssets.i.playerUIPrefab).GetComponentInChildren<PlayerUIController>();
+        }
+
+        switch (state)
+        {
+            case GameController.State.DEFAULT:
                 _playerSettings = GameAssets.i.playerSettings_default;
                 _gameSettings = GameAssets.i.gameSettings_default;
                 break;
+            case GameController.State.BLUR:
+                _playerSettings = GameAssets.i.playerSettings_default;
+                _gameSettings = GameAssets.i.gameSettings_default;
+                break;
+            case GameController.State.PARTICLES:
+                _playerSettings = GameAssets.i.playerSettings_default;
+                _gameSettings = GameAssets.i.gameSettings_default;
+                break;
+            case GameController.State.VISION:
+                _playerSettings = GameAssets.i.playerSettings_default;
+                _gameSettings = GameAssets.i.gameSettings_default;
+                break;
+            default:
+                Debug.LogError("No feature set!");
+                break;
+        }
+
+        playerUIController.PlayerSettings = _playerSettings;
+        playerUIController.GameSettings = _gameSettings;
+
+        GunController.i.PlayerSettings = _playerSettings;
+        _materialChangeController.GameSettings = _gameSettings;
+
+        _gameSettings.state = state;
+        StateChange();
+    }
+
+    private void ResetLevel()
+    {
+        StopCoroutine(SpawnEnemies());
+
+        // Delete current level
+        if (_activeLevelPrefab != null) Destroy(_activeLevelPrefab);
+
+        // Remove all active enemies
+        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+        foreach (EnemyController enemy in enemies)
+        {
+            Destroy(enemy.gameObject);
         }
     }
 
@@ -75,29 +129,6 @@ public class Level : MonoBehaviour
         yield return null;
     }
 
-    private void OnPlayerHit(float damage)
-    {
-        _playerSettings.playerHealth -= damage;
-        PlayerHealthChange();
-        CheckIsPlayerDead();
-    }
-
-    private void CheckIsPlayerDead()
-    {
-        if (_playerSettings.playerHealth <= 0.0f)
-        {
-            OnGameEnd();
-        }
-    }
-
-    private void OnEnemyDeath(GameObject enemy, float score)
-    {
-        _gameController.AddToScore(score);
-
-        enemy.GetComponent<EnemyController>().onEnemyDeath -= OnEnemyDeath;
-        enemy.GetComponent<EnemyController>().onPlayerHit -= OnPlayerHit;
-    }
-
     private Vector3 GetRandomEnemySpawnPosition()
     {
         GameObject[] enemySpawns = GameObject.FindGameObjectsWithTag("Spawn_Enemy");
@@ -111,17 +142,63 @@ public class Level : MonoBehaviour
         }
     }
 
-    private void OnGameEnd()
+    public void AddToScore(float value)
     {
-        _isGameRunning = false;
+        _playerSettings.score += value;
+        ScoreChange();
+
+        if (CheckScoreWinCondition())
+        {
+            _isGameRunning = false;
+            GameWon();
+        }
     }
 
-    private void OnDisable()
+    private bool CheckIsPlayerAlive()
     {
-        _gameController.onGameEnd -= OnGameEnd;
-        _gameController.onGameWon -= OnGameEnd;
+        if (_playerSettings.playerHealth <= 0.0f)
+        {
+            return false;
+        } else
+        {
+            return true;
+        }
     }
 
+    private bool CheckScoreWinCondition()
+    {
+        if (_playerSettings.score >= _gameSettings.ScoreToBeAchieved)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    #region Event Handling
+    private void OnPlayerHit(float damage)
+    {
+        _playerSettings.playerHealth -= damage;
+        PlayerHealthChange();
+
+        if (!CheckIsPlayerAlive())
+        {
+            GameLost();
+        }
+    }
+
+    private void OnEnemyDeath(GameObject enemy, float score)
+    {
+        AddToScore(score);
+
+        enemy.GetComponent<EnemyController>().onEnemyDeath -= OnEnemyDeath;
+        enemy.GetComponent<EnemyController>().onPlayerHit -= OnPlayerHit;
+    }
+    #endregion
+
+    #region Events
     public event Action onPlayerHealthChange;
     public void PlayerHealthChange()
     {
@@ -130,4 +207,41 @@ public class Level : MonoBehaviour
             onPlayerHealthChange();
         }
     }
+
+    public event Action onScoreChange;
+    public void ScoreChange()
+    {
+        if (onScoreChange != null)
+        {
+            onScoreChange();
+        }
+    }
+
+    public event Action onGameWon;
+    public void GameWon()
+    {
+        if (onGameWon != null)
+        {
+            onGameWon();
+        }
+    }
+
+    public event Action onGameLost;
+    public void GameLost()
+    {
+        if (onGameLost != null)
+        {
+            onGameLost();
+        }
+    }
+
+    public event Action onStateChange;
+    public void StateChange()
+    {
+        if (onStateChange != null)
+        {
+            onStateChange();
+        }
+    }
+    #endregion
 }

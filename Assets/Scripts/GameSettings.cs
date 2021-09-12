@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game Setting")]
 public class GameSettings : ScriptableObject, ISerializationCallbackReceiver
 {
+    [Header("Game State")]
+    public GameController.State state;
+
     [Header("Win Conditions")]
     public int EnemiesToKill;
     public float ScoreToBeAchieved;

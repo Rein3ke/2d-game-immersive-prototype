@@ -15,14 +15,13 @@ public class SceneController : MonoBehaviour
     {
         sceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        GameController.CurrentGameController.onLoadingNextScene += loadNextScene;
         GameController.CurrentGameController.onLoadingMainMenuScene += loadMenu;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         currentScene = SceneManager.GetActiveScene();
     }
 
-    private void loadNextScene()
+    public void loadNextScene()
     {
         Debug.Log("Loading next scene...");
         if (sceneIndex == (SceneManager.sceneCountInBuildSettings - 1))
@@ -48,7 +47,6 @@ public class SceneController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameController.CurrentGameController.onLoadingNextScene -= loadNextScene;
         GameController.CurrentGameController.onLoadingMainMenuScene -= loadMenu;
 
         SceneManager.sceneLoaded -= OnSceneLoaded;

@@ -20,7 +20,6 @@ public class CameraMovementController : MonoBehaviour
     private float movementSpeed = 4.0f;
 
     private bool isDown = false;
-    private bool isActive = true;
 
     private void Awake()
     {
@@ -35,16 +34,11 @@ public class CameraMovementController : MonoBehaviour
         GameController.CurrentGameController.InputController.onSpacebarLeft += goUp;
         GameController.CurrentGameController.InputController.onLeftPressed += goLeft;
         GameController.CurrentGameController.InputController.onRightPressed += goRight;
-
-        // Subscribed Events: Game State
-        GameController.CurrentGameController.onGameEnd += OnGameEnd;
-        GameController.CurrentGameController.onGameWon += OnGameEnd;
-
     }
 
     private void goDown()
     {
-        if (!isActive || isDown) return;
+        if (!Level.i.IsGameRunning || isDown) return;
 
         Vector3 currentPosition = transform.position;
         transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, -yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
@@ -53,7 +47,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void goUp()
     {
-        if (!isActive || !isDown) return;
+        if (!Level.i.IsGameRunning || !isDown) return;
 
         Vector3 currentPosition = transform.position;
         transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
@@ -62,7 +56,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void goLeft()
     {
-        if (!isActive) return;
+        if (!Level.i.IsGameRunning) return;
 
         if (isDown)
         {
@@ -77,7 +71,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void goRight()
     {
-        if (!isActive) return;
+        if (!Level.i.IsGameRunning) return;
 
         if (isDown)
         {
@@ -91,16 +85,11 @@ public class CameraMovementController : MonoBehaviour
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -5f, 5f), transform.position.y, transform.position.z);
     }
 
-    // When the GameOver state is reached, the camera should no longer be able to move.
-    private void OnGameEnd() => isActive = false;
-
     private void OnDisable()
     {
         GameController.CurrentGameController.InputController.onSpacebarPressed  -= goDown;
         GameController.CurrentGameController.InputController.onSpacebarLeft     -= goUp;
         GameController.CurrentGameController.InputController.onLeftPressed      -= goLeft;
         GameController.CurrentGameController.InputController.onRightPressed     -= goRight;
-        GameController.CurrentGameController.onGameEnd -= OnGameEnd;
-        GameController.CurrentGameController.onGameWon -= OnGameEnd;
     }
 }

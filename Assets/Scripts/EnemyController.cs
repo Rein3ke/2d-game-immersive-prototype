@@ -18,7 +18,6 @@ public class EnemyController : MonoBehaviour
     private GameController _gameController;
 
     private bool _isHit = false;
-    private bool _isGameRunning = true;
     private SpriteRenderer _spriteRenderer;
     private SoundController _soundController;
     private Animator _animator;
@@ -49,9 +48,6 @@ public class EnemyController : MonoBehaviour
 
         _count++;
 
-        _gameController.onGameEnd += OnGameEnd;
-        _gameController.onGameWon += OnGameEnd;
-
         StartCoroutine(EnemyBehaviour());
     }
 
@@ -60,30 +56,12 @@ public class EnemyController : MonoBehaviour
         if (_enemySettings.switchPositionTime <= 0) Debug.LogWarning("Warning: SwitchPositionTime not set!");
     }
 
-    private void StartEnemyBehaviour()
-    {
-        GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
-        if (covers.Length > 0)
-        {
-            int randomCoverIndex = Random.Range(0, covers.Length);
-            Vector3 position = covers[randomCoverIndex].transform.position;
-
-            StartCoroutine(GoToPosition(position));
-            // Play Spawn Sound (Random)
-            PlayAudio(_enemySettings.spawnSounds, .3f, true);
-        }
-        else
-        {
-            Debug.LogError("Error: No cover found!");
-        }
-    }
-
     private IEnumerator EnemyBehaviour()
     {
         // Play Spawn Sound (Random)
         PlayAudio(_enemySettings.spawnSounds, .3f, true);
 
-        while (_isGameRunning && !_isHit)
+        while (Level.i.IsGameRunning && !_isHit)
         {
             GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
             if (covers.Length > 0)
@@ -169,7 +147,7 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        while(!_isHit && _isGameRunning)
+        while(!_isHit && Level.i.IsGameRunning)
         {
             PlayAudio(_enemySettings.shootingSounds, .1f, true);
 
@@ -252,11 +230,6 @@ public class EnemyController : MonoBehaviour
         EnemyDeath();
     }
 
-    private void OnGameEnd()
-    {
-        _isGameRunning = false;
-    }
-
     #region Events
     public delegate void EnemyDeathCallback(GameObject gameObject, float score);
     public event EnemyDeathCallback onEnemyDeath;
@@ -282,7 +255,5 @@ public class EnemyController : MonoBehaviour
     private void OnDestroy()
     {
         _count--;
-        GameController.CurrentGameController.onGameEnd -= OnGameEnd;
-        GameController.CurrentGameController.onGameWon -= OnGameEnd;
     }
 }

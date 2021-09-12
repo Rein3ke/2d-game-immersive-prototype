@@ -1,25 +1,20 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
-    public enum Phase
+    public enum State
     {
-        DEFAULT, BLUR, PARTICLES, VISION
+        DEFAULT = 0,
+        BLUR = 1,
+        PARTICLES = 2,
+        VISION = 3,
+        Length = 4
     }
 
     // Own instance of GameController
     public static GameController CurrentGameController { get => _currentGameController; }
     private static GameController _currentGameController;
-
-    public bool IsGameOver
-    {
-        get => _isGameOver;
-    }
-    private bool _isGameOver = false;
 
     // Public access for the input and sound controller
     public InputController InputController
@@ -36,9 +31,8 @@ public class GameController : MonoBehaviour
     // All Controllers
     private SceneController _sceneController;
     private CursorController _cursorController;
-    private Level _level;
 
-    private Phase currentPhase = Phase.DEFAULT;
+    private State _currentState = State.DEFAULT;
 
     private void Awake()
     {
@@ -55,7 +49,6 @@ public class GameController : MonoBehaviour
         _cursorController = GetComponent<CursorController>();
         _inputController = GetComponent<InputController>();
         _soundController = GetComponent<SoundController>();
-        _level = GetComponent<Level>();
     }
 
     // Start is called before the first frame update
@@ -78,27 +71,34 @@ public class GameController : MonoBehaviour
             _isGameRunning = false;
         }
         */
-        // Event Subscribtion
-        if (_sceneController.CurrentScene.name.Equals("Level"))
-        {
-            switch(currentPhase)
-            {
-                case Phase.DEFAULT:
-                    _level.BuildLevel(GameAssets.i.levelPrefab_01, currentPhase);
-                    break;
-            }
-            _level.StartLevel();
-        }
 
-        if (GunController.Instance != null) GunController.Instance.onRayCastHit += OnRaycastHit;
+        // Event Subscribtion
+        if (GunController.i != null) GunController.i.onRayCastHit += OnRaycastHit;
+
+        RunGameSetup();
     }
 
-    public void AddToScore(float value)
+    private void RunGameSetup()
     {
-        GameAssets.i.playerSettings_default.score += value;
-        ScoreChange();
-
-        CheckForWinConditions();
+        if (_sceneController.CurrentScene.name.Equals("Level"))
+        {
+            switch (_currentState)
+            {
+                case State.DEFAULT:
+                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                    break;
+                case State.BLUR:
+                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                    break;
+                case State.PARTICLES:
+                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                    break;
+                case State.VISION:
+                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                    break;
+            }
+            Level.i.StartLevel();
+        }
     }
 
     // Processes the subscribed raycast hit and forwards the actual hit command. (Comes from an active camera controller)
@@ -116,21 +116,39 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private bool CheckForWinConditions()
+    private State GetNextState()
     {
-        if (GameAssets.i.playerSettings_default.score >= GameAssets.i.gameSettings_default.ScoreToBeAchieved)
+        int index = ((int)_currentState);
+        string nextState = Enum.GetName(typeof(State), ++index);
+        return (State) Enum.Parse(typeof(State), nextState);
+    }
+
+    private State GetStateByIndex(int index)
+    {
+        string nextState = Enum.GetName(typeof(State), index);
+        return (State)Enum.Parse(typeof(State), nextState);
+    }
+
+    private void SetCurrentState(State state)
+    {
+        if (Equals(state, State.Length))
         {
-            GameWon();
-            return true;
+            _sceneController.loadNextScene();
         } else
         {
-            return false;
+            _currentState = state;
         }
     }
 
-    public void loadNextScene()
+    public void loadNextLevel()
     {
-        LoadingNextScene();
+        SetCurrentState(GetNextState());
+        RunGameSetup();
+    }
+
+    public void retryLevel()
+    {
+        RunGameSetup();
     }
 
     public void loadMenu()
@@ -139,35 +157,6 @@ public class GameController : MonoBehaviour
     }
 
     #region Events
-    public event Action onGameEnd;
-    public void GameEnd()
-    {
-        if (onGameEnd != null)
-        {
-            Debug.Log("Event: Player death!");
-            onGameEnd();
-        }
-    }
-
-    public event Action onScoreChange;
-    public void ScoreChange()
-    {
-        if (onScoreChange != null)
-        {
-            onScoreChange();
-        }
-    }
-
-    public event Action onLoadingNextScene;
-    public void LoadingNextScene()
-    {
-        if (onLoadingNextScene != null)
-        {
-            Debug.Log("Event: Loading next scene!");
-            onLoadingNextScene();
-        }
-    }
-
     public event Action onLoadingMainMenuScene;
     public void LoadingMainMenuScene()
     {
@@ -177,19 +166,10 @@ public class GameController : MonoBehaviour
             onLoadingMainMenuScene();
         }
     }
-
-    public event Action onGameWon;
-    public void GameWon()
-    {
-        if (onGameWon != null)
-        {
-            onGameWon();
-        }
-    }
     #endregion
 
     private void OnDisable()
     {
-        if (GunController.Instance != null) GunController.Instance.onRayCastHit -= OnRaycastHit;
+        if (GunController.i != null) GunController.i.onRayCastHit -= OnRaycastHit;
     }
 }

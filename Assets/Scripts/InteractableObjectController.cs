@@ -18,12 +18,12 @@ public class InteractableObjectController : MonoBehaviour
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
     private SoundController _soundController;
-    private GameController _gameController;
+    private Level _level;
 
     // Start is called before the first frame update
     void Start()
     {
-        _gameController = GameController.CurrentGameController;
+        _level = Level.i;
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (_interactableObjectSettings.animationController != null)
@@ -49,7 +49,7 @@ public class InteractableObjectController : MonoBehaviour
 
         _isHit = true;
 
-        _gameController.AddToScore(_interactableObjectSettings.score);
+        _level.AddToScore(_interactableObjectSettings.score);
 
         if (_playDestroyAnimation)
         {

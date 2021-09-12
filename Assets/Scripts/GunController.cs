@@ -8,24 +8,27 @@ public class GunController : MonoBehaviour
 {
     [SerializeField]
     private LayerMask layerMask;
-    
-    [SerializeField]
-    private PlayerSettings playerSettings;
 
-    private static GunController _instance;
-    public static GunController Instance
+    public PlayerSettings PlayerSettings
     {
-        get => _instance;
+        set => _playerSettings = value;
     }
+    private PlayerSettings _playerSettings;
+
+    public static GunController i
+    {
+        get => _i;
+    }
+    private static GunController _i;
 
     private SoundController soundController;
     private bool isGunReady = true;
-    private bool isActive = true;
+    private bool isGunReloading = false;
 
     // Start is called before the first frame update
     void Awake()
     {
-        if (_instance == null) _instance = this;
+        if (_i == null) _i = this;
         else Debug.LogError("Error: Too many active gun controllers!");
     }
 
@@ -35,30 +38,28 @@ public class GunController : MonoBehaviour
 
         GameController.CurrentGameController.InputController.onLeftMousePressed += OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyR += OnRKey;
-        GameController.CurrentGameController.onGameEnd += OnGameEnd;
-        GameController.CurrentGameController.onGameWon += OnGameEnd;
     }
 
     private void OnLeftMouseButton()
     {
-        if (!isActive) return;
+        if (!Level.i.IsGameRunning) return;
         if (!isGunReady) return;
-        if (playerSettings.playerAmmunition == 0)
+        if (_playerSettings.playerAmmunition == 0)
         {
-            soundController.playAudio(playerSettings.gunEmptyAudioClip, false);
+            soundController.playAudio(_playerSettings.gunEmptyAudioClip, false);
             return;
         }
 
         Vector3 mousePosition = Input.mousePosition;
 
-        mousePosition.x += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
-        mousePosition.y += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
-        mousePosition.z += Random.Range(-playerSettings.playerGunSpreadFactor, playerSettings.playerGunSpreadFactor);
+        mousePosition.x += Random.Range(-_playerSettings.playerGunSpreadFactor, _playerSettings.playerGunSpreadFactor);
+        mousePosition.y += Random.Range(-_playerSettings.playerGunSpreadFactor, _playerSettings.playerGunSpreadFactor);
+        mousePosition.z += Random.Range(-_playerSettings.playerGunSpreadFactor, _playerSettings.playerGunSpreadFactor);
 
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
-        soundController.playAudio(playerSettings.gunShotAudioClip, true);
+        soundController.playAudio(_playerSettings.gunShotAudioClip, true);
 
         RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
 
@@ -67,7 +68,7 @@ public class GunController : MonoBehaviour
             RayCastHit(hit2D);
         }
 
-        playerSettings.playerAmmunition--;
+        _playerSettings.playerAmmunition--;
         AmmunitionChange();
 
         isGunReady = false;
@@ -77,8 +78,8 @@ public class GunController : MonoBehaviour
 
     private void OnRKey()
     {
-        if (!isActive) return;
-        if (playerSettings.playerAmmunition < playerSettings.playerMaxAmmunition)
+        if (!Level.i.IsGameRunning) return;
+        if (_playerSettings.playerAmmunition < _playerSettings.playerMaxAmmunition && !isGunReloading)
         {
             StartCoroutine(Reload());
         }
@@ -87,15 +88,20 @@ public class GunController : MonoBehaviour
     private IEnumerator Reload()
     {
         isGunReady = false;
-        while(playerSettings.playerAmmunition < playerSettings.playerMaxAmmunition)
+        isGunReloading = true;
+
+        while (_playerSettings.playerAmmunition < _playerSettings.playerMaxAmmunition)
         {
-            playerSettings.playerAmmunition++;
+            _playerSettings.playerAmmunition++;
             AmmunitionChange();
-            soundController.playAudio(playerSettings.gunReloadAudioClip, false);
-            yield return new WaitForSeconds(playerSettings.playerReloadTime / playerSettings.playerMaxAmmunition);
+            soundController.playAudio(_playerSettings.gunReloadAudioClip, false);
+            yield return new WaitForSeconds(_playerSettings.playerReloadTime / _playerSettings.playerMaxAmmunition);
         }
-        soundController.playAudio(playerSettings.gunPostReloadAudioClip, false);
+        soundController.playAudio(_playerSettings.gunPostReloadAudioClip, false);
+
         isGunReady = true;
+        isGunReloading = false;
+
         yield return false;
     }
 
@@ -103,11 +109,6 @@ public class GunController : MonoBehaviour
     {
         yield return new WaitForSeconds(cooldown);
         isGunReady = true;
-    }
-
-    private void OnGameEnd()
-    {
-        isActive = false;
     }
 
     #region Events
@@ -135,8 +136,6 @@ public class GunController : MonoBehaviour
     {
         GameController.CurrentGameController.InputController.onLeftMousePressed -= OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyR -= OnRKey;
-        GameController.CurrentGameController.onGameEnd -= OnGameEnd;
-        GameController.CurrentGameController.onGameWon -= OnGameEnd;
     }
 
 }
