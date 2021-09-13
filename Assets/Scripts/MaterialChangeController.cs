@@ -9,12 +9,18 @@ public class MaterialChangeController : MonoBehaviour
     {
         set => _gameSettings = value;
     }
+
     private GameSettings _gameSettings;
+    private InputController _inputController;
 
     void Start()
     {
-        GameController.CurrentGameController.InputController.onSpacebarPressed += OnSpacebarPressed;
-        GameController.CurrentGameController.InputController.onSpacebarLeft += OnSpacebarLeft;
+        _inputController = GameController.CurrentGameController.InputController;
+
+        _inputController.onSpacebarDown += OnSpacebarPressed;
+        _inputController.onSpacebarUp += OnSpacebarLeft;
+        _inputController.onRightMouseDown += OnRightMouseDown;
+        _inputController.onRightMouseUp += OnRightMouseUp;
 
         Level.i.onStateChange += OnStateChange;
     }
@@ -25,40 +31,35 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.BLUR:
-                GameObject[] decoration = GameObject.FindGameObjectsWithTag("Decoration");
-                GameObject[] decorationForeground = GameObject.FindGameObjectsWithTag("Decoration_Foreground");
-                GameObject[] decorationBackground = GameObject.FindGameObjectsWithTag("Decoration_Background");
-
-                SetMaterialOnGameObjects(decoration, GameAssets.i.blur);
-                SetMaterialOnGameObjects(decorationForeground, GameAssets.i.blur_foreground);
-                SetMaterialOnGameObjects(decorationBackground, GameAssets.i.blur_background);
-
                 GameAssets.i.blur.SetFloat("_BlurAmount", 0.07f);
                 GameAssets.i.blur_background.SetFloat("_BlurAmount", 0.2f);
                 GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0.1f);
                 GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.0f);
-
+                GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.0f);
                 break;
-        }
-    }
-
-    private void SetMaterialOnGameObjects(GameObject[] gameObjects, Material material)
-    {
-        foreach (GameObject gameObject in gameObjects)
-        {
-            gameObject.GetComponent<SpriteRenderer>().material = material;
         }
     }
 
     private void ResetMaterialsInScene()
     {
-        GameObject[] decoration = GameObject.FindGameObjectsWithTag("Decoration");
-        GameObject[] decorationForeground = GameObject.FindGameObjectsWithTag("Decoration_Foreground");
-        GameObject[] decorationBackground = GameObject.FindGameObjectsWithTag("Decoration_Background");
-
-        SetMaterialOnGameObjects(decoration, GameAssets.i.defaultMaterial);
-        SetMaterialOnGameObjects(decorationForeground, GameAssets.i.defaultMaterial);
-        SetMaterialOnGameObjects(decorationBackground, GameAssets.i.defaultMaterial);
+        // Blur Reset
+        GameAssets.i.blur.SetFloat("_BlurAmount", 0f);
+        GameAssets.i.blur_background.SetFloat("_BlurAmount", 0f);
+        GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0f);
+        GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0f);
+        GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0f);
+        // Saturation Reset
+        GameAssets.i.blur.SetFloat("_Saturation", 1f);
+        GameAssets.i.blur_background.SetFloat("_Saturation", 1f);
+        GameAssets.i.blur_foreground.SetFloat("_Saturation", 1f);
+        GameAssets.i.blur_interactables.SetFloat("_Saturation", 1f);
+        GameAssets.i.blur_enemies.SetFloat("_Saturation", 1f);
+        // Color Reset
+        GameAssets.i.blur.SetColor("_Color", Color.white);
+        GameAssets.i.blur_background.SetColor("_Color", Color.white);
+        GameAssets.i.blur_foreground.SetColor("_Color", Color.white);
+        GameAssets.i.blur_interactables.SetColor("_Color", Color.white);
+        GameAssets.i.blur_enemies.SetColor("_Color", Color.white);
     }
 
     private void OnSpacebarPressed()
@@ -68,19 +69,11 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.BLUR:
-                foreach(EnemyController enemyController in FindObjectsOfType<EnemyController>())
-                {
-                    enemyController.SpriteRenderer.material = GameAssets.i.blur_interactables;
-                }
-                foreach (InteractableObjectController interactableObject in FindObjectsOfType<InteractableObjectController>())
-                {
-                    interactableObject.SpriteRenderer.material = GameAssets.i.blur_interactables;
-                }
-
                 GameAssets.i.blur.SetFloat("_BlurAmount", 0.3f);
                 GameAssets.i.blur_background.SetFloat("_BlurAmount", 0.4f);
                 GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0.01f);
                 GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.3f);
+                GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.3f);
                 break;
         }
     }
@@ -96,14 +89,50 @@ public class MaterialChangeController : MonoBehaviour
                 GameAssets.i.blur_background.SetFloat("_BlurAmount", 0.2f);
                 GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0.1f);
                 GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.0f);
+                GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.0f);
+                break;
+        }
+    }
+
+    private void OnRightMouseDown()
+    {
+        if (!Level.i.IsGameRunning) return;
+
+        switch (_gameSettings.state)
+        {
+            case GameController.State.VISION:
+                GameAssets.i.blur.SetColor("_Color", Color.gray);
+                GameAssets.i.blur_background.SetColor("_Color", Color.gray);
+                GameAssets.i.blur_foreground.SetColor("_Color", Color.gray);
+                GameAssets.i.blur_interactables.SetColor("_Color", Color.green);
+                GameAssets.i.blur_enemies.SetColor("_Color", Color.red);
+                break;
+        }
+    }
+
+    private void OnRightMouseUp()
+    {
+        if (!Level.i.IsGameRunning) return;
+
+        switch (_gameSettings.state)
+        {
+            case GameController.State.VISION:
+                GameAssets.i.blur.SetColor("_Color", Color.white);
+                GameAssets.i.blur_background.SetColor("_Color", Color.white);
+                GameAssets.i.blur_foreground.SetColor("_Color", Color.white);
+                GameAssets.i.blur_interactables.SetColor("_Color", Color.white);
+                GameAssets.i.blur_enemies.SetColor("_Color", Color.white);
                 break;
         }
     }
 
     private void OnDisable()
     {
-        GameController.CurrentGameController.InputController.onSpacebarPressed -= OnSpacebarPressed;
-        GameController.CurrentGameController.InputController.onSpacebarLeft -= OnSpacebarLeft;
+        _inputController.onSpacebarDown -= OnSpacebarPressed;
+        _inputController.onSpacebarUp -= OnSpacebarLeft;
+        _inputController.onRightMouseDown -= OnRightMouseDown;
+        _inputController.onRightMouseUp -= OnRightMouseUp;
+
         Level.i.onStateChange -= OnStateChange;
     }
 }

@@ -123,17 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &7833419 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7358070666220765242, guid: b4b1e79a56faba447a844766fbbd4046, type: 3}
-  m_PrefabInstance: {fileID: 1602866966}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fba397760c23f44fa44065bcd6e9d39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &311506896
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +280,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521411904}
   m_CullTransparentMesh: 1
+--- !u!114 &551125097 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7358070666220765236, guid: b4b1e79a56faba447a844766fbbd4046, type: 3}
+  m_PrefabInstance: {fileID: 1602866966}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b8e49c01efb6b43852cc357f8febc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &597576678
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,8 +736,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7833419}
-        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
+      - m_Target: {fileID: 551125097}
+        m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
         m_MethodName: loadNextScene
         m_Mode: 1
         m_Arguments:

@@ -15,13 +15,19 @@ public class GameAssets : MonoBehaviour
         }
     }
 
+    [Header("Prefabs")]
     public GameObject playerUIPrefab;
     public GameObject levelPrefab_01;
+    [Header("Settings")]
     public PlayerSettings playerSettings_default;
+    [Space(4)]
     public GameSettings gameSettings_default;
+    [Header("Materials")]
     public Material defaultMaterial;
     public Material blur;
     public Material blur_foreground;
     public Material blur_background;
     public Material blur_interactables;
+    public Material blur_enemies;
+    public Material groundMaterial;
 }

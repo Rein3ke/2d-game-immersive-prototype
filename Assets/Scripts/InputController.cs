@@ -1,17 +1,13 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
-
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            SpacePressed();
+            SpaceDown();
         }
         if(Input.GetKeyUp(KeyCode.Space))
         {
@@ -19,73 +15,101 @@ public class InputController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            LeftPressed();
+            LeftDown();
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            RightPressed();
+            RightDown();
         }
         if (Input.GetMouseButtonDown(0))
         {
-            LeftMousePressed();
+            LeftMouseDown();
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            RightMouseDown();
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            RightMouseUp();
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            KeyRPressed();
+            KeyRDown();
         }
     }
 
-    public event Action onSpacebarPressed;
-    public void SpacePressed()
+    #region Events
+    public event Action onSpacebarDown;
+    public void SpaceDown()
     {
-        if (onSpacebarPressed != null)
+        if (onSpacebarDown != null)
         {
-            onSpacebarPressed();
+            onSpacebarDown();
         }
     }
 
-    public event Action onSpacebarLeft;
+    public event Action onSpacebarUp;
     public void SpaceLeft()
     {
-        if (onSpacebarLeft != null)
+        if (onSpacebarUp != null)
         {
-            onSpacebarLeft();
+            onSpacebarUp();
         }
     }
 
-    public event Action onLeftPressed;
-    public void LeftPressed()
+    public event Action onLeftDown;
+    public void LeftDown()
     {
-        if (onLeftPressed != null)
+        if (onLeftDown != null)
         {
-            onLeftPressed();
+            onLeftDown();
         }
     }
 
-    public event Action onRightPressed;
-    public void RightPressed()
+    public event Action onRightDown;
+    public void RightDown()
     {
-        if (onRightPressed != null)
+        if (onRightDown != null)
         {
-            onRightPressed();
+            onRightDown();
         }
     }
 
-    public event Action onLeftMousePressed;
-    public void LeftMousePressed()
+    public event Action onLeftMouseDown;
+    public void LeftMouseDown()
     {
-        if (onLeftMousePressed != null)
+        if (onLeftMouseDown != null)
         {
-            onLeftMousePressed();
+            onLeftMouseDown();
         }
     }
 
-    public event Action onKeyR;
-    public void KeyRPressed()
+    public event Action onRightMouseDown;
+    public void RightMouseDown()
     {
-        if (onKeyR != null)
+        if (onRightMouseDown != null)
         {
-            onKeyR();
+            onRightMouseDown();
         }
     }
+
+    public event Action onRightMouseUp;
+    public void RightMouseUp()
+    {
+        if (onRightMouseUp != null)
+        {
+            onRightMouseUp();
+        }
+    }
+
+    public event Action onKeyRDown;
+    public void KeyRDown()
+    {
+        if (onKeyRDown != null)
+        {
+            onKeyRDown();
+        }
+    }
+    #endregion
 }

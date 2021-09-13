@@ -130,10 +130,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4379107270902890938, guid: b4b1e79a56faba447a844766fbbd4046, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7358070666220765241, guid: b4b1e79a56faba447a844766fbbd4046, type: 3}
       propertyPath: m_Name
       value: GameController
@@ -182,10 +178,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8843557172056405370, guid: b4b1e79a56faba447a844766fbbd4046, type: 3}
-      propertyPath: _playerUIPrefab
-      value: 
-      objectReference: {fileID: 5772418944547589451, guid: fd82ff379026ad448b3b690736dece08, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4b1e79a56faba447a844766fbbd4046, type: 3}
 --- !u!1001 &3869226945931310540

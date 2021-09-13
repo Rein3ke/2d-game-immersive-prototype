@@ -36,8 +36,8 @@ public class GunController : MonoBehaviour
     {
         soundController = GameController.CurrentGameController.SoundController;
 
-        GameController.CurrentGameController.InputController.onLeftMousePressed += OnLeftMouseButton;
-        GameController.CurrentGameController.InputController.onKeyR += OnRKey;
+        GameController.CurrentGameController.InputController.onLeftMouseDown += OnLeftMouseButton;
+        GameController.CurrentGameController.InputController.onKeyRDown += OnRKey;
     }
 
     private void OnLeftMouseButton()
@@ -134,8 +134,8 @@ public class GunController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameController.CurrentGameController.InputController.onLeftMousePressed -= OnLeftMouseButton;
-        GameController.CurrentGameController.InputController.onKeyR -= OnRKey;
+        GameController.CurrentGameController.InputController.onLeftMouseDown -= OnLeftMouseButton;
+        GameController.CurrentGameController.InputController.onKeyRDown -= OnRKey;
     }
 
 }

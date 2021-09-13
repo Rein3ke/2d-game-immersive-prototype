@@ -7,6 +7,7 @@ public class EnemyController : MonoBehaviour
     public static int Count
     {
         get => _count;
+        set => _count = value;
     }
     private static int _count = 0;
 
@@ -41,7 +42,6 @@ public class EnemyController : MonoBehaviour
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (_spriteRenderer == null) Debug.LogError("Error: SpriteRenderer not found!");
 
-        _spriteRenderer.material = _enemySettings.material;
         _spriteRenderer.sprite = _enemySettings.sprite;
         _spriteRenderer.color = _enemySettings.color;
 

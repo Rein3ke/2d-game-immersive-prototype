@@ -49,9 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fba397760c23f44fa44065bcd6e9d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUIPrefab: {fileID: 5772418944547589451, guid: fd82ff379026ad448b3b690736dece08, type: 3}
-  playerSettings: {fileID: 11400000, guid: 61a8198c7481d03439a5e1ba6434fe9c, type: 2}
-  gameSettings: {fileID: 11400000, guid: 987873a4b91865a469903308b66dcb41, type: 2}
 --- !u!114 &7358070666220765236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,14 +94,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7358070666220765241}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e29f88b14d13904b8aa7179de3fca29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  decorationTargetColor: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
-  enemyTargetColor: {r: 1, g: 1, b: 1, a: 1}
-  interactableObjectTargetColor: {r: 0.63771695, g: 1, b: 0.504717, a: 1}
 --- !u!114 &307515323
 MonoBehaviour:
   m_ObjectHideFlags: 0

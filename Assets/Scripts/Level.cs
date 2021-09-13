@@ -95,6 +95,9 @@ public class Level : MonoBehaviour
         {
             Destroy(enemy.gameObject);
         }
+
+        // Reset Enemy Counter (used for Enemy Spawning)
+        EnemyController.Count = 0;
     }
 
     public void StartLevel()

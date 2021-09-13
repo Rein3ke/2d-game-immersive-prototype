@@ -30,10 +30,22 @@ public class CameraMovementController : MonoBehaviour
     private void Start()
     {
         // Subscribed Events: Input
-        GameController.CurrentGameController.InputController.onSpacebarPressed += goDown;
-        GameController.CurrentGameController.InputController.onSpacebarLeft += goUp;
-        GameController.CurrentGameController.InputController.onLeftPressed += goLeft;
-        GameController.CurrentGameController.InputController.onRightPressed += goRight;
+        GameController.CurrentGameController.InputController.onSpacebarDown += goDown;
+        GameController.CurrentGameController.InputController.onSpacebarUp += goUp;
+        GameController.CurrentGameController.InputController.onLeftDown += goLeft;
+        GameController.CurrentGameController.InputController.onRightDown += goRight;
+        GameController.CurrentGameController.InputController.onRightMouseDown += zoomIn;
+        GameController.CurrentGameController.InputController.onRightMouseUp += zoomOut;
+    }
+
+    private void zoomIn()
+    {
+        Camera.main.fieldOfView -= 5f;
+    }
+
+    private void zoomOut()
+    {
+        Camera.main.fieldOfView += 5f;
     }
 
     private void goDown()
@@ -87,9 +99,11 @@ public class CameraMovementController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameController.CurrentGameController.InputController.onSpacebarPressed  -= goDown;
-        GameController.CurrentGameController.InputController.onSpacebarLeft     -= goUp;
-        GameController.CurrentGameController.InputController.onLeftPressed      -= goLeft;
-        GameController.CurrentGameController.InputController.onRightPressed     -= goRight;
+        GameController.CurrentGameController.InputController.onSpacebarDown  -= goDown;
+        GameController.CurrentGameController.InputController.onSpacebarUp     -= goUp;
+        GameController.CurrentGameController.InputController.onLeftDown      -= goLeft;
+        GameController.CurrentGameController.InputController.onRightDown     -= goRight;
+        GameController.CurrentGameController.InputController.onRightMouseDown -= zoomIn;
+        GameController.CurrentGameController.InputController.onRightMouseUp -= zoomOut;
     }
 }
