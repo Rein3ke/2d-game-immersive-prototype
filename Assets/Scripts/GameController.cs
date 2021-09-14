@@ -46,6 +46,7 @@ public class GameController : MonoBehaviour
 
         // Set all controller
         _sceneController = GetComponent<SceneController>();
+        if (_sceneController == null) Debug.LogError("No scene controller!");
         _cursorController = GetComponent<CursorController>();
         _inputController = GetComponent<InputController>();
         _soundController = GetComponent<SoundController>();
@@ -54,65 +55,35 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        // Get Enemy Spawn Position (as GameObject)
-        // _enemySpawnPosition = GameObject.FindGameObjectWithTag("Spawn_Enemy");
-        /*
-        // Instantiate Player UI and start game if current scene isn't "Main Menu"
-        if (!_sceneController.CurrentScene.name.Equals("Menu")) {
-            Instantiate(playerUIPrefab, new Vector3(0f, 0f, -20f), Quaternion.identity);
-
-            _isGameRunning = true;
-            _isGameOver = false;
-            playerSettings.OnEnable();
-
-            StartCoroutine(SpawnEnemies());
-        } else
-        {
-            _isGameRunning = false;
-        }
-        */
-
-        // Event Subscribtion
-        if (GunController.i != null) GunController.i.onRayCastHit += OnRaycastHit;
-
         RunGameSetup();
     }
 
     private void RunGameSetup()
     {
+        Debug.Log("GameController.RunGameSetup");
+
         if (_sceneController.CurrentScene.name.Equals("Level"))
         {
             switch (_currentState)
             {
                 case State.DEFAULT:
+                    Debug.Log("GameController.RunGameSetup.DEFAULT");
                     Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                     break;
                 case State.BLUR:
+                    Debug.Log("GameController.RunGameSetup.BLUR");
                     Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                     break;
                 case State.PARTICLES:
+                    Debug.Log("GameController.RunGameSetup.PARTICLES");
                     Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                     break;
                 case State.VISION:
+                    Debug.Log("GameController.RunGameSetup.VISION");
                     Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                     break;
             }
             Level.i.StartLevel();
-        }
-    }
-
-    // Processes the subscribed raycast hit and forwards the actual hit command. (Comes from an active camera controller)
-    private void OnRaycastHit(RaycastHit2D hitObject)
-    {
-        Collider2D hitCollider = hitObject.collider;
-        switch (hitCollider.tag)
-        {
-            case "InteractableObject":
-                hitCollider.gameObject.GetComponent<InteractableObjectController>().handleHit();
-                break;
-            case "Enemy":
-                hitCollider.gameObject.GetComponent<EnemyController>().handleHit();
-                break;
         }
     }
 
@@ -167,9 +138,4 @@ public class GameController : MonoBehaviour
         }
     }
     #endregion
-
-    private void OnDisable()
-    {
-        if (GunController.i != null) GunController.i.onRayCastHit -= OnRaycastHit;
-    }
 }

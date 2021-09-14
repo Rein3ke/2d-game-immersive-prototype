@@ -8,8 +8,7 @@ public class SceneController : MonoBehaviour
 {
     private int sceneIndex;
 
-    public Scene CurrentScene { get => currentScene; }
-    private Scene currentScene;
+    public Scene CurrentScene { get => SceneManager.GetActiveScene(); }
 
     private void Start()
     {
@@ -17,8 +16,8 @@ public class SceneController : MonoBehaviour
 
         GameController.CurrentGameController.onLoadingMainMenuScene += loadMenu;
 
+        // Event Subscription
         SceneManager.sceneLoaded += OnSceneLoaded;
-        currentScene = SceneManager.GetActiveScene();
     }
 
     public void loadNextScene()
@@ -42,7 +41,6 @@ public class SceneController : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("Current scene: " + scene.name);
-        currentScene = scene;
     }
 
     private void OnDisable()

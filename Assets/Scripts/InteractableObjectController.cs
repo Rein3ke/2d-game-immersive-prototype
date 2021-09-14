@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractableObjectController : MonoBehaviour
+public class InteractableObjectController : MonoBehaviour, IHitable
 {
     [SerializeField]
     InteractableObjectSettings _interactableObjectSettings;
