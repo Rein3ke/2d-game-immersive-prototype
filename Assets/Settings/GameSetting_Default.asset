@@ -12,12 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e19b522cb578742bfc0bf7b4f91839, type: 3}
   m_Name: GameSetting_Default
   m_EditorClassIdentifier: 
-  state: 2
+  state: 0
   EnemiesToKill: 25
-  ScoreToBeAchieved: 200
+  ScoreToBeAchieved: 2000
   maxEnemies: 6
   enemySpawnMinimumCooldown: 4
   enemySpawnMaximumCooldown: 6
   enemyPrefabs:
   - {fileID: 10792795520325551, guid: c1e98a694ac7cf5498666d412818f2c1, type: 3}
   - {fileID: 10792795520325551, guid: c1b97d848c39c97499a3a440bb20ea11, type: 3}
+  objectSpawnMinimumCooldown: 5
+  objectSpawnMaximumCooldown: 20
+  objectDecayTime: 5
+  spawnableGameObjects:
+  - {fileID: 5578398289351187830, guid: 0a33358b6cb417a468d28becec4bb7c5, type: 3}

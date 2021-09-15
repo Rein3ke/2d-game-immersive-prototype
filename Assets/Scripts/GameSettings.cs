@@ -22,9 +22,17 @@ public class GameSettings : ScriptableObject, ISerializationCallbackReceiver
     [Space(8)]
     public List<GameObject> enemyPrefabs;
 
+    [Header("Objects to spawn")]
+    public float objectSpawnMinimumCooldown;
+    public float objectSpawnMaximumCooldown;
+    public float objectDecayTime;
+    [Space(8)]
+    public List<GameObject> spawnableGameObjects;
+
     public void OnAfterDeserialize()
     {
         if (enemySpawnMinimumCooldown > enemySpawnMaximumCooldown) enemySpawnMinimumCooldown = enemySpawnMaximumCooldown;
+        if (objectSpawnMinimumCooldown > objectSpawnMaximumCooldown) objectSpawnMinimumCooldown = objectSpawnMaximumCooldown;
     }
 
     public void OnBeforeSerialize()

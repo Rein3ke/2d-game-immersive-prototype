@@ -2,13 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class InteractableObjectController : MonoBehaviour, IHitable
 {
     [SerializeField]
     InteractableObjectSettings _interactableObjectSettings;
-    [SerializeField]
-    private bool _playDestroyAnimation = false;
 
     private bool _playAnimatorAnimation = false;
     private bool _playHitSound = false;
@@ -45,6 +44,16 @@ public class InteractableObjectController : MonoBehaviour, IHitable
         {
             _changeTexture = true;
         }
+        if (_interactableObjectSettings.spawnable)
+        {
+            PrepareFadeIn();
+        }
+    }
+
+    private void PrepareFadeIn()
+    {
+        //_spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, 0f);
+        StartCoroutine(FadeIn());
     }
 
     public void handleHit()
@@ -55,9 +64,9 @@ public class InteractableObjectController : MonoBehaviour, IHitable
 
         _level.AddToScore(_interactableObjectSettings.score);
 
-        if (_playDestroyAnimation)
+        if (_interactableObjectSettings.playFadeOutAnimation)
         {
-            StartCoroutine(Fade());
+            StartCoroutine(FadeOutAndDestroy());
         }
         if (_playAnimatorAnimation)
         {
@@ -73,7 +82,7 @@ public class InteractableObjectController : MonoBehaviour, IHitable
         }
     }
 
-    IEnumerator Fade()
+    public IEnumerator FadeOutAndDestroy()
     {
         Color color;
         for (float alphaValue = 1f; alphaValue >= 0; alphaValue -= 0.5f * Time.deltaTime)
@@ -84,10 +93,22 @@ public class InteractableObjectController : MonoBehaviour, IHitable
             yield return null;
         }
 
-        GameObject parent = gameObject.transform.parent.gameObject;
+        Destroy(gameObject);
+        yield return null;
+    }
 
-        if (parent.CompareTag("InteractableObject")) Destroy(parent.gameObject);
-        else Destroy(gameObject);
+    public IEnumerator FadeIn()
+    {
+        Debug.Log("Fade in");
+        Color color;
+        for (float alphaValue = 0f; alphaValue <= 1f; alphaValue += 0.5f * Time.deltaTime)
+        {
+            color = _spriteRenderer.color;
+            color.a = alphaValue;
+            _spriteRenderer.color = color;
+            Debug.Log(color.a);
+            yield return null;
+        }
 
         yield return null;
     }
@@ -95,6 +116,9 @@ public class InteractableObjectController : MonoBehaviour, IHitable
     private void OnDestroy()
     {
         StopAllCoroutines();
+
+        GameObject parent = gameObject.transform.parent.gameObject;
+        if (parent.CompareTag("InteractableObject")) Destroy(parent.gameObject);
     }
 
     private void OnDisable()

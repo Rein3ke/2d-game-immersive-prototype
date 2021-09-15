@@ -16,3 +16,5 @@ MonoBehaviour:
   hitSoundClip: {fileID: 8300000, guid: 9d8dfec9536e4c74d9078e24f0a7aff7, type: 3}
   animationController: {fileID: 9100000, guid: 23fc0cdbbc780d144866922ca6a388ec, type: 2}
   score: 25
+  playFadeOutAnimation: 1
+  spawnable: 0

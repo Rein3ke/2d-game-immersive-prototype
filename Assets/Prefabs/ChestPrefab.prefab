@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 5578398290311685748}
   - component: {fileID: 5578398290311685749}
   - component: {fileID: 5578398290311685750}
-  - component: {fileID: 5578398290311685751}
+  - component: {fileID: 7310256492948324277}
   m_Layer: 6
   m_Name: Graphic
   m_TagString: InteractableObject
@@ -103,7 +103,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300004, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -141,7 +141,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.1875, y: 1}
   m_EdgeRadius: 0
---- !u!114 &5578398290311685751
+--- !u!114 &7310256492948324277
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -154,4 +154,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactableObjectSettings: {fileID: 11400000, guid: 422739e61a66e6148b33f7acf154cfb9, type: 2}
-  _playDestroyAnimation: 1

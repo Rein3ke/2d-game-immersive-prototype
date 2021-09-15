@@ -85,6 +85,7 @@ public class Level : MonoBehaviour
     private void ResetLevel()
     {
         StopCoroutine(SpawnEnemies());
+        StopCoroutine(SpawnInteractables());
 
         // Delete current level
         if (_activeLevelPrefab != null) Destroy(_activeLevelPrefab);
@@ -94,6 +95,12 @@ public class Level : MonoBehaviour
         foreach (EnemyController enemy in enemies)
         {
             Destroy(enemy.gameObject);
+        }
+
+        InteractableObjectController[] interactables = FindObjectsOfType<InteractableObjectController>();
+        foreach (InteractableObjectController interactable in interactables)
+        {
+            Destroy(interactable.gameObject);
         }
 
         // Reset Enemy Counter (used for Enemy Spawning)
@@ -108,6 +115,7 @@ public class Level : MonoBehaviour
         _playerSettings.OnEnable();
 
         StartCoroutine(SpawnEnemies());
+        StartCoroutine(SpawnInteractables());
     }
 
     private IEnumerator SpawnEnemies()
@@ -128,6 +136,33 @@ public class Level : MonoBehaviour
             }
         }
         yield return null;
+    }
+
+    private IEnumerator SpawnInteractables()
+    {
+        while (_isGameRunning)
+        {
+            float waitForSeconds = Random.Range(_gameSettings.objectSpawnMinimumCooldown, _gameSettings.objectSpawnMaximumCooldown);
+            yield return new WaitForSeconds(waitForSeconds);
+
+            GameObject interactablePrefab = _gameSettings.spawnableGameObjects[Random.Range(0, _gameSettings.spawnableGameObjects.Count)];
+            GameObject interactableGameObject = Instantiate(interactablePrefab, GetRandomInteractableSpawnPosition(), Quaternion.identity, null);
+        }
+        yield return null;
+    }
+
+    private Vector3 GetRandomInteractableSpawnPosition()
+    {
+        GameObject[] objectSpawns = GameObject.FindGameObjectsWithTag("InteractableObject_Position");
+        if (objectSpawns.Length > 0)
+        {
+            return objectSpawns[Random.Range(0, objectSpawns.Length)].transform.position;
+        }
+        else
+        {
+            Debug.LogError("Error: No object spawns found!");
+            return Vector3.zero;
+        }
     }
 
     private Vector3 GetRandomEnemySpawnPosition()

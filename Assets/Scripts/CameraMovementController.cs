@@ -40,12 +40,12 @@ public class CameraMovementController : MonoBehaviour
 
     private void zoomIn()
     {
-        Camera.main.fieldOfView -= 5f;
+        Camera.main.fieldOfView -= 2.5f;
     }
 
     private void zoomOut()
     {
-        Camera.main.fieldOfView += 5f;
+        Camera.main.fieldOfView += 2.5f;
     }
 
     private void goDown()

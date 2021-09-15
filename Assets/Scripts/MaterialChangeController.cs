@@ -61,6 +61,7 @@ public class MaterialChangeController : MonoBehaviour
         GameAssets.i.blur_foreground.SetFloat("_Saturation", 1f);
         GameAssets.i.blur_interactables.SetFloat("_Saturation", 1f);
         GameAssets.i.blur_enemies.SetFloat("_Saturation", 1f);
+        GameAssets.i.groundMaterial.SetFloat("_Saturation", 1f);
         // Color Reset
         GameAssets.i.blur.SetColor("_Color", Color.white);
         GameAssets.i.blur_background.SetColor("_Color", Color.white);
@@ -114,11 +115,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.VISION:
-                GameAssets.i.blur.SetColor("_Color", Color.gray);
-                GameAssets.i.blur_background.SetColor("_Color", Color.gray);
-                GameAssets.i.blur_foreground.SetColor("_Color", Color.gray);
-                GameAssets.i.blur_interactables.SetColor("_Color", Color.green);
-                GameAssets.i.blur_enemies.SetColor("_Color", Color.red);
+                GameAssets.i.blur.SetFloat("_Saturation", 0.3f);
+                GameAssets.i.blur_background.SetFloat("_Saturation", 0.3f);
+                GameAssets.i.blur_foreground.SetFloat("_Saturation", 0.3f);
+                GameAssets.i.blur_interactables.SetFloat("_Saturation", 1.0f);
+                GameAssets.i.blur_enemies.SetFloat("_Saturation", 1.0f);
+                GameAssets.i.groundMaterial.SetFloat("_Saturation", 0.3f);
                 break;
         }
     }
@@ -130,11 +132,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.VISION:
-                GameAssets.i.blur.SetColor("_Color", Color.white);
-                GameAssets.i.blur_background.SetColor("_Color", Color.white);
-                GameAssets.i.blur_foreground.SetColor("_Color", Color.white);
-                GameAssets.i.blur_interactables.SetColor("_Color", Color.white);
-                GameAssets.i.blur_enemies.SetColor("_Color", Color.white);
+                GameAssets.i.blur.SetFloat("_Saturation", 1.0f);
+                GameAssets.i.blur_background.SetFloat("_Saturation", 1.0f);
+                GameAssets.i.blur_foreground.SetFloat("_Saturation", 1.0f);
+                GameAssets.i.blur_interactables.SetFloat("_Saturation", 1.0f);
+                GameAssets.i.blur_enemies.SetFloat("_Saturation", 1.0f);
+                GameAssets.i.groundMaterial.SetFloat("_Saturation", 1.0f);
                 break;
         }
     }
