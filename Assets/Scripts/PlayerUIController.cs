@@ -122,22 +122,7 @@ public class PlayerUIController : MonoBehaviour
 
     private void OnStateChange()
     {
-        string text = "Active Feature: ";
-        switch(_gameSettings.state)
-        {
-            case GameController.State.BLUR:
-                text += "Blured Textures";
-                break;
-            case GameController.State.PARTICLES:
-                text += "Particles";
-                break;
-            case GameController.State.VISION:
-                text += "Special Vision";
-                break;
-            default:
-                text += "No Feature";
-                break;
-        }
+        string text = "Active Feature: " + Enum.GetName(typeof (GameController.State), _gameSettings.state);
 
         SetTextfieldText(activeFeatureText, text);
     }

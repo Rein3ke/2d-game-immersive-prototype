@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour
     {
         DEFAULT = 0,
         BLUR = 1,
-        PARTICLES = 2,
+        DOODLE = 2,
         VISION = 3,
         Length = 4
     }
@@ -74,8 +74,8 @@ public class GameController : MonoBehaviour
                     Debug.Log("GameController.RunGameSetup.BLUR");
                     Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                     break;
-                case State.PARTICLES:
-                    Debug.Log("GameController.RunGameSetup.PARTICLES");
+                case State.DOODLE:
+                    Debug.Log("GameController.RunGameSetup.DOODLE");
                     Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                     break;
                 case State.VISION:

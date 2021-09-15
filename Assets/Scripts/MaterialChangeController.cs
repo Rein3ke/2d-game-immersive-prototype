@@ -37,6 +37,13 @@ public class MaterialChangeController : MonoBehaviour
                 GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.0f);
                 GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.0f);
                 break;
+            case GameController.State.DOODLE:
+                GameAssets.i.blur.SetInt("_DoodleEffect", 0);
+                GameAssets.i.blur_background.SetInt("_DoodleEffect", 0);
+                GameAssets.i.blur_foreground.SetInt("_DoodleEffect", 0);
+                GameAssets.i.blur_interactables.SetInt("_DoodleEffect", 1);
+                GameAssets.i.blur_enemies.SetInt("_DoodleEffect", 1);
+                break;
         }
     }
 
@@ -60,6 +67,12 @@ public class MaterialChangeController : MonoBehaviour
         GameAssets.i.blur_foreground.SetColor("_Color", Color.white);
         GameAssets.i.blur_interactables.SetColor("_Color", Color.white);
         GameAssets.i.blur_enemies.SetColor("_Color", Color.white);
+        // Doodle Effect Reset
+        GameAssets.i.blur.SetInt("_DoodleEffect", 0);
+        GameAssets.i.blur_background.SetInt("_DoodleEffect", 0);
+        GameAssets.i.blur_foreground.SetInt("_DoodleEffect", 0);
+        GameAssets.i.blur_interactables.SetInt("_DoodleEffect", 0);
+        GameAssets.i.blur_enemies.SetInt("_DoodleEffect", 0);
     }
 
     private void OnSpacebarPressed()

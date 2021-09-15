@@ -63,7 +63,8 @@ public class GunController : MonoBehaviour
 
         RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
 
-        IHitable hitable = hit2D.collider.GetComponent<IHitable>();
+        Collider2D collider = hit2D.collider;
+        IHitable hitable = collider?.GetComponent<IHitable>();
         if (hitable != null)
         {
             hitable.handleHit();

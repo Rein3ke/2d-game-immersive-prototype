@@ -59,7 +59,7 @@ public class Level : MonoBehaviour
                 _playerSettings = GameAssets.i.playerSettings_default;
                 _gameSettings = GameAssets.i.gameSettings_default;
                 break;
-            case GameController.State.PARTICLES:
+            case GameController.State.DOODLE:
                 _playerSettings = GameAssets.i.playerSettings_default;
                 _gameSettings = GameAssets.i.gameSettings_default;
                 break;
