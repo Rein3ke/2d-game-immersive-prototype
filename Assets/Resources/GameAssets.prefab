@@ -51,6 +51,7 @@ MonoBehaviour:
   blur: {fileID: 2100000, guid: c6398d05db8fc8b46beafc093e84da66, type: 2}
   blur_foreground: {fileID: 2100000, guid: 19ea76b99b55a4b43a944f2e48fcf65f, type: 2}
   blur_background: {fileID: 2100000, guid: 65c684d412b8cda4991deb1c051d2209, type: 2}
+  universalBackgroundImage: {fileID: 2100000, guid: f45e89896e3269e4788aea84893003b8, type: 2}
   blur_interactables: {fileID: 2100000, guid: c708d169d24936143a6a585449e587b9, type: 2}
   blur_enemies: {fileID: 2100000, guid: 997594a4d7d5f484f9aace5bacc2ec2a, type: 2}
   groundMaterial: {fileID: 2100000, guid: c914fa78c7ba9ec4ba73f8e9be05071e, type: 2}

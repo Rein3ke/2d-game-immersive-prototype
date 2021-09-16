@@ -27,6 +27,7 @@ public class GameAssets : MonoBehaviour
     public Material blur;
     public Material blur_foreground;
     public Material blur_background;
+    public Material universalBackgroundImage;
     public Material blur_interactables;
     public Material blur_enemies;
     public Material groundMaterial;

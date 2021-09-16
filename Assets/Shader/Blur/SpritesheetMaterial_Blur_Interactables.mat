@@ -65,7 +65,7 @@ Material:
     - _DistortionEnabled: 0
     - _DistortionStrength: 1
     - _DistortionStrengthScaled: 0
-    - _DoodleEffect: 1
+    - _DoodleEffect: 0
     - _DstBlend: 0
     - _EmissionEnabled: 0
     - _FlipbookMode: 0

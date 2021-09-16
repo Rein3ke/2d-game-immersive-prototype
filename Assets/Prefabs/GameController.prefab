@@ -99,6 +99,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e29f88b14d13904b8aa7179de3fca29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blurAmountDefault: 0.1
+  blurAmountForeground: 0.1
+  blurAmountBackground: 0.2
+  blurAmountBackgroundImage: 0.2
+  blurAmountEnemies: 0.2
+  blurAmountInteractables: 0.2
 --- !u!114 &307515323
 MonoBehaviour:
   m_ObjectHideFlags: 0

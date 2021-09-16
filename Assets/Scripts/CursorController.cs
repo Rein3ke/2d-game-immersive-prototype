@@ -1,19 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CursorController : MonoBehaviour
 {
-    // Cursor
     [SerializeField]
     private Texture2D cursorTexture;
     [SerializeField]
     private CursorMode cursorMode = CursorMode.Auto;
 
-    // Start is called before the first frame update
-    void Start()
+    private Vector2 hotSpot;
+
+    private void Start()
     {
-        Vector2 hotSpot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2);
-        Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+        hotSpot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2);
+    }
+
+    private void Update()
+    {
+        if (Application.isFocused)
+        {
+            Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+        }
     }
 }

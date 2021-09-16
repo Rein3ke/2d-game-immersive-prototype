@@ -40,5 +40,5 @@ Material:
     - _DoodleEffect: 0
     - _Saturation: 0.771
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 0.8584906, g: 0.61626273, b: 0.5061855, a: 1}
   m_BuildTextureStacks: []

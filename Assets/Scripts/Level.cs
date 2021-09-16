@@ -96,7 +96,7 @@ public class Level : MonoBehaviour
         {
             Destroy(enemy.gameObject);
         }
-
+        // Remove all active interactive objects
         InteractableObjectController[] interactables = FindObjectsOfType<InteractableObjectController>();
         foreach (InteractableObjectController interactable in interactables)
         {
@@ -221,6 +221,7 @@ public class Level : MonoBehaviour
 
         if (!CheckIsPlayerAlive())
         {
+            _isGameRunning = false;
             GameLost();
         }
     }

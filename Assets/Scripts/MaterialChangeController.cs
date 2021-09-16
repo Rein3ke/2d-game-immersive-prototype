@@ -5,6 +5,19 @@ using UnityEngine;
 
 public class MaterialChangeController : MonoBehaviour
 {
+    [SerializeField]
+    private float blurAmountDefault;
+    [SerializeField]
+    private float blurAmountForeground;
+    [SerializeField]
+    private float blurAmountBackground;
+    [SerializeField]
+    private float blurAmountBackgroundImage;
+    [SerializeField]
+    private float blurAmountEnemies;
+    [SerializeField]
+    private float blurAmountInteractables;
+
     public GameSettings GameSettings
     {
         set => _gameSettings = value;
@@ -31,9 +44,10 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.BLUR:
-                GameAssets.i.blur.SetFloat("_BlurAmount", 0.07f);
-                GameAssets.i.blur_background.SetFloat("_BlurAmount", 0.2f);
-                GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0.1f);
+                GameAssets.i.blur.SetFloat("_BlurAmount", blurAmountDefault);
+                GameAssets.i.blur_background.SetFloat("_BlurAmount", blurAmountBackground);
+                GameAssets.i.universalBackgroundImage.SetFloat("_BlurAmount", blurAmountBackgroundImage);
+                GameAssets.i.blur_foreground.SetFloat("_BlurAmount", blurAmountForeground);
                 GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.0f);
                 GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.0f);
                 break;
@@ -52,6 +66,7 @@ public class MaterialChangeController : MonoBehaviour
         // Blur Reset
         GameAssets.i.blur.SetFloat("_BlurAmount", 0f);
         GameAssets.i.blur_background.SetFloat("_BlurAmount", 0f);
+        GameAssets.i.universalBackgroundImage.SetFloat("_BlurAmount", 0f);
         GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0f);
         GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0f);
         GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0f);
@@ -83,11 +98,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.BLUR:
-                GameAssets.i.blur.SetFloat("_BlurAmount", 0.3f);
-                GameAssets.i.blur_background.SetFloat("_BlurAmount", 0.4f);
-                GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0.01f);
-                GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.3f);
-                GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.3f);
+                GameAssets.i.blur.SetFloat("_BlurAmount", blurAmountDefault * 2f);
+                GameAssets.i.blur_background.SetFloat("_BlurAmount", blurAmountBackground * 2f);
+                GameAssets.i.universalBackgroundImage.SetFloat("_BlurAmount", blurAmountBackgroundImage * 2f);
+                GameAssets.i.blur_foreground.SetFloat("_BlurAmount", blurAmountForeground / 4);
+                GameAssets.i.blur_interactables.SetFloat("_BlurAmount", blurAmountInteractables);
+                GameAssets.i.blur_enemies.SetFloat("_BlurAmount", blurAmountEnemies);
                 break;
         }
     }
@@ -99,9 +115,10 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.BLUR:
-                GameAssets.i.blur.SetFloat("_BlurAmount", 0.07f);
-                GameAssets.i.blur_background.SetFloat("_BlurAmount", 0.2f);
-                GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0.1f);
+                GameAssets.i.blur.SetFloat("_BlurAmount", blurAmountDefault);
+                GameAssets.i.blur_background.SetFloat("_BlurAmount", blurAmountBackground);
+                GameAssets.i.universalBackgroundImage.SetFloat("_BlurAmount", blurAmountBackgroundImage);
+                GameAssets.i.blur_foreground.SetFloat("_BlurAmount", blurAmountForeground);
                 GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.0f);
                 GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.0f);
                 break;
