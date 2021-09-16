@@ -40,20 +40,49 @@ public class CameraMovementController : MonoBehaviour
 
     private void zoomIn()
     {
-        Camera.main.fieldOfView -= 2.5f;
+        if (!Level.i.IsGameRunning) return;
+        StartCoroutine(Zoom(Camera.main.fieldOfView, Camera.main.fieldOfView - 2f, .2f));
     }
 
     private void zoomOut()
     {
-        Camera.main.fieldOfView += 2.5f;
+        if (!Level.i.IsGameRunning) return;
+        StartCoroutine(Zoom(Camera.main.fieldOfView, Camera.main.fieldOfView + 2f, .2f));
+    }
+
+    private IEnumerator Zoom(float v_start, float v_end, float duration)
+    {
+        float elapsed = 0.0f;
+        while (elapsed < duration)
+        {
+            Camera.main.fieldOfView = Mathf.Lerp(v_start, v_end, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Camera.main.fieldOfView = v_end;
+        yield return null;
+    }
+
+    private IEnumerator GoUpOrDown(float v_start, float v_end, float duration)
+    {
+        float elapsed = 0.0f;
+        while (elapsed < duration)
+        {
+            transform.position = new Vector3(transform.position.x, Mathf.Lerp(v_start, v_end, elapsed / duration), transform.position.z);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = new Vector3(transform.position.x, v_end, transform.position.z);
+        yield return null;
     }
 
     private void goDown()
     {
         if (!Level.i.IsGameRunning || isDown) return;
 
-        Vector3 currentPosition = transform.position;
-        transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, -yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
+        //Vector3 currentPosition = transform.position;
+        //transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, -yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
+        StartCoroutine(GoUpOrDown(transform.position.y, transform.position.y - yOffset, .1f));
         isDown = true;
     }
 
@@ -61,8 +90,9 @@ public class CameraMovementController : MonoBehaviour
     {
         if (!Level.i.IsGameRunning || !isDown) return;
 
-        Vector3 currentPosition = transform.position;
-        transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
+        //Vector3 currentPosition = transform.position;
+        //transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
+        StartCoroutine(GoUpOrDown(transform.position.y, transform.position.y + yOffset, .1f));
         isDown = false;
     }
 

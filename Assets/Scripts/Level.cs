@@ -147,6 +147,9 @@ public class Level : MonoBehaviour
 
             GameObject interactablePrefab = _gameSettings.spawnableGameObjects[Random.Range(0, _gameSettings.spawnableGameObjects.Count)];
             GameObject interactableGameObject = Instantiate(interactablePrefab, GetRandomInteractableSpawnPosition(), Quaternion.identity, null);
+
+            Destroy(interactableGameObject, waitForSeconds);
+            yield return null;
         }
         yield return null;
     }
