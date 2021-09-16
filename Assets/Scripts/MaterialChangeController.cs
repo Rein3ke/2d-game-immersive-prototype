@@ -159,7 +159,7 @@ public class MaterialChangeController : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    private void OnDistroy()
     {
         _inputController.onSpacebarDown -= OnSpacebarPressed;
         _inputController.onSpacebarUp -= OnSpacebarLeft;

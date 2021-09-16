@@ -99,14 +99,12 @@ public class InteractableObjectController : MonoBehaviour, IHitable
 
     public IEnumerator FadeIn()
     {
-        Debug.Log("Fade in");
         Color color;
         for (float alphaValue = 0f; alphaValue <= 1f; alphaValue += 0.5f * Time.deltaTime)
         {
             color = _spriteRenderer.color;
             color.a = alphaValue;
             _spriteRenderer.color = color;
-            Debug.Log(color.a);
             yield return null;
         }
 

@@ -97,7 +97,7 @@ public class CameraMovementController : MonoBehaviour
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -5f, 5f), transform.position.y, transform.position.z);
     }
 
-    private void OnDisable()
+    private void OnDistroy()
     {
         GameController.CurrentGameController.InputController.onSpacebarDown  -= goDown;
         GameController.CurrentGameController.InputController.onSpacebarUp     -= goUp;

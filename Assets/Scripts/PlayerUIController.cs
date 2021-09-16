@@ -18,6 +18,12 @@ public class PlayerUIController : MonoBehaviour
     private GameObject gameOverPanel;
     [SerializeField]
     private GameObject gameWonPanel;
+    [SerializeField]
+    private Image image;
+    [SerializeField]
+    private Color damageColor;
+    [SerializeField]
+    private Color healthColor;
 
     private Canvas canvas;
     private Camera mainCamera;
@@ -33,6 +39,8 @@ public class PlayerUIController : MonoBehaviour
         set => _gameSettings = value;
     }
     private GameSettings _gameSettings;
+
+    float _localHealthReference;
 
     private void Start()
     {
@@ -70,6 +78,7 @@ public class PlayerUIController : MonoBehaviour
 
         gameOverPanel.SetActive(false);
         gameWonPanel.SetActive(false);
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
     }
 
     private void SetTextfieldText(Text element, string content)
@@ -113,6 +122,28 @@ public class PlayerUIController : MonoBehaviour
     private void OnPlayerHealthChange()
     {
         SetTextfieldText(playerHealthText, "Life: " + Mathf.Clamp(_playerSettings.playerHealth, 0.0f, _playerSettings.playerMaxHealth) + " HP");
+        if (_playerSettings.playerHealth < _localHealthReference)
+        {
+            StartCoroutine(ShowHealthColorOverlay(damageColor));
+        } else if (_playerSettings.playerHealth > _localHealthReference)
+        {
+            StartCoroutine(ShowHealthColorOverlay(healthColor));
+        }
+        _localHealthReference = _playerSettings.playerHealth;
+    }
+
+    private IEnumerator ShowHealthColorOverlay(Color color)
+    {
+        image.color = color;
+        Color c;
+        for (float alpha = .5f; alpha >= 0f; alpha -= 0.5f * Time.deltaTime)
+        {
+            c = image.color;
+            c.a = alpha;
+            image.color = c;
+            yield return null;
+        }
+        yield return null;
     }
 
     private void OnScoreChange()
