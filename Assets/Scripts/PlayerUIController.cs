@@ -70,6 +70,8 @@ public class PlayerUIController : MonoBehaviour
 
     private void ResetUI()
     {
+        _localHealthReference = _playerSettings.playerHealth;
+
         // Set values from player settings
         OnAmmunitionChange();
         OnPlayerHealthChange();
@@ -79,6 +81,9 @@ public class PlayerUIController : MonoBehaviour
         gameOverPanel.SetActive(false);
         gameWonPanel.SetActive(false);
         image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
+
+        // Level Blend In Effect
+        StartCoroutine(ShowColorOverlay(Color.black, 0.2f));
     }
 
     private void SetTextfieldText(Text element, string content)
@@ -86,6 +91,7 @@ public class PlayerUIController : MonoBehaviour
         element.text = content;
     }
 
+    #region Button Handler Methods
     public void LoadMenu()
     {
         GameController.CurrentGameController.loadMenu();
@@ -102,6 +108,7 @@ public class PlayerUIController : MonoBehaviour
         GameController.CurrentGameController.retryLevel();
         ResetUI();
     }
+    #endregion
 
     #region Event Handling
     private void OnGameWon()
@@ -124,19 +131,19 @@ public class PlayerUIController : MonoBehaviour
         SetTextfieldText(playerHealthText, "Life: " + Mathf.Clamp(_playerSettings.playerHealth, 0.0f, _playerSettings.playerMaxHealth) + " HP");
         if (_playerSettings.playerHealth < _localHealthReference)
         {
-            StartCoroutine(ShowHealthColorOverlay(damageColor));
+            StartCoroutine(ShowColorOverlay(damageColor, 0.5f));
         } else if (_playerSettings.playerHealth > _localHealthReference)
         {
-            StartCoroutine(ShowHealthColorOverlay(healthColor));
+            StartCoroutine(ShowColorOverlay(healthColor, 0.5f));
         }
         _localHealthReference = _playerSettings.playerHealth;
     }
 
-    private IEnumerator ShowHealthColorOverlay(Color color)
+    private IEnumerator ShowColorOverlay(Color color, float speed)
     {
         image.color = color;
         Color c;
-        for (float alpha = .5f; alpha >= 0f; alpha -= 0.5f * Time.deltaTime)
+        for (float alpha = .5f; alpha >= 0f; alpha -= speed * Time.deltaTime)
         {
             c = image.color;
             c.a = alpha;

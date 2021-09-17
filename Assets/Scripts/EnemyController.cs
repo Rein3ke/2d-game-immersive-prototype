@@ -32,6 +32,7 @@ public class EnemyController : MonoBehaviour, IHitable
     private SoundController _soundController;
     private Animator _animator;
     private BoxCollider2D _boxCollider2D;
+    private Coroutine _currentShootRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -105,7 +106,10 @@ public class EnemyController : MonoBehaviour, IHitable
         float elapsedTime = 0;
         float switchPositionTime = _enemySettings.switchPositionTime;
 
-        StopCoroutine(Shoot());
+        if (_currentShootRoutine != null)
+        {
+            StopCoroutine(_currentShootRoutine);
+        }
 
         _animator.SetBool("isRunning", true);
 
@@ -119,7 +123,7 @@ public class EnemyController : MonoBehaviour, IHitable
 
         _animator.SetBool("isRunning", false);
 
-        StartCoroutine(Shoot());
+        _currentShootRoutine = StartCoroutine(Shoot());
         yield return null;
     }
 
@@ -140,7 +144,10 @@ public class EnemyController : MonoBehaviour, IHitable
 
     private IEnumerator FadeOut()
     {
-        StopCoroutine(Shoot());
+        if (_currentShootRoutine != null)
+        {
+            StopCoroutine(_currentShootRoutine);
+        }
 
         Color c;
         for (float ft = 1f; ft >= 0; ft -= 0.5f * Time.deltaTime)

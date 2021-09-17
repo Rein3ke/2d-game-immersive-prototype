@@ -24,6 +24,7 @@ public class GunController : MonoBehaviour
     private SoundController soundController;
     private bool isGunReady = true;
     private bool isGunReloading = false;
+    private bool _isBehindCover = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -38,12 +39,41 @@ public class GunController : MonoBehaviour
 
         GameController.CurrentGameController.InputController.onLeftMouseDown += OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyRDown += OnRKey;
+        GameController.CurrentGameController.InputController.onSpacebarDown += OnSpacebarDown;
+        GameController.CurrentGameController.InputController.onSpacebarUp += OnSpacebarUp;
+
     }
 
+    private IEnumerator Reload()
+    {
+        isGunReady = false;
+        isGunReloading = true;
+
+        while (_playerSettings.playerAmmunition < _playerSettings.playerMaxAmmunition)
+        {
+            _playerSettings.playerAmmunition++;
+            AmmunitionChange();
+            soundController.playAudio(_playerSettings.gunReloadAudioClip, false);
+            yield return new WaitForSeconds(_playerSettings.playerReloadTime / _playerSettings.playerMaxAmmunition);
+        }
+        soundController.playAudio(_playerSettings.gunPostReloadAudioClip, false);
+
+        isGunReady = true;
+        isGunReloading = false;
+
+        yield return false;
+    }
+
+    private IEnumerator WaitForCooldown(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+        isGunReady = true;
+    }
+
+    #region Event Handling
     private void OnLeftMouseButton()
     {
-        if (!Level.i.IsGameRunning) return;
-        if (!isGunReady) return;
+        if (!Level.i.IsGameRunning || _isBehindCover || !isGunReady) return;
         if (_playerSettings.playerAmmunition == 0)
         {
             soundController.playAudio(_playerSettings.gunEmptyAudioClip, false);
@@ -78,6 +108,16 @@ public class GunController : MonoBehaviour
         StartCoroutine(WaitForCooldown(.8f));
     }
 
+    private void OnSpacebarUp()
+    {
+        _isBehindCover = false;
+    }
+
+    private void OnSpacebarDown()
+    {
+        _isBehindCover = true;
+    }
+
     private void OnRKey()
     {
         if (!Level.i.IsGameRunning) return;
@@ -86,44 +126,9 @@ public class GunController : MonoBehaviour
             StartCoroutine(Reload());
         }
     }
-
-    private IEnumerator Reload()
-    {
-        isGunReady = false;
-        isGunReloading = true;
-
-        while (_playerSettings.playerAmmunition < _playerSettings.playerMaxAmmunition)
-        {
-            _playerSettings.playerAmmunition++;
-            AmmunitionChange();
-            soundController.playAudio(_playerSettings.gunReloadAudioClip, false);
-            yield return new WaitForSeconds(_playerSettings.playerReloadTime / _playerSettings.playerMaxAmmunition);
-        }
-        soundController.playAudio(_playerSettings.gunPostReloadAudioClip, false);
-
-        isGunReady = true;
-        isGunReloading = false;
-
-        yield return false;
-    }
-
-    private IEnumerator WaitForCooldown(float cooldown)
-    {
-        yield return new WaitForSeconds(cooldown);
-        isGunReady = true;
-    }
+    #endregion
 
     #region Events
-    public delegate void RayCastCallback(RaycastHit2D hit);
-    public event RayCastCallback onRayCastHit;
-    public void RayCastHit(RaycastHit2D hit)
-    {
-        if (onRayCastHit != null)
-        {
-            onRayCastHit(hit);
-        }
-    }
-
     public event Action onAmmunitionChange;
     public void AmmunitionChange()
     {
@@ -134,10 +139,12 @@ public class GunController : MonoBehaviour
     }
     #endregion
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         GameController.CurrentGameController.InputController.onLeftMouseDown -= OnLeftMouseButton;
         GameController.CurrentGameController.InputController.onKeyRDown -= OnRKey;
+        GameController.CurrentGameController.InputController.onSpacebarDown -= OnSpacebarDown;
+        GameController.CurrentGameController.InputController.onSpacebarUp -= OnSpacebarUp;
     }
 
 }

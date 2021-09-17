@@ -23,6 +23,8 @@ public class Level : MonoBehaviour
     }
     private bool _isGameRunning;
     private GameObject _activeLevelPrefab;
+    private Coroutine _currentSpawnEnemiesRoutine;
+    private Coroutine _currentSpawnInteractablesRoutine;
 
     private void Awake()
     {
@@ -84,8 +86,16 @@ public class Level : MonoBehaviour
 
     private void ResetLevel()
     {
-        StopCoroutine(SpawnEnemies());
-        StopCoroutine(SpawnInteractables());
+        if (_currentSpawnEnemiesRoutine != null)
+        {
+            StopCoroutine(_currentSpawnEnemiesRoutine);
+            _currentSpawnEnemiesRoutine = null;
+        }
+        if (_currentSpawnInteractablesRoutine != null)
+        {
+            StopCoroutine(_currentSpawnInteractablesRoutine);
+            _currentSpawnInteractablesRoutine = null;
+        }
 
         // Delete current level
         if (_activeLevelPrefab != null) Destroy(_activeLevelPrefab);
@@ -114,8 +124,8 @@ public class Level : MonoBehaviour
         // Player Settings Reset
         _playerSettings.OnEnable();
 
-        StartCoroutine(SpawnEnemies());
-        StartCoroutine(SpawnInteractables());
+        _currentSpawnEnemiesRoutine = StartCoroutine(SpawnEnemies());
+        _currentSpawnInteractablesRoutine = StartCoroutine(SpawnInteractables());
     }
 
     private IEnumerator SpawnEnemies()
