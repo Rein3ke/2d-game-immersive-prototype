@@ -100,6 +100,13 @@ public class GunController : MonoBehaviour
             hitable.handleHit();
         }
 
+        GameObject projectile = Instantiate(Resources.Load("Projectile") as GameObject, transform.position, Quaternion.identity);
+        if (projectile != null)
+        {
+            ProjectileController projectileController = projectile.GetComponentInChildren<ProjectileController>();
+            projectileController.MoveToPosition(ray.direction);
+        }
+
         _playerSettings.playerAmmunition--;
         AmmunitionChange();
 

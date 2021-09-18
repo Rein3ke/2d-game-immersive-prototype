@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   EnemiesToKill: 25
-  ScoreToBeAchieved: 200
+  ScoreToBeAchieved: 2000
   maxEnemies: 6
   enemySpawnMinimumCooldown: 4
   enemySpawnMaximumCooldown: 6

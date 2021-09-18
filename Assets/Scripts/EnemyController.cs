@@ -134,11 +134,11 @@ public class EnemyController : MonoBehaviour, IHitable
         if (localDirection.x < 0)
         {
             _spriteRenderer.flipX = true;
-            _boxCollider2D.offset = new Vector2(_boxCollider2D.offset.x * -1, _boxCollider2D.offset.y);
+            //_boxCollider2D.offset = new Vector2(_boxCollider2D.offset.x * -1, _boxCollider2D.offset.y);
         } else
         {
             _spriteRenderer.flipX = false;
-            _boxCollider2D.offset = new Vector2(Mathf.Abs(_boxCollider2D.offset.x), _boxCollider2D.offset.y);
+            //_boxCollider2D.offset = new Vector2(Mathf.Abs(_boxCollider2D.offset.x), _boxCollider2D.offset.y);
         }
     }
 
