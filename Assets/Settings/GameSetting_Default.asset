@@ -26,3 +26,4 @@ MonoBehaviour:
   objectDecayTime: 5
   spawnableGameObjects:
   - {fileID: 5578398289351187830, guid: 0a33358b6cb417a468d28becec4bb7c5, type: 3}
+  - {fileID: 5850487602260830753, guid: 15408560605e97444b65d214a9869fc0, type: 3}
