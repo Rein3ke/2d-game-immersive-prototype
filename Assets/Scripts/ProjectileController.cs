@@ -9,9 +9,27 @@ public class ProjectileController : MonoBehaviour
     private float _speed = 100f;
     [SerializeField]
     LayerMask layerMask;
+
     ParticleSystem _particleSystem;
     Rigidbody2D _rigidbody2D;
     GameObject _parent;
+
+    public bool CanHitDecoration { get => _canHitDecoration; set => _canHitDecoration = value; }
+    private bool _canHitDecoration = true;
+
+    public bool CanHitEnemy { get => _canHitEnemy; set => _canHitEnemy = value; }
+    private bool _canHitEnemy = true;
+
+    public bool CanHitInteractables { get => _canHitInteractables; set => _canHitInteractables = value; }
+    private bool _canHitInteractables = true;
+    
+    public bool CanHitForegroundCover { get => _canHitForegroundCover; set => _canHitForegroundCover = value; }
+    private bool _canHitForegroundCover = true;
+
+    enum HitObject
+    {
+        DECORATION, ENEMY, PLAYER, INTERACTABLE_OBJECT, FOREGROUND_COVER
+    }
 
     private void Awake()
     {
@@ -36,28 +54,54 @@ public class ProjectileController : MonoBehaviour
             switch (collision.gameObject.tag)
             {
                 case "Enemy":
-                    _particleSystem.Stop();
+                    HandleHit(HitObject.ENEMY);
                     break;
                 case "Decoration":
-                    _particleSystem.Stop();
+                    HandleHit(HitObject.DECORATION);
                     break;
                 case "InteractableObject":
-                    _particleSystem.Stop();
+                    HandleHit(HitObject.INTERACTABLE_OBJECT);
+                    break;
+                case "Decoration_Foreground":
+                    HandleHit(HitObject.FOREGROUND_COVER);
                     break;
             }
         }
     }
 
-    internal void MoveToPosition(Vector3 direction)
+    private void HandleHit(HitObject hitObject)
     {
-        StartCoroutine(MoveTo(direction));
+        switch (hitObject)
+        {
+            case HitObject.ENEMY:
+                if (_canHitEnemy) _particleSystem.Stop();
+                break;
+            case HitObject.DECORATION:
+                if (_canHitDecoration) _particleSystem.Stop();
+                break;
+            case HitObject.INTERACTABLE_OBJECT:
+                if (_canHitInteractables) _particleSystem.Stop();
+                break;
+            case HitObject.FOREGROUND_COVER:
+                if (_canHitForegroundCover)
+                {
+                    Destroy(_parent);
+                    _particleSystem.Stop();
+                }
+                break;
+        }
     }
 
-    private IEnumerator MoveTo(Vector3 direction)
+    internal void MoveToPosition(Vector3 direction, float movementSpeed = 100f)
+    {
+        StartCoroutine(MoveTo(direction, movementSpeed));
+    }
+
+    private IEnumerator MoveTo(Vector3 direction, float movementSpeed)
     {
         while(Level.i.IsGameRunning)
         {
-            _parent.transform.position += direction * _speed * Time.deltaTime;
+            _parent.transform.position += direction * movementSpeed * Time.deltaTime;
             yield return null;
         }
         yield return null;

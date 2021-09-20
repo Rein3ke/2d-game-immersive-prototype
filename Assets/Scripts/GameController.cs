@@ -56,6 +56,7 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         RunGameSetup();
+        _inputController.onKeyEscapeDown += OnKeyEscapeDown;
     }
 
     private void RunGameSetup()
@@ -127,7 +128,18 @@ public class GameController : MonoBehaviour
         LoadingMainMenuScene();
     }
 
-    #region Events
+    #region Event Handling
+    private void OnKeyEscapeDown()
+    {
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
+        Application.Quit();
+        #endif
+    }
+#endregion
+
+#region Events
     public event Action onLoadingMainMenuScene;
     public void LoadingMainMenuScene()
     {
@@ -137,5 +149,5 @@ public class GameController : MonoBehaviour
             onLoadingMainMenuScene();
         }
     }
-    #endregion
+#endregion
 }

@@ -16,5 +16,6 @@ MonoBehaviour:
   hitSoundClip: {fileID: 0}
   animationController: {fileID: 0}
   score: 10
+  lifepointsGainAfterHit: 20
   playFadeOutAnimation: 1
   spawnable: 1

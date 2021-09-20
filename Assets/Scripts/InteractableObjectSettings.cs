@@ -13,6 +13,8 @@ public class InteractableObjectSettings : ScriptableObject, ISerializationCallba
     public RuntimeAnimatorController animationController;
     [Space(8), Tooltip("The score gained after the object was hit. Always has to be positive.")]
     public float score;
+    [Space(8), Tooltip("The lifepoints gained after the object was hit. Can damage or heal the player.")]
+    public float lifepointsGainAfterHit;
     [Space(8)]
     public bool playFadeOutAnimation;
     public bool spawnable;

@@ -30,13 +30,15 @@ public class Level : MonoBehaviour
     {
         if (_i != null) Debug.LogError("Too many level controllers!");
         else _i = this;
+
+        _gameController = GameController.CurrentGameController;
+        _materialChangeController = GetComponent<MaterialChangeController>();
+        if (_materialChangeController == null) Debug.LogError("Error: No MaterialChangeController found!");
     }
 
     private void Start()
     {
-        _gameController = GameController.CurrentGameController;
-        _materialChangeController = GetComponent<MaterialChangeController>();
-        if (_materialChangeController == null) Debug.LogError("Error: No MaterialChangeController found!");
+        
     }
 
     public void BuildLevel(GameObject levelPrefab, GameController.State state)
@@ -226,10 +228,10 @@ public class Level : MonoBehaviour
         }
     }
 
-    #region Event Handling
-    private void OnPlayerHit(float damage)
+    internal void TakeDamage(float damage)
     {
         _playerSettings.playerHealth -= damage;
+        _playerSettings.playerHealth = Mathf.Clamp(_playerSettings.playerHealth, 0.0f, _playerSettings.playerMaxHealth);
         PlayerHealthChange();
 
         if (!CheckIsPlayerAlive())
@@ -237,6 +239,13 @@ public class Level : MonoBehaviour
             _isGameRunning = false;
             GameLost();
         }
+    }
+
+
+    #region Event Handling
+    private void OnPlayerHit(float damage)
+    {
+        TakeDamage(damage);
     }
 
     private void OnEnemyDeath(GameObject enemy, float score)

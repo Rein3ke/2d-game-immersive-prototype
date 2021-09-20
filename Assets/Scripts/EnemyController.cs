@@ -171,6 +171,8 @@ public class EnemyController : MonoBehaviour, IHitable
             GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
             GameObject hitObject = PerformRayCast(playerGameObject.transform.position, true);
 
+            Instantiate(Resources.Load("ShootingParticle") as GameObject, new Vector3(transform.position.x, transform.position.y + .75f, transform.position.z), Quaternion.identity);
+
             if (hitObject == null)
             {
                 PlayAudio(_enemySettings.hitNothingSounds, .3f, true);
@@ -209,6 +211,18 @@ public class EnemyController : MonoBehaviour, IHitable
         
         Vector3 direction = targetPosition - origin;
         Ray ray = new Ray(origin, direction);
+
+        // Projectile Effect
+        GameObject projectile = Instantiate(Resources.Load("Projectile") as GameObject, origin, Quaternion.identity);
+        if (projectile != null)
+        {
+            ProjectileController projectileController = projectile.GetComponentInChildren<ProjectileController>();
+            projectileController.CanHitDecoration = false;
+            projectileController.CanHitEnemy = false;
+            Vector3 projectileDirection = Camera.main.transform.position - origin;
+            projectileController.MoveToPosition(projectileDirection, 5f);
+        }
+
         Debug.DrawRay(ray.origin, ray.direction, Color.red, 2f);
         RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 50f, _layerMask);
 
@@ -238,6 +252,8 @@ public class EnemyController : MonoBehaviour, IHitable
 
         _isHit = true;
         StopAllCoroutines();
+
+        Instantiate(Resources.Load("HitParticle") as GameObject, transform.position, Quaternion.identity);
 
         StartCoroutine(FadeOut());
         _animator.SetBool("isDead", true);

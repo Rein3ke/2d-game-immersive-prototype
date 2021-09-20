@@ -64,6 +64,10 @@ public class InteractableObjectController : MonoBehaviour, IHitable
 
         _level.AddToScore(_interactableObjectSettings.score);
 
+        if (_interactableObjectSettings.lifepointsGainAfterHit < 0.0f || _interactableObjectSettings.lifepointsGainAfterHit > 0.0f)
+        {
+            Level.i.TakeDamage(_interactableObjectSettings.lifepointsGainAfterHit * -1);
+        }
         if (_interactableObjectSettings.playFadeOutAnimation)
         {
             StartCoroutine(FadeOutAndDestroy());

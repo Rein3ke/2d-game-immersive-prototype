@@ -104,6 +104,7 @@ public class GunController : MonoBehaviour
         if (projectile != null)
         {
             ProjectileController projectileController = projectile.GetComponentInChildren<ProjectileController>();
+            projectileController.CanHitForegroundCover = false;
             projectileController.MoveToPosition(ray.direction);
         }
 

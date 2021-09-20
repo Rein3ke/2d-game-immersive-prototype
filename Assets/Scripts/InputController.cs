@@ -5,6 +5,10 @@ public class InputController : MonoBehaviour
 {
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            KeyEscapeDown();
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             SpaceDown();
@@ -40,6 +44,15 @@ public class InputController : MonoBehaviour
     }
 
     #region Events
+    public event Action onKeyEscapeDown;
+    private void KeyEscapeDown()
+    {
+        if (onKeyEscapeDown != null)
+        {
+            onKeyEscapeDown();
+        }
+    }
+
     public event Action onSpacebarDown;
     public void SpaceDown()
     {
