@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="container.uss" />
+    <ui:VisualElement name="Background" style="background-image: url(&apos;/Assets/Sprites/C4TkyIrWYAADSyy.png&apos;); width: 100%; height: 100%; position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-image-tint-color: rgb(103, 103, 103);" />
+    <ui:VisualElement name="menu-container" class="container align-center-horizontal" style="height: 100%; width: auto; flex-direction: column; display: flex;">
+        <ui:Label text="2D IMMERSIVE HIGHLIGHT PROTOTYPE" display-tooltip-when-elided="true" name="title" enable-rich-text="true" style="opacity: 1; color: rgb(255, 255, 255); -unity-text-align: upper-center; font-size: 32px; -unity-font-style: bold; height: 64px;" />
+        <ui:Button text="START" tooltip="Run the game" tabindex="1" name="start-button" class="button button-primary button_hover" />
+        <ui:Button text="INTRODUCTION" tabindex="2" name="introduction-button" class="button button-secondary button-secondary_hover" />
+        <ui:Button text="EXIT" tabindex="3" name="exit-button" class="button button-secondary" />
+    </ui:VisualElement>
+    <ui:VisualElement name="introduction-container" class="container" style="display: none; height: 100%;">
+        <ui:VisualElement name="description-container" class="container-small" style="margin-bottom: 8px;">
+            <ui:Label text="Description" display-tooltip-when-elided="true" style="font-size: 16px; color: rgb(255, 255, 255); -unity-font-style: bold;" />
+            <ui:Label text="The goal of this game is to test effects to better mark interaction possibilities. For this purpose, several levels were created, each presenting a different feature. The first level has no effect. Here the player should get a feel for the game." display-tooltip-when-elided="true" style="font-size: 16px; color: rgb(255, 255, 255); -unity-font-style: normal; white-space: normal;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="controls-container" class="container-small" style="width: 250px; margin-bottom: 8px;">
+            <ui:Label text="Controls" display-tooltip-when-elided="true" style="font-size: 16px; -unity-font-style: bold; color: rgb(255, 255, 255);" />
+            <ui:Label text="Move: A &amp; D" display-tooltip-when-elided="false" style="font-size: 16px; -unity-font-style: normal; color: rgb(255, 255, 255);" />
+            <ui:Label text="Shoot: Left Mouse Button" display-tooltip-when-elided="false" style="font-size: 16px; -unity-font-style: normal; color: rgb(255, 255, 255);" />
+            <ui:Label text="Take Cover: Space" display-tooltip-when-elided="false" style="font-size: 16px; -unity-font-style: normal; color: rgb(255, 255, 255);" />
+            <ui:Label text="Zoom In: Right Mouse Button" display-tooltip-when-elided="false" style="font-size: 16px; -unity-font-style: normal; color: rgb(255, 255, 255);" />
+        </ui:VisualElement>
+        <ui:Button text="BACK TO MENU" display-tooltip-when-elided="true" name="back-button" class="button button-secondary" style="margin-left: 0; margin-right: 0; margin-top: auto; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="DescriptionContainer" style="flex-direction: row; align-items: center; justify-content: space-between; position: absolute; bottom: 0; left: 0; right: 0; margin-left: 16px; margin-right: 16px; margin-bottom: 8px;">
+        <ui:Label text="HTW Berlin" display-tooltip-when-elided="true" class="text-description" />
+        <ui:Label text="Made by Marvin Kullick" display-tooltip-when-elided="true" class="text-description" />
+        <ui:Label text="Prof. Dr. Tobias Lenz" display-tooltip-when-elided="true" class="text-description" />
+    </ui:VisualElement>
+</ui:UXML>

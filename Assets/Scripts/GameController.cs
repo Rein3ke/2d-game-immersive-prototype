@@ -13,57 +13,53 @@ public class GameController : MonoBehaviour
     }
 
     // Own instance of GameController
-    public static GameController CurrentGameController { get => _currentGameController; }
-    private static GameController _currentGameController;
-
-    // Public access for the input and sound controller
-    public InputController InputController
-    {
-        get => _inputController;
-    }
-    private InputController _inputController;
-    public SoundController SoundController
-    {
-        get => _soundController;
-    }
-    private SoundController _soundController;
+    public static GameController CurrentGameController { get => m_currentGameController; private set => m_currentGameController = value; }
+    private static GameController m_currentGameController;
 
     // All Controllers
-    private SceneController _sceneController;
-    private CursorController _cursorController;
+
+    // Public access for the input and sound controller
+    public InputController InputController { get => m_inputController; private set => m_inputController = value; }
+    private InputController m_inputController;
+
+    public SceneController SceneController { get => m_sceneController; private set => m_sceneController = value; }
+    private SceneController m_sceneController;
+    private CursorController m_cursorController;
+    public SoundController SoundController { get => m_soundController; private set => m_soundController = value; }
+    private SoundController m_soundController;
 
     private State _currentState = State.DEFAULT;
 
     private void Awake()
     {
-        if (_currentGameController != null && _currentGameController != this)
+        if (CurrentGameController != null && CurrentGameController != this)
         {
             Destroy(gameObject);
         } else
         {
-            _currentGameController = this;
+            CurrentGameController = this;
         }
 
         // Set all controller
-        _sceneController = GetComponent<SceneController>();
-        if (_sceneController == null) Debug.LogError("No scene controller!");
-        _cursorController = GetComponent<CursorController>();
-        _inputController = GetComponent<InputController>();
-        _soundController = GetComponent<SoundController>();
+        SceneController = GetComponent<SceneController>();
+        if (SceneController == null) Debug.LogError("No scene controller!");
+        m_cursorController = GetComponent<CursorController>();
+        InputController = GetComponent<InputController>();
+        SoundController = GetComponent<SoundController>();
     }
 
     // Start is called before the first frame update
     private void Start()
     {
         RunGameSetup();
-        _inputController.onKeyEscapeDown += OnKeyEscapeDown;
+        m_inputController.onKeyEscapeDown += OnKeyEscapeDown;
     }
 
     private void RunGameSetup()
     {
         Debug.Log("GameController.RunGameSetup");
 
-        if (_sceneController.CurrentScene.name.Equals("Level"))
+        if (m_sceneController.CurrentScene.name.Equals("Level"))
         {
             switch (_currentState)
             {
@@ -105,7 +101,7 @@ public class GameController : MonoBehaviour
     {
         if (Equals(state, State.Length))
         {
-            _sceneController.loadNextScene();
+            m_sceneController.loadNextScene();
         } else
         {
             _currentState = state;
@@ -128,14 +124,19 @@ public class GameController : MonoBehaviour
         LoadingMainMenuScene();
     }
 
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
     #region Event Handling
     private void OnKeyEscapeDown()
     {
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-        #else
-        Application.Quit();
-        #endif
+        ExitGame();
     }
 #endregion
 
