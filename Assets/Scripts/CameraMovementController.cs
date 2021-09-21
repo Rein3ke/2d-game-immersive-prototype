@@ -1,15 +1,9 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraMovementController : MonoBehaviour
 {
-    private static CameraMovementController _instance;
-    public static CameraMovementController Instance
-    {
-        get => _instance;
-    }
+    public static CameraMovementController Instance { get; private set; }
 
     // Value that determines how far the camera can move down.
     [SerializeField]
@@ -19,88 +13,109 @@ public class CameraMovementController : MonoBehaviour
     [SerializeField]
     private float movementSpeed = 4.0f;
 
-    private bool isDown = false;
+    private Vector3 m_origin;
+    private bool m_isDown = false;
+    private Camera m_mainCamera;
 
     private void Awake()
     {
-        if (_instance == null) _instance = this;
+        if (Instance == null) Instance = this;
         else Debug.LogError("Error: Only one CameraController should be active at runtime.");
     }
 
     private void Start()
     {
+        m_mainCamera = Camera.main;
+        if (m_mainCamera == null)
+        {
+            Debug.LogError("No main camera found!");
+            return;
+        }
+        m_origin = transform.position;
         // Subscribed Events: Input
-        GameController.CurrentGameController.InputController.onSpacebarDown += goDown;
-        GameController.CurrentGameController.InputController.onSpacebarUp += goUp;
-        GameController.CurrentGameController.InputController.onLeftDown += goLeft;
-        GameController.CurrentGameController.InputController.onRightDown += goRight;
-        GameController.CurrentGameController.InputController.onRightMouseDown += zoomIn;
-        GameController.CurrentGameController.InputController.onRightMouseUp += zoomOut;
+        GameController.CurrentGameController.InputController.onSpacebarDown += GoDown;
+        GameController.CurrentGameController.InputController.onSpacebarUp += GoUp;
+        GameController.CurrentGameController.InputController.onLeftDown += GoLeft;
+        GameController.CurrentGameController.InputController.onRightDown += GoRight;
+        GameController.CurrentGameController.InputController.onRightMouseDown += ZoomIn;
+        GameController.CurrentGameController.InputController.onRightMouseUp += ZoomOut;
     }
 
-    private void zoomIn()
+    private void ZoomIn()
     {
         if (!Level.i.IsGameRunning) return;
-        StartCoroutine(Zoom(Camera.main.fieldOfView, Camera.main.fieldOfView - 2f, .2f));
+        
+        var fieldOfView = m_mainCamera.fieldOfView;
+        StartCoroutine(Zoom(fieldOfView, fieldOfView - 2f, .2f));
     }
 
-    private void zoomOut()
+    private void ZoomOut()
     {
         if (!Level.i.IsGameRunning) return;
-        StartCoroutine(Zoom(Camera.main.fieldOfView, Camera.main.fieldOfView + 2f, .2f));
+        
+        var fieldOfView = m_mainCamera.fieldOfView;
+        StartCoroutine(Zoom(fieldOfView, fieldOfView + 2f, .2f));
     }
 
-    private IEnumerator Zoom(float v_start, float v_end, float duration)
+    private IEnumerator Zoom(float vStart, float vEnd, float duration)
     {
         float elapsed = 0.0f;
         while (elapsed < duration)
         {
-            Camera.main.fieldOfView = Mathf.Lerp(v_start, v_end, elapsed / duration);
+            m_mainCamera.fieldOfView = Mathf.Lerp(vStart, vEnd, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        Camera.main.fieldOfView = v_end;
+        m_mainCamera.fieldOfView = vEnd;
         yield return null;
     }
 
-    private IEnumerator GoUpOrDown(float v_start, float v_end, float duration)
+    private IEnumerator GoUpOrDown(float vStart, float vEnd, float duration)
     {
         float elapsed = 0.0f;
         while (elapsed < duration)
         {
-            transform.position = new Vector3(transform.position.x, Mathf.Lerp(v_start, v_end, elapsed / duration), transform.position.z);
+            var transformPosition = transform.position;
+            transformPosition = new Vector3(transformPosition.x, Mathf.Lerp(vStart, vEnd, elapsed / duration), transformPosition.z);
+            transform.position = transformPosition;
             elapsed += Time.deltaTime;
             yield return null;
         }
-        transform.position = new Vector3(transform.position.x, v_end, transform.position.z);
+
+        var currentTransform = transform;
+        var finalPosition = currentTransform.position;
+        finalPosition = new Vector3(finalPosition.x, vEnd, finalPosition.z);
+        currentTransform.position = finalPosition;
         yield return null;
     }
 
-    private void goDown()
+    private void GoDown()
     {
-        if (!Level.i.IsGameRunning || isDown) return;
+        if (!Level.i.IsGameRunning || m_isDown) return;
 
         //Vector3 currentPosition = transform.position;
         //transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, -yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
-        StartCoroutine(GoUpOrDown(transform.position.y, transform.position.y - yOffset, .1f));
-        isDown = true;
+        var transformPosition = transform.position;
+        StartCoroutine(GoUpOrDown(transformPosition.y, transformPosition.y - yOffset, .1f));
+        m_isDown = true;
     }
 
-    private void goUp()
+    private void GoUp()
     {
-        if (!Level.i.IsGameRunning || !isDown) return;
+        if (!Level.i.IsGameRunning || !m_isDown) return;
 
         //Vector3 currentPosition = transform.position;
         //transform.position = Vector3.Lerp(currentPosition, new Vector3(currentPosition.x, yOffset, currentPosition.z), Mathf.SmoothStep(0.0f, 1.0f, Mathf.SmoothStep(0.0f, 1.0f, .5f)));
-        StartCoroutine(GoUpOrDown(transform.position.y, transform.position.y + yOffset, .1f));
-        isDown = false;
+        var transformPosition = transform.position;
+        StartCoroutine(GoUpOrDown(transformPosition.y, m_origin.y, .1f));
+        m_isDown = false;
     }
 
-    private void goLeft()
+    private void GoLeft()
     {
         if (!Level.i.IsGameRunning) return;
 
-        if (isDown)
+        if (m_isDown)
         {
             transform.position += Vector3.left * (movementSpeed / 3) * Time.deltaTime;
         } else
@@ -108,14 +123,16 @@ public class CameraMovementController : MonoBehaviour
             transform.position += Vector3.left * movementSpeed * Time.deltaTime;
         }
 
-        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -5f, 5f), transform.position.y, transform.position.z);
+        var transformPosition = transform.position;
+        transformPosition = new Vector3(Mathf.Clamp(transformPosition.x, -5f, 5f), transformPosition.y, transformPosition.z);
+        transform.position = transformPosition;
     }
 
-    private void goRight()
+    private void GoRight()
     {
         if (!Level.i.IsGameRunning) return;
 
-        if (isDown)
+        if (m_isDown)
         {
             transform.position += Vector3.right * (movementSpeed / 3) * Time.deltaTime;
         }
@@ -124,16 +141,18 @@ public class CameraMovementController : MonoBehaviour
             transform.position += Vector3.right * movementSpeed * Time.deltaTime;
         }
 
-        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -5f, 5f), transform.position.y, transform.position.z);
+        var transformPosition = transform.position;
+        transformPosition = new Vector3(Mathf.Clamp(transformPosition.x, -5f, 5f), transformPosition.y, transformPosition.z);
+        transform.position = transformPosition;
     }
 
-    private void OnDistroy()
+    private void OnDestroy()
     {
-        GameController.CurrentGameController.InputController.onSpacebarDown  -= goDown;
-        GameController.CurrentGameController.InputController.onSpacebarUp     -= goUp;
-        GameController.CurrentGameController.InputController.onLeftDown      -= goLeft;
-        GameController.CurrentGameController.InputController.onRightDown     -= goRight;
-        GameController.CurrentGameController.InputController.onRightMouseDown -= zoomIn;
-        GameController.CurrentGameController.InputController.onRightMouseUp -= zoomOut;
+        GameController.CurrentGameController.InputController.onSpacebarDown  -= GoDown;
+        GameController.CurrentGameController.InputController.onSpacebarUp     -= GoUp;
+        GameController.CurrentGameController.InputController.onLeftDown      -= GoLeft;
+        GameController.CurrentGameController.InputController.onRightDown     -= GoRight;
+        GameController.CurrentGameController.InputController.onRightMouseDown -= ZoomIn;
+        GameController.CurrentGameController.InputController.onRightMouseUp -= ZoomOut;
     }
 }
