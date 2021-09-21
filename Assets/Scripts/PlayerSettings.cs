@@ -6,17 +6,16 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Player Setting")]
 public class PlayerSettings : ScriptableObject, ISerializationCallbackReceiver
 {
-    [NonSerialized]
-    public float score;
+    [NonSerialized] public float Score;
+    [NonSerialized] public int RightClickedCount;
+    [NonSerialized] public int SpacebarPressedCount;
     // Player Stats
-    [NonSerialized]
-    public float playerHealth;
+    [NonSerialized] public float PlayerHealth;
     [Header("Player Stats")]
     public float playerMaxHealth;
     [Space(8)]
     // Gun Stats
-    [NonSerialized]
-    public float playerAmmunition;
+    [NonSerialized] public float PlayerAmmunition;
     [Header("Gun Stats")]
     public float playerMaxAmmunition;
     public float playerGunSpreadFactor;
@@ -30,9 +29,9 @@ public class PlayerSettings : ScriptableObject, ISerializationCallbackReceiver
 
     public void OnAfterDeserialize()
     {
-        playerHealth = playerMaxHealth;
-        playerAmmunition = playerMaxAmmunition;
-        score = 0.0f;
+        PlayerHealth = playerMaxHealth;
+        PlayerAmmunition = playerMaxAmmunition;
+        Score = 0.0f;
     }
 
     public void OnBeforeSerialize()
@@ -41,8 +40,8 @@ public class PlayerSettings : ScriptableObject, ISerializationCallbackReceiver
 
     public void OnEnable()
     {
-        playerHealth = playerMaxHealth;
-        playerAmmunition = playerMaxAmmunition;
-        score = 0.0f;
+        PlayerHealth = playerMaxHealth;
+        PlayerAmmunition = playerMaxAmmunition;
+        Score = 0.0f;
     }
 }

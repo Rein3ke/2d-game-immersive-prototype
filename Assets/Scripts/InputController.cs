@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
-    void Update()
+    public PlayerSettings PlayerSettings { get; set; }
+
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -47,82 +49,57 @@ public class InputController : MonoBehaviour
     public event Action onKeyEscapeDown;
     private void KeyEscapeDown()
     {
-        if (onKeyEscapeDown != null)
-        {
-            onKeyEscapeDown();
-        }
+        onKeyEscapeDown?.Invoke();
     }
 
     public event Action onSpacebarDown;
     public void SpaceDown()
     {
-        if (onSpacebarDown != null)
-        {
-            onSpacebarDown();
-        }
+        PlayerSettings.SpacebarPressedCount++;
+        onSpacebarDown?.Invoke();
     }
 
     public event Action onSpacebarUp;
     public void SpaceLeft()
     {
-        if (onSpacebarUp != null)
-        {
-            onSpacebarUp();
-        }
+        onSpacebarUp?.Invoke();
     }
 
     public event Action onLeftDown;
     public void LeftDown()
     {
-        if (onLeftDown != null)
-        {
-            onLeftDown();
-        }
+        onLeftDown?.Invoke();
     }
 
     public event Action onRightDown;
     public void RightDown()
     {
-        if (onRightDown != null)
-        {
-            onRightDown();
-        }
+        onRightDown?.Invoke();
     }
 
     public event Action onLeftMouseDown;
     public void LeftMouseDown()
     {
-        if (onLeftMouseDown != null)
-        {
-            onLeftMouseDown();
-        }
+        onLeftMouseDown?.Invoke();
     }
 
     public event Action onRightMouseDown;
     public void RightMouseDown()
     {
-        if (onRightMouseDown != null)
-        {
-            onRightMouseDown();
-        }
+        PlayerSettings.RightClickedCount++;
+        onRightMouseDown?.Invoke();
     }
 
     public event Action onRightMouseUp;
     public void RightMouseUp()
     {
-        if (onRightMouseUp != null)
-        {
-            onRightMouseUp();
-        }
+        onRightMouseUp?.Invoke();
     }
 
     public event Action onKeyRDown;
     public void KeyRDown()
     {
-        if (onKeyRDown != null)
-        {
-            onKeyRDown();
-        }
+        onKeyRDown?.Invoke();
     }
     #endregion
 }

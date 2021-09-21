@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5585922818669162630}
   - component: {fileID: 4650934471849190430}
   - component: {fileID: 5199628052549517737}
+  - component: {fileID: 2922298847614349075}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -42,7 +43,7 @@ ParticleSystem:
   serializedVersion: 7
   lengthInSec: 0.5
   simulationSpeed: 1
-  stopAction: 0
+  stopAction: 3
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
@@ -4804,6 +4805,18 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &2922298847614349075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5335041750250142662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5e7a2971c2ffbe4eb44d19ac72b3059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5968932856102611338
 GameObject:
   m_ObjectHideFlags: 0

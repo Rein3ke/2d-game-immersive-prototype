@@ -4,17 +4,9 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour, IHitable
 {
-    public static int Count
-    {
-        get => _count;
-        set => _count = value;
-    }
-    private static int _count = 0;
+    public static int Count { get; set; } = 0;
 
-    public EnemySettings EnemySettings
-    {
-        get => _enemySettings;
-    }
+    public EnemySettings EnemySettings => _enemySettings;
 
     [SerializeField]
     private EnemySettings _enemySettings;
@@ -24,27 +16,27 @@ public class EnemyController : MonoBehaviour, IHitable
     private GameController _gameController;
 
     private bool _isHit = false;
-    public SpriteRenderer SpriteRenderer
-    {
-        get => _spriteRenderer;
-    }
-    private SpriteRenderer _spriteRenderer;
+    private SpriteRenderer SpriteRenderer { get; set; }
+
     private SoundController _soundController;
     private Animator _animator;
     private BoxCollider2D _boxCollider2D;
     private Coroutine _currentShootRoutine;
+    
+    private static readonly int IsDead = Animator.StringToHash("isDead");
+    private static readonly int IsRunning = Animator.StringToHash("isRunning");
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _gameController = GameController.CurrentGameController;
 
         // Set Sprite Renderer
-        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        if (_spriteRenderer == null) Debug.LogError("Error: SpriteRenderer not found!");
+        SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (SpriteRenderer == null) Debug.LogError("Error: SpriteRenderer not found!");
 
-        _spriteRenderer.sprite = _enemySettings.sprite;
-        _spriteRenderer.color = _enemySettings.color;
+        SpriteRenderer.sprite = _enemySettings.sprite;
+        SpriteRenderer.color = _enemySettings.color;
 
         _boxCollider2D = GetComponentInChildren<BoxCollider2D>();
         if (_boxCollider2D == null) Debug.LogError("Error: BoxCollider2D not found!");
@@ -57,7 +49,7 @@ public class EnemyController : MonoBehaviour, IHitable
 
         EnemySettingsErrorCheck();
 
-        _count++;
+        Count++;
 
         StartCoroutine(EnemyBehaviour());
     }
@@ -111,7 +103,7 @@ public class EnemyController : MonoBehaviour, IHitable
             StopCoroutine(_currentShootRoutine);
         }
 
-        _animator.SetBool("isRunning", true);
+        _animator.SetBool(IsRunning, true);
 
         // True as long as the required time is not reached.
         while ((elapsedTime < switchPositionTime) && !_isHit)
@@ -121,7 +113,7 @@ public class EnemyController : MonoBehaviour, IHitable
             yield return null;
         }
 
-        _animator.SetBool("isRunning", false);
+        _animator.SetBool(IsRunning, false);
 
         _currentShootRoutine = StartCoroutine(Shoot());
         yield return null;
@@ -131,15 +123,7 @@ public class EnemyController : MonoBehaviour, IHitable
     private void FlipSpriteBasedOnDirection(Vector3 currentPosition, Vector3 targetPosition)
     {
         Vector3 localDirection = transform.InverseTransformDirection(currentPosition - targetPosition);
-        if (localDirection.x < 0)
-        {
-            _spriteRenderer.flipX = true;
-            //_boxCollider2D.offset = new Vector2(_boxCollider2D.offset.x * -1, _boxCollider2D.offset.y);
-        } else
-        {
-            _spriteRenderer.flipX = false;
-            //_boxCollider2D.offset = new Vector2(Mathf.Abs(_boxCollider2D.offset.x), _boxCollider2D.offset.y);
-        }
+        SpriteRenderer.flipX = localDirection.x < 0;
     }
 
     private IEnumerator FadeOut()
@@ -152,9 +136,9 @@ public class EnemyController : MonoBehaviour, IHitable
         Color c;
         for (float ft = 1f; ft >= 0; ft -= 0.5f * Time.deltaTime)
         {
-            c = _spriteRenderer.color;
+            c = SpriteRenderer.color;
             c.a = ft;
-            _spriteRenderer.color = c;
+            SpriteRenderer.color = c;
             yield return null;
         }
 
@@ -243,7 +227,7 @@ public class EnemyController : MonoBehaviour, IHitable
         }
 
         AudioClip randomAudioClip = audioClipList[Random.Range(0, audioClipList.Count)];
-        _soundController.playAudio(randomAudioClip, volume, pitch);
+        _soundController.PlayAudio(randomAudioClip, volume, pitch);
     }
 
     public void handleHit()
@@ -256,7 +240,7 @@ public class EnemyController : MonoBehaviour, IHitable
         Instantiate(Resources.Load("HitParticle") as GameObject, transform.position, Quaternion.identity);
 
         StartCoroutine(FadeOut());
-        _animator.SetBool("isDead", true);
+        _animator.SetBool(IsDead, true);
         
         PlayAudio(_enemySettings.deathSounds, 1f, true);
 
@@ -287,6 +271,6 @@ public class EnemyController : MonoBehaviour, IHitable
 
     private void OnDestroy()
     {
-        _count--;
+        Count--;
     }
 }

@@ -79,7 +79,11 @@ public class Level : MonoBehaviour
         playerUIController.PlayerSettings = _playerSettings;
         playerUIController.GameSettings = _gameSettings;
 
+        TutorialUIController tutorialUIController = FindObjectOfType<TutorialUIController>();
+        if (tutorialUIController != null) tutorialUIController.PlayerSettings = _playerSettings;
+
         GunController.i.PlayerSettings = _playerSettings;
+        GameController.CurrentGameController.InputController.PlayerSettings = _playerSettings;
         _materialChangeController.GameSettings = _gameSettings;
 
         _gameSettings.state = state;
@@ -195,7 +199,7 @@ public class Level : MonoBehaviour
 
     public void AddToScore(float value)
     {
-        _playerSettings.score += value;
+        _playerSettings.Score += value;
         ScoreChange();
 
         if (CheckScoreWinCondition())
@@ -207,7 +211,7 @@ public class Level : MonoBehaviour
 
     private bool CheckIsPlayerAlive()
     {
-        if (_playerSettings.playerHealth <= 0.0f)
+        if (_playerSettings.PlayerHealth <= 0.0f)
         {
             return false;
         } else
@@ -218,7 +222,7 @@ public class Level : MonoBehaviour
 
     private bool CheckScoreWinCondition()
     {
-        if (_playerSettings.score >= _gameSettings.ScoreToBeAchieved)
+        if (_playerSettings.Score >= _gameSettings.ScoreToBeAchieved)
         {
             return true;
         }
@@ -230,8 +234,8 @@ public class Level : MonoBehaviour
 
     internal void TakeDamage(float damage)
     {
-        _playerSettings.playerHealth -= damage;
-        _playerSettings.playerHealth = Mathf.Clamp(_playerSettings.playerHealth, 0.0f, _playerSettings.playerMaxHealth);
+        _playerSettings.PlayerHealth -= damage;
+        _playerSettings.PlayerHealth = Mathf.Clamp(_playerSettings.PlayerHealth, 0.0f, _playerSettings.playerMaxHealth);
         PlayerHealthChange();
 
         if (!CheckIsPlayerAlive())

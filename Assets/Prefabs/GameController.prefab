@@ -118,6 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c26dd2d002e82c4f89344e4dd506017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: e663400d830d04841b3cb27823657f8b, type: 2}
   audioPitchFactor: 0.25
 --- !u!114 &8843557172056405370
 MonoBehaviour:

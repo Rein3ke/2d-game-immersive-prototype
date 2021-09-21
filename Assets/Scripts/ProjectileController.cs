@@ -6,8 +6,6 @@ using UnityEngine;
 public class ProjectileController : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 100f;
-    [SerializeField]
     LayerMask layerMask;
 
     ParticleSystem _particleSystem;

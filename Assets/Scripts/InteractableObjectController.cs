@@ -78,7 +78,7 @@ public class InteractableObjectController : MonoBehaviour, IHitable
         }
         if (_playHitSound)
         {
-            _soundController.playAudio(_interactableObjectSettings.hitSoundClip, true);
+            _soundController.PlayAudio(_interactableObjectSettings.hitSoundClip, true);
         }
         if (_changeTexture)
         {

@@ -70,7 +70,7 @@ public class PlayerUIController : MonoBehaviour
 
     private void ResetUI()
     {
-        _localHealthReference = _playerSettings.playerHealth;
+        _localHealthReference = _playerSettings.PlayerHealth;
 
         // Set values from player settings
         OnAmmunitionChange();
@@ -123,20 +123,20 @@ public class PlayerUIController : MonoBehaviour
 
     private void OnAmmunitionChange()
     {
-        SetTextfieldText(playerAmmoText, "Ammo: " + _playerSettings.playerAmmunition + "/" + _playerSettings.playerMaxAmmunition);
+        SetTextfieldText(playerAmmoText, "Ammo: " + _playerSettings.PlayerAmmunition + "/" + _playerSettings.playerMaxAmmunition);
     }
 
     private void OnPlayerHealthChange()
     {
-        SetTextfieldText(playerHealthText, "Life: " + Mathf.Clamp(_playerSettings.playerHealth, 0.0f, _playerSettings.playerMaxHealth) + " HP");
-        if (_playerSettings.playerHealth < _localHealthReference)
+        SetTextfieldText(playerHealthText, "Life: " + Mathf.Clamp(_playerSettings.PlayerHealth, 0.0f, _playerSettings.playerMaxHealth) + " HP");
+        if (_playerSettings.PlayerHealth < _localHealthReference)
         {
             StartCoroutine(ShowColorOverlay(damageColor, 0.5f));
-        } else if (_playerSettings.playerHealth > _localHealthReference)
+        } else if (_playerSettings.PlayerHealth > _localHealthReference)
         {
             StartCoroutine(ShowColorOverlay(healthColor, 0.5f));
         }
-        _localHealthReference = _playerSettings.playerHealth;
+        _localHealthReference = _playerSettings.PlayerHealth;
     }
 
     private IEnumerator ShowColorOverlay(Color color, float speed)
@@ -155,7 +155,7 @@ public class PlayerUIController : MonoBehaviour
 
     private void OnScoreChange()
     {
-        SetTextfieldText(playerScoreText, "Score: " + _playerSettings.score);
+        SetTextfieldText(playerScoreText, "Score: " + _playerSettings.Score);
     }
 
     private void OnStateChange()

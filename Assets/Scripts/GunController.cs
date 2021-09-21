@@ -49,14 +49,14 @@ public class GunController : MonoBehaviour
         isGunReady = false;
         isGunReloading = true;
 
-        while (_playerSettings.playerAmmunition < _playerSettings.playerMaxAmmunition)
+        while (_playerSettings.PlayerAmmunition < _playerSettings.playerMaxAmmunition)
         {
-            _playerSettings.playerAmmunition++;
+            _playerSettings.PlayerAmmunition++;
             AmmunitionChange();
-            soundController.playAudio(_playerSettings.gunReloadAudioClip, false);
+            soundController.PlayAudio(_playerSettings.gunReloadAudioClip, false);
             yield return new WaitForSeconds(_playerSettings.playerReloadTime / _playerSettings.playerMaxAmmunition);
         }
-        soundController.playAudio(_playerSettings.gunPostReloadAudioClip, false);
+        soundController.PlayAudio(_playerSettings.gunPostReloadAudioClip, false);
 
         isGunReady = true;
         isGunReloading = false;
@@ -74,9 +74,9 @@ public class GunController : MonoBehaviour
     private void OnLeftMouseButton()
     {
         if (!Level.i.IsGameRunning || _isBehindCover || !isGunReady) return;
-        if (_playerSettings.playerAmmunition == 0)
+        if (_playerSettings.PlayerAmmunition == 0)
         {
-            soundController.playAudio(_playerSettings.gunEmptyAudioClip, false);
+            soundController.PlayAudio(_playerSettings.gunEmptyAudioClip, false);
             return;
         }
 
@@ -89,7 +89,7 @@ public class GunController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
-        soundController.playAudio(_playerSettings.gunShotAudioClip, true);
+        soundController.PlayAudio(_playerSettings.gunShotAudioClip, true);
 
         RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
 
@@ -108,7 +108,7 @@ public class GunController : MonoBehaviour
             projectileController.MoveToPosition(ray.direction);
         }
 
-        _playerSettings.playerAmmunition--;
+        _playerSettings.PlayerAmmunition--;
         AmmunitionChange();
 
         isGunReady = false;
@@ -129,7 +129,7 @@ public class GunController : MonoBehaviour
     private void OnRKey()
     {
         if (!Level.i.IsGameRunning) return;
-        if (_playerSettings.playerAmmunition < _playerSettings.playerMaxAmmunition && !isGunReloading)
+        if (_playerSettings.PlayerAmmunition < _playerSettings.playerMaxAmmunition && !isGunReloading)
         {
             StartCoroutine(Reload());
         }
