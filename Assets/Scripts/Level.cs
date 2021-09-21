@@ -58,6 +58,7 @@ public class Level : MonoBehaviour
             case GameController.State.DEFAULT:
                 _playerSettings = GameAssets.i.playerSettings_default;
                 _gameSettings = GameAssets.i.gameSettings_default;
+                InstantiateTutorial(true, true);
                 break;
             case GameController.State.BLUR:
                 _playerSettings = GameAssets.i.playerSettings_default;
@@ -70,6 +71,7 @@ public class Level : MonoBehaviour
             case GameController.State.VISION:
                 _playerSettings = GameAssets.i.playerSettings_default;
                 _gameSettings = GameAssets.i.gameSettings_default;
+                InstantiateTutorial(true, false);
                 break;
             default:
                 Debug.LogError("No feature set!");
@@ -79,15 +81,24 @@ public class Level : MonoBehaviour
         playerUIController.PlayerSettings = _playerSettings;
         playerUIController.GameSettings = _gameSettings;
 
-        TutorialUIController tutorialUIController = FindObjectOfType<TutorialUIController>();
-        if (tutorialUIController != null) tutorialUIController.PlayerSettings = _playerSettings;
-
         GunController.i.PlayerSettings = _playerSettings;
         GameController.CurrentGameController.InputController.PlayerSettings = _playerSettings;
         _materialChangeController.GameSettings = _gameSettings;
 
         _gameSettings.state = state;
         StateChange();
+    }
+
+    private void InstantiateTutorial(bool showRightMouseButton, bool showSpacebar)
+    {
+        var tutorialUI = Instantiate(Resources.Load("TutorialUICanvas") as GameObject);
+        
+        var tutorialUIController = tutorialUI.GetComponent<TutorialUIController>();
+        if (tutorialUIController == null) return;
+        
+        tutorialUIController.PlayerSettings = _playerSettings;
+        if (showRightMouseButton) tutorialUIController.ShowRightMouseButton = true;
+        if (showSpacebar) tutorialUIController.ShowSpacebar = true;
     }
 
     private void ResetLevel()
@@ -121,6 +132,15 @@ public class Level : MonoBehaviour
 
         // Reset Enemy Counter (used for Enemy Spawning)
         EnemyController.Count = 0;
+        
+        // Delete Tutorial UI GameObject & Reset Counters
+        var tutorialUIGameObject = FindObjectOfType<TutorialUIController>()?.gameObject;
+        if (tutorialUIGameObject != null) Destroy(tutorialUIGameObject);
+        if (_playerSettings != null)
+        {
+            _playerSettings.SpacebarPressedCount = 0;
+            _playerSettings.RightClickedCount = 0;
+        }
     }
 
     public void StartLevel()

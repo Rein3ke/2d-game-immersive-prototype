@@ -679,7 +679,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 841890887}
         m_TargetAssemblyTypeName: GameController, Assembly-CSharp
-        m_MethodName: loadMenu
+        m_MethodName: LoadMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
