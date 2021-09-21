@@ -52,6 +52,6 @@ public class MainMenuUIController : MonoBehaviour
 
     void ExitButtonPressed()
     {
-        GameController.CurrentGameController.ExitGame();
+        GameController.ExitGame();
     }
 }

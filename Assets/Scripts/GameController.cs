@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
     public SoundController SoundController { get => m_soundController; private set => m_soundController = value; }
     private SoundController m_soundController;
 
-    private State _currentState = State.DEFAULT;
+    private State m_currentState = State.DEFAULT;
 
     private void Awake()
     {
@@ -57,36 +57,35 @@ public class GameController : MonoBehaviour
 
     private void RunGameSetup()
     {
+        if (!m_sceneController.CurrentScene.name.Equals("Level")) return;
         Debug.Log("GameController.RunGameSetup");
 
-        if (m_sceneController.CurrentScene.name.Equals("Level"))
+        switch (m_currentState)
         {
-            switch (_currentState)
-            {
-                case State.DEFAULT:
-                    Debug.Log("GameController.RunGameSetup.DEFAULT");
-                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
-                    break;
-                case State.BLUR:
-                    Debug.Log("GameController.RunGameSetup.BLUR");
-                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
-                    break;
-                case State.DOODLE:
-                    Debug.Log("GameController.RunGameSetup.DOODLE");
-                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
-                    break;
-                case State.VISION:
-                    Debug.Log("GameController.RunGameSetup.VISION");
-                    Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
-                    break;
-            }
-            Level.i.StartLevel();
+            default:
+            case State.DEFAULT:
+                Debug.Log("GameController.RunGameSetup.DEFAULT");
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                break;
+            case State.BLUR:
+                Debug.Log("GameController.RunGameSetup.BLUR");
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                break;
+            case State.DOODLE:
+                Debug.Log("GameController.RunGameSetup.DOODLE");
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                break;
+            case State.VISION:
+                Debug.Log("GameController.RunGameSetup.VISION");
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                break;
         }
+        Level.i.StartLevel();
     }
 
     private State GetNextState()
     {
-        int index = ((int)_currentState);
+        int index = ((int)m_currentState);
         string nextState = Enum.GetName(typeof(State), ++index);
         return (State) Enum.Parse(typeof(State), nextState);
     }
@@ -104,27 +103,27 @@ public class GameController : MonoBehaviour
             m_sceneController.loadNextScene();
         } else
         {
-            _currentState = state;
+            m_currentState = state;
         }
     }
 
-    public void loadNextLevel()
+    public void LoadNextLevel()
     {
         SetCurrentState(GetNextState());
         RunGameSetup();
     }
 
-    public void retryLevel()
+    public void RetryLevel()
     {
         RunGameSetup();
     }
 
-    public void loadMenu()
+    public void LoadMenu()
     {
         LoadingMainMenuScene();
     }
 
-    public void ExitGame()
+    public static void ExitGame()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -134,21 +133,17 @@ public class GameController : MonoBehaviour
     }
 
     #region Event Handling
-    private void OnKeyEscapeDown()
+    private static void OnKeyEscapeDown()
     {
         ExitGame();
     }
 #endregion
 
-#region Events
+    #region Events
     public event Action onLoadingMainMenuScene;
     public void LoadingMainMenuScene()
     {
-        if (onLoadingMainMenuScene != null)
-        {
-            Debug.Log("Event: Loading main menu scene!");
-            onLoadingMainMenuScene();
-        }
+        onLoadingMainMenuScene?.Invoke();
     }
-#endregion
+    #endregion
 }

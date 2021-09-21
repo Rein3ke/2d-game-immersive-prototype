@@ -94,18 +94,18 @@ public class PlayerUIController : MonoBehaviour
     #region Button Handler Methods
     public void LoadMenu()
     {
-        GameController.CurrentGameController.loadMenu();
+        GameController.CurrentGameController.LoadMenu();
     }
 
     public void LoadNextLevel()
     {
-        GameController.CurrentGameController.loadNextLevel();
+        GameController.CurrentGameController.LoadNextLevel();
         ResetUI();
     }
 
     public void RetryLevel()
     {
-        GameController.CurrentGameController.retryLevel();
+        GameController.CurrentGameController.RetryLevel();
         ResetUI();
     }
     #endregion
