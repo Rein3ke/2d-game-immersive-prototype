@@ -1,10 +1,12 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A controller used for exchanging materials stored under GameAssets.
+/// </summary>
 public class MaterialChangeController : MonoBehaviour
 {
+    [Header("Level of Blur")]
     [SerializeField]
     private float blurAmountDefault;
     [SerializeField]
@@ -18,13 +20,10 @@ public class MaterialChangeController : MonoBehaviour
     [SerializeField]
     private float blurAmountInteractables;
 
-    public GameSettings GameSettings
-    {
-        set => _gameSettings = value;
-    }
-    private GameSettings _gameSettings;
+    // Properties
+    public GameSettings GameSettings { get; set; }
+    private InputController InputController { get; set; }
     
-    private InputController _inputController;
     // Property IDs
     private static readonly int BlurAmount = Shader.PropertyToID("_BlurAmount");
     private static readonly int DoodleEffect = Shader.PropertyToID("_DoodleEffect");
@@ -33,20 +32,27 @@ public class MaterialChangeController : MonoBehaviour
 
     private void Start()
     {
-        _inputController = GameController.CurrentGameController.InputController;
+        // Get input controller reference
+        InputController = GameController.CurrentGameController.InputController;
 
-        _inputController.onSpacebarDown += OnSpacebarPressed;
-        _inputController.onSpacebarUp += OnSpacebarLeft;
-        _inputController.onRightMouseDown += OnRightMouseDown;
-        _inputController.onRightMouseUp += OnRightMouseUp;
-
+        // Set events
+        InputController.onSpacebarDown += OnSpacebarPressed;
+        InputController.onSpacebarUp += OnSpacebarLeft;
+        InputController.onRightMouseDown += OnRightMouseDown;
+        InputController.onRightMouseUp += OnRightMouseUp;
         Level.i.onStateChange += OnStateChange;
     }
 
+    /// <summary>
+    /// Used to configure the materials stored under GameAssets. The configuration is defined by the current state.
+    /// </summary>
     private void OnStateChange()
     {
+        // Reset the values of all materials to their default values
         ResetMaterialsInScene();
-        switch (_gameSettings.state)
+        
+        // Set the correct values depending on the state
+        switch (GameSettings.state)
         {
             case GameController.State.BLUR:
                 GameAssets.i.blur.SetFloat(BlurAmount, blurAmountDefault);
@@ -66,6 +72,9 @@ public class MaterialChangeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets all materials that may have been modified during runtime.
+    /// </summary>
     private static void ResetMaterialsInScene()
     {
         // Blur Reset
@@ -96,11 +105,14 @@ public class MaterialChangeController : MonoBehaviour
         GameAssets.i.blur_enemies.SetInt(DoodleEffect, 0);
     }
 
+    /// <summary>
+    /// Handles the space bar event. Depending on the state, new values are set when the space bar is pressed.
+    /// </summary>
     private void OnSpacebarPressed()
     {
         if (!Level.i.IsGameRunning) return;
 
-        switch (_gameSettings.state)
+        switch (GameSettings.state)
         {
             case GameController.State.BLUR:
                 StartCoroutine(ChangeValue(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat(BlurAmount), blurAmountDefault * 2f, .2f));
@@ -113,12 +125,15 @@ public class MaterialChangeController : MonoBehaviour
                 break;
         }
     }
-
+    
+    /// <summary>
+    /// Handles the space bar event. When leaving the space bar, the values of the materials are reset, depending on the state.
+    /// </summary>
     private void OnSpacebarLeft()
     {
         if (!Level.i.IsGameRunning) return;
 
-        switch (_gameSettings.state)
+        switch (GameSettings.state)
         {
             case GameController.State.BLUR:
                 StartCoroutine(ChangeValue(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat("_BlurAmount"), blurAmountDefault, .2f));
@@ -132,11 +147,14 @@ public class MaterialChangeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the right mouse button event. Here the values of the materials are set, depending on the state.
+    /// </summary>
     private void OnRightMouseDown()
     {
         if (!Level.i.IsGameRunning) return;
 
-        switch (_gameSettings.state)
+        switch (GameSettings.state)
         {
             case GameController.State.VISION:
                 StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 0.3f, .2f));
@@ -150,11 +168,14 @@ public class MaterialChangeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the right mouse button event. Here the values of the materials are reset, depending on the state.
+    /// </summary>
     private void OnRightMouseUp()
     {
         if (!Level.i.IsGameRunning) return;
 
-        switch (_gameSettings.state)
+        switch (GameSettings.state)
         {
             case GameController.State.VISION:
                 StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 1.0f, .2f));
@@ -168,25 +189,40 @@ public class MaterialChangeController : MonoBehaviour
         }
     }
 
-    private static IEnumerator ChangeValue(Material material, string method, float vStart, float vEnd, float duration)
+    /// <summary>
+    /// Used for smooth transition between two values. Accepts a material, a shader reference id, a start and end value and a duration.
+    /// </summary>
+    /// <param name="material">Target material</param>
+    /// <param name="shaderReferenceId">Shader reference id (string)</param>
+    /// <param name="vStart"> Start value</param>
+    /// <param name="vEnd">End value</param>
+    /// <param name="duration">Duration in seconds</param>
+    /// <returns>Nothing</returns>
+    private static IEnumerator ChangeValue(Material material, string shaderReferenceId, float vStart, float vEnd, float duration)
     {
         float elapsed = 0.0f;
+        
         while (elapsed < duration)
         {
-            material.SetFloat(method, Mathf.Lerp(vStart, vEnd, elapsed / duration));
+            material.SetFloat(shaderReferenceId, Mathf.Lerp(vStart, vEnd, elapsed / duration));
             elapsed += Time.deltaTime;
             yield return null;
         }
-        material.SetFloat(method, vEnd);
+        
+        material.SetFloat(shaderReferenceId, vEnd);
+        
         yield return null;
     }
 
+    /// <summary>
+    /// Unsubscribe all events.
+    /// </summary>
     private void OnDestroy()
     {
-        _inputController.onSpacebarDown -= OnSpacebarPressed;
-        _inputController.onSpacebarUp -= OnSpacebarLeft;
-        _inputController.onRightMouseDown -= OnRightMouseDown;
-        _inputController.onRightMouseUp -= OnRightMouseUp;
+        InputController.onSpacebarDown -= OnSpacebarPressed;
+        InputController.onSpacebarUp -= OnSpacebarLeft;
+        InputController.onRightMouseDown -= OnRightMouseDown;
+        InputController.onRightMouseUp -= OnRightMouseUp;
 
         Level.i.onStateChange -= OnStateChange;
     }
