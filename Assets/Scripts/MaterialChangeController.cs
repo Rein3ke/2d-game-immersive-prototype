@@ -115,12 +115,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (GameSettings.state)
         {
             case GameController.State.BLUR:
-                StartCoroutine(ChangeValue(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat(BlurAmount), blurAmountDefault * 2f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_BlurAmount", GameAssets.i.blur_background.GetFloat(BlurAmount), blurAmountBackground * 2f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.universalBackgroundImage, "_BlurAmount", GameAssets.i.universalBackgroundImage.GetFloat(BlurAmount), blurAmountBackgroundImage * 2f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_BlurAmount", GameAssets.i.blur_foreground.GetFloat(BlurAmount), blurAmountForeground / 4f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_BlurAmount", GameAssets.i.blur_interactables.GetFloat(BlurAmount), blurAmountInteractables, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_BlurAmount", GameAssets.i.blur_enemies.GetFloat(BlurAmount), blurAmountEnemies, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat(BlurAmount), blurAmountDefault * 2f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_background, "_BlurAmount", GameAssets.i.blur_background.GetFloat(BlurAmount), blurAmountBackground * 2f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.universalBackgroundImage, "_BlurAmount", GameAssets.i.universalBackgroundImage.GetFloat(BlurAmount), blurAmountBackgroundImage * 2f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_foreground, "_BlurAmount", GameAssets.i.blur_foreground.GetFloat(BlurAmount), blurAmountForeground / 4f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_interactables, "_BlurAmount", GameAssets.i.blur_interactables.GetFloat(BlurAmount), blurAmountInteractables, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_enemies, "_BlurAmount", GameAssets.i.blur_enemies.GetFloat(BlurAmount), blurAmountEnemies, .2f));
 
                 break;
         }
@@ -136,12 +136,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (GameSettings.state)
         {
             case GameController.State.BLUR:
-                StartCoroutine(ChangeValue(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat("_BlurAmount"), blurAmountDefault, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_BlurAmount", GameAssets.i.blur_background.GetFloat("_BlurAmount"), blurAmountBackground, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.universalBackgroundImage, "_BlurAmount", GameAssets.i.universalBackgroundImage.GetFloat("_BlurAmount"), blurAmountBackgroundImage, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_BlurAmount", GameAssets.i.blur_foreground.GetFloat("_BlurAmount"), blurAmountForeground, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_BlurAmount", GameAssets.i.blur_interactables.GetFloat("_BlurAmount"), 0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_BlurAmount", GameAssets.i.blur_enemies.GetFloat("_BlurAmount"), 0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat("_BlurAmount"), blurAmountDefault, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_background, "_BlurAmount", GameAssets.i.blur_background.GetFloat("_BlurAmount"), blurAmountBackground, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.universalBackgroundImage, "_BlurAmount", GameAssets.i.universalBackgroundImage.GetFloat("_BlurAmount"), blurAmountBackgroundImage, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_foreground, "_BlurAmount", GameAssets.i.blur_foreground.GetFloat("_BlurAmount"), blurAmountForeground, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_interactables, "_BlurAmount", GameAssets.i.blur_interactables.GetFloat("_BlurAmount"), 0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_enemies, "_BlurAmount", GameAssets.i.blur_enemies.GetFloat("_BlurAmount"), 0f, .2f));
 
                 break;
         }
@@ -157,12 +157,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (GameSettings.state)
         {
             case GameController.State.VISION:
-                StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 0.3f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat(Saturation), 0.3f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat(Saturation), 0.3f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat(Saturation), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat(Saturation), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat(Saturation), 0.3f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 0.3f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat(Saturation), 0.3f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat(Saturation), 0.3f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat(Saturation), 0.3f, .2f));
                 
                 break;
         }
@@ -178,19 +178,19 @@ public class MaterialChangeController : MonoBehaviour
         switch (GameSettings.state)
         {
             case GameController.State.VISION:
-                StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat(Saturation), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat(Saturation), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat(Saturation), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat(Saturation), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(SmoothMaterialValueChange(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat(Saturation), 1.0f, .2f));
 
                 break;
         }
     }
 
     /// <summary>
-    /// Used for smooth transition between two values. Accepts a material, a shader reference id, a start and end value and a duration.
+    /// Coroutine: Used for smooth transition between two values. Accepts a material, a shader reference id, a start and end value and a duration.
     /// </summary>
     /// <param name="material">Target material</param>
     /// <param name="shaderReferenceId">Shader reference id (string)</param>
@@ -198,7 +198,7 @@ public class MaterialChangeController : MonoBehaviour
     /// <param name="vEnd">End value</param>
     /// <param name="duration">Duration in seconds</param>
     /// <returns>Nothing</returns>
-    private static IEnumerator ChangeValue(Material material, string shaderReferenceId, float vStart, float vEnd, float duration)
+    private static IEnumerator SmoothMaterialValueChange(Material material, string shaderReferenceId, float vStart, float vEnd, float duration)
     {
         float elapsed = 0.0f;
         
@@ -215,7 +215,7 @@ public class MaterialChangeController : MonoBehaviour
     }
 
     /// <summary>
-    /// Unsubscribe all events.
+    /// Unsubscribe from all events.
     /// </summary>
     private void OnDestroy()
     {
