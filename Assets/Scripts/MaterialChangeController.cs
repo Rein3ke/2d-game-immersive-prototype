@@ -22,11 +22,16 @@ public class MaterialChangeController : MonoBehaviour
     {
         set => _gameSettings = value;
     }
-
     private GameSettings _gameSettings;
+    
     private InputController _inputController;
+    // Property IDs
+    private static readonly int BlurAmount = Shader.PropertyToID("_BlurAmount");
+    private static readonly int DoodleEffect = Shader.PropertyToID("_DoodleEffect");
+    private static readonly int Saturation = Shader.PropertyToID("_Saturation");
+    private static readonly int MaterialColor = Shader.PropertyToID("_Color");
 
-    void Start()
+    private void Start()
     {
         _inputController = GameController.CurrentGameController.InputController;
 
@@ -44,51 +49,51 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.BLUR:
-                GameAssets.i.blur.SetFloat("_BlurAmount", blurAmountDefault);
-                GameAssets.i.blur_background.SetFloat("_BlurAmount", blurAmountBackground);
-                GameAssets.i.universalBackgroundImage.SetFloat("_BlurAmount", blurAmountBackgroundImage);
-                GameAssets.i.blur_foreground.SetFloat("_BlurAmount", blurAmountForeground);
-                GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0.0f);
-                GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0.0f);
+                GameAssets.i.blur.SetFloat(BlurAmount, blurAmountDefault);
+                GameAssets.i.blur_background.SetFloat(BlurAmount, blurAmountBackground);
+                GameAssets.i.universalBackgroundImage.SetFloat(BlurAmount, blurAmountBackgroundImage);
+                GameAssets.i.blur_foreground.SetFloat(BlurAmount, blurAmountForeground);
+                GameAssets.i.blur_interactables.SetFloat(BlurAmount, 0.0f);
+                GameAssets.i.blur_enemies.SetFloat(BlurAmount, 0.0f);
                 break;
             case GameController.State.DOODLE:
-                GameAssets.i.blur.SetInt("_DoodleEffect", 0);
-                GameAssets.i.blur_background.SetInt("_DoodleEffect", 0);
-                GameAssets.i.blur_foreground.SetInt("_DoodleEffect", 0);
-                GameAssets.i.blur_interactables.SetInt("_DoodleEffect", 1);
-                GameAssets.i.blur_enemies.SetInt("_DoodleEffect", 1);
+                GameAssets.i.blur.SetInt(DoodleEffect, 0);
+                GameAssets.i.blur_background.SetInt(DoodleEffect, 0);
+                GameAssets.i.blur_foreground.SetInt(DoodleEffect, 0);
+                GameAssets.i.blur_interactables.SetInt(DoodleEffect, 1);
+                GameAssets.i.blur_enemies.SetInt(DoodleEffect, 1);
                 break;
         }
     }
 
-    private void ResetMaterialsInScene()
+    private static void ResetMaterialsInScene()
     {
         // Blur Reset
-        GameAssets.i.blur.SetFloat("_BlurAmount", 0f);
-        GameAssets.i.blur_background.SetFloat("_BlurAmount", 0f);
-        GameAssets.i.universalBackgroundImage.SetFloat("_BlurAmount", 0f);
-        GameAssets.i.blur_foreground.SetFloat("_BlurAmount", 0f);
-        GameAssets.i.blur_interactables.SetFloat("_BlurAmount", 0f);
-        GameAssets.i.blur_enemies.SetFloat("_BlurAmount", 0f);
+        GameAssets.i.blur.SetFloat(BlurAmount, 0f);
+        GameAssets.i.blur_background.SetFloat(BlurAmount, 0f);
+        GameAssets.i.universalBackgroundImage.SetFloat(BlurAmount, 0f);
+        GameAssets.i.blur_foreground.SetFloat(BlurAmount, 0f);
+        GameAssets.i.blur_interactables.SetFloat(BlurAmount, 0f);
+        GameAssets.i.blur_enemies.SetFloat(BlurAmount, 0f);
         // Saturation Reset
-        GameAssets.i.blur.SetFloat("_Saturation", 1f);
-        GameAssets.i.blur_background.SetFloat("_Saturation", 1f);
-        GameAssets.i.blur_foreground.SetFloat("_Saturation", 1f);
-        GameAssets.i.blur_interactables.SetFloat("_Saturation", 1f);
-        GameAssets.i.blur_enemies.SetFloat("_Saturation", 1f);
-        GameAssets.i.groundMaterial.SetFloat("_Saturation", 1f);
+        GameAssets.i.blur.SetFloat(Saturation, 1f);
+        GameAssets.i.blur_background.SetFloat(Saturation, 1f);
+        GameAssets.i.blur_foreground.SetFloat(Saturation, 1f);
+        GameAssets.i.blur_interactables.SetFloat(Saturation, 1f);
+        GameAssets.i.blur_enemies.SetFloat(Saturation, 1f);
+        GameAssets.i.groundMaterial.SetFloat(Saturation, 1f);
         // Color Reset
-        GameAssets.i.blur.SetColor("_Color", Color.white);
-        GameAssets.i.blur_background.SetColor("_Color", Color.white);
-        GameAssets.i.blur_foreground.SetColor("_Color", Color.white);
-        GameAssets.i.blur_interactables.SetColor("_Color", Color.white);
-        GameAssets.i.blur_enemies.SetColor("_Color", Color.white);
+        GameAssets.i.blur.SetColor(MaterialColor, Color.white);
+        GameAssets.i.blur_background.SetColor(MaterialColor, Color.white);
+        GameAssets.i.blur_foreground.SetColor(MaterialColor, Color.white);
+        GameAssets.i.blur_interactables.SetColor(MaterialColor, Color.white);
+        GameAssets.i.blur_enemies.SetColor(MaterialColor, Color.white);
         // Doodle Effect Reset
-        GameAssets.i.blur.SetInt("_DoodleEffect", 0);
-        GameAssets.i.blur_background.SetInt("_DoodleEffect", 0);
-        GameAssets.i.blur_foreground.SetInt("_DoodleEffect", 0);
-        GameAssets.i.blur_interactables.SetInt("_DoodleEffect", 0);
-        GameAssets.i.blur_enemies.SetInt("_DoodleEffect", 0);
+        GameAssets.i.blur.SetInt(DoodleEffect, 0);
+        GameAssets.i.blur_background.SetInt(DoodleEffect, 0);
+        GameAssets.i.blur_foreground.SetInt(DoodleEffect, 0);
+        GameAssets.i.blur_interactables.SetInt(DoodleEffect, 0);
+        GameAssets.i.blur_enemies.SetInt(DoodleEffect, 0);
     }
 
     private void OnSpacebarPressed()
@@ -98,12 +103,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.BLUR:
-                StartCoroutine(ChangeValue(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat("_BlurAmount"), blurAmountDefault * 2f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_BlurAmount", GameAssets.i.blur_background.GetFloat("_BlurAmount"), blurAmountBackground * 2f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.universalBackgroundImage, "_BlurAmount", GameAssets.i.universalBackgroundImage.GetFloat("_BlurAmount"), blurAmountBackgroundImage * 2f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_BlurAmount", GameAssets.i.blur_foreground.GetFloat("_BlurAmount"), blurAmountForeground / 4f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_BlurAmount", GameAssets.i.blur_interactables.GetFloat("_BlurAmount"), blurAmountInteractables, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_BlurAmount", GameAssets.i.blur_enemies.GetFloat("_BlurAmount"), blurAmountEnemies, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur, "_BlurAmount", GameAssets.i.blur.GetFloat(BlurAmount), blurAmountDefault * 2f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_BlurAmount", GameAssets.i.blur_background.GetFloat(BlurAmount), blurAmountBackground * 2f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.universalBackgroundImage, "_BlurAmount", GameAssets.i.universalBackgroundImage.GetFloat(BlurAmount), blurAmountBackgroundImage * 2f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_BlurAmount", GameAssets.i.blur_foreground.GetFloat(BlurAmount), blurAmountForeground / 4f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_BlurAmount", GameAssets.i.blur_interactables.GetFloat(BlurAmount), blurAmountInteractables, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_BlurAmount", GameAssets.i.blur_enemies.GetFloat(BlurAmount), blurAmountEnemies, .2f));
 
                 break;
         }
@@ -134,12 +139,12 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.VISION:
-                StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat("_Saturation"), 0.3f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat("_Saturation"), 0.3f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat("_Saturation"), 0.3f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat("_Saturation"), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat("_Saturation"), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat("_Saturation"), 0.3f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 0.3f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat(Saturation), 0.3f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat(Saturation), 0.3f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat(Saturation), 0.3f, .2f));
                 
                 break;
         }
@@ -152,31 +157,31 @@ public class MaterialChangeController : MonoBehaviour
         switch (_gameSettings.state)
         {
             case GameController.State.VISION:
-                StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat("_Saturation"), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat("_Saturation"), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat("_Saturation"), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat("_Saturation"), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat("_Saturation"), 1.0f, .2f));
-                StartCoroutine(ChangeValue(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat("_Saturation"), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur, "_Saturation", GameAssets.i.blur.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_background, "_Saturation", GameAssets.i.blur_background.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_foreground, "_Saturation", GameAssets.i.blur_foreground.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_interactables, "_Saturation", GameAssets.i.blur_interactables.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.blur_enemies, "_Saturation", GameAssets.i.blur_enemies.GetFloat(Saturation), 1.0f, .2f));
+                StartCoroutine(ChangeValue(GameAssets.i.groundMaterial, "_Saturation", GameAssets.i.groundMaterial.GetFloat(Saturation), 1.0f, .2f));
 
                 break;
         }
     }
 
-    private IEnumerator ChangeValue(Material material, string method, float v_start, float v_end, float duration)
+    private static IEnumerator ChangeValue(Material material, string method, float vStart, float vEnd, float duration)
     {
         float elapsed = 0.0f;
         while (elapsed < duration)
         {
-            material.SetFloat(method, Mathf.Lerp(v_start, v_end, elapsed / duration));
+            material.SetFloat(method, Mathf.Lerp(vStart, vEnd, elapsed / duration));
             elapsed += Time.deltaTime;
             yield return null;
         }
-        material.SetFloat(method, v_end);
+        material.SetFloat(method, vEnd);
         yield return null;
     }
 
-    private void OnDistroy()
+    private void OnDestroy()
     {
         _inputController.onSpacebarDown -= OnSpacebarPressed;
         _inputController.onSpacebarUp -= OnSpacebarLeft;
