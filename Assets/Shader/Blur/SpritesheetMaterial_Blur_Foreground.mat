@@ -38,6 +38,10 @@ Material:
     m_Floats:
     - _BlurAmount: 0
     - _DoodleEffect: 0
+    - _DoodleFrameCount: 24
+    - _DoodleFrameTime: 0.25
+    - _DoodleMaxOffset: 0.005
+    - _DoodleNoiseScale: 500
     - _Saturation: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
