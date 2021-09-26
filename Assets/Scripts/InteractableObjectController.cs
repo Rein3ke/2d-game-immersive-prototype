@@ -37,7 +37,7 @@ public class InteractableObjectController : MonoBehaviour, IHitable
         }
         if (_interactableObjectSettings.hitSoundClip != null)
         {
-            _soundController = GameController.CurrentGameController.SoundController;
+            _soundController = GameController.Instance.SoundController;
             _playHitSound = true;
         }
         if (_interactableObjectSettings.sprite != null)

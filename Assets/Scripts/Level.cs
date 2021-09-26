@@ -30,7 +30,7 @@ public class Level : MonoBehaviour
         if (_i != null) Debug.LogError("Too many level controllers!");
         else _i = this;
 
-        _gameController = GameController.CurrentGameController;
+        _gameController = GameController.Instance;
         _materialChangeController = GetComponent<MaterialChangeController>();
         if (_materialChangeController == null) Debug.LogError("Error: No MaterialChangeController found!");
     }
@@ -81,7 +81,7 @@ public class Level : MonoBehaviour
         playerUIController.GameSettings = _gameSettings;
 
         GunController.i.PlayerSettings = _playerSettings;
-        GameController.CurrentGameController.InputController.PlayerSettings = _playerSettings;
+        GameController.Instance.InputController.PlayerSettings = _playerSettings;
         _materialChangeController.GameSettings = _gameSettings;
 
         _gameSettings.state = state;

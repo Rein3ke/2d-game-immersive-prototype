@@ -32,7 +32,7 @@ public class MainMenuUIController : MonoBehaviour
 
     void StartButtonPressed()
     {
-        GameController.CurrentGameController.SceneController.loadNextScene();
+        GameController.Instance.SceneController.loadNextScene();
     }
 
     void IntroductionButtonPressed()
@@ -49,6 +49,6 @@ public class MainMenuUIController : MonoBehaviour
 
     void ExitButtonPressed()
     {
-        GameController.ExitGame();
+        GameController.CloseApplication();
     }
 }

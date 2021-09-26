@@ -1,8 +1,12 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(InputController), typeof(SoundController), typeof(SceneController))]
 public class GameController : MonoBehaviour
 {
+    /// <summary>
+    /// An enum used to set the current application state.
+    /// </summary>
     public enum State
     {
         DEFAULT = 0,
@@ -13,117 +17,145 @@ public class GameController : MonoBehaviour
     }
 
     // Own instance of GameController
-    public static GameController CurrentGameController { get => m_currentGameController; private set => m_currentGameController = value; }
-    private static GameController m_currentGameController;
+    public static GameController Instance { get; private set; }
 
     // All Controllers
 
-    // Public access for the input and sound controller
-    public InputController InputController { get => m_inputController; private set => m_inputController = value; }
-    private InputController m_inputController;
+    // Public access for the input, scene and sound controller
+    public InputController InputController { get; private set; }
+    public SceneController SceneController { get; private set; }
+    public SoundController SoundController { get; private set; }
 
-    public SceneController SceneController { get => m_sceneController; private set => m_sceneController = value; }
-    private SceneController m_sceneController;
-    private CursorController m_cursorController;
-    public SoundController SoundController { get => m_soundController; private set => m_soundController = value; }
-    private SoundController m_soundController;
-
-    private State m_currentState = State.DEFAULT;
+    private State _currentState = State.DEFAULT;
 
     private void Awake()
     {
-        if (CurrentGameController != null && CurrentGameController != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         } else
         {
-            CurrentGameController = this;
+            Instance = this;
         }
 
         // Set all controller
         SceneController = GetComponent<SceneController>();
         if (SceneController == null) Debug.LogError("No scene controller!");
-        m_cursorController = GetComponent<CursorController>();
+
         InputController = GetComponent<InputController>();
+        
         SoundController = GetComponent<SoundController>();
     }
-
-    // Start is called before the first frame update
+    
+    /// <summary>
+    /// Standard unity method. Executes the RunGameSetup() method.
+    /// </summary>
     private void Start()
     {
         RunGameSetup();
-        m_inputController.onKeyEscapeDown += OnKeyEscapeDown;
+        
+        InputController.onKeyEscapeDown += InputController_OnKeyEscapeDown;
     }
 
+    /// <summary>
+    /// Configures the level script depending on the current state. After configuration the level is started.
+    /// </summary>
     private void RunGameSetup()
     {
-        if (!m_sceneController.CurrentScene.name.Equals("Level")) return;
-        Debug.Log("GameController.RunGameSetup");
+        if (!SceneController.CurrentScene.name.Equals("Level")) return;
 
-        switch (m_currentState)
+        switch (_currentState)
         {
             default:
             case State.DEFAULT:
                 Debug.Log("GameController.RunGameSetup.DEFAULT");
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
             case State.BLUR:
                 Debug.Log("GameController.RunGameSetup.BLUR");
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
             case State.DOODLE:
                 Debug.Log("GameController.RunGameSetup.DOODLE");
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
             case State.VISION:
                 Debug.Log("GameController.RunGameSetup.VISION");
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, m_currentState);
+                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
         }
         Level.i.StartLevel();
     }
 
+    /// <summary>
+    /// Returns the next state depending on the enum.
+    /// </summary>
+    /// <returns>Next state depending on the enum</returns>
     private State GetNextState()
     {
-        int index = ((int)m_currentState);
+        int index = ((int)_currentState);
+        
         string nextState = Enum.GetName(typeof(State), ++index);
+        
         return (State) Enum.Parse(typeof(State), nextState);
     }
 
+    /// <summary>
+    /// Takes an integer and returns a corresponding state.
+    /// </summary>
+    /// <param name="index">State index ID</param>
+    /// <returns>State</returns>
     private State GetStateByIndex(int index)
     {
         string nextState = Enum.GetName(typeof(State), index);
         return (State)Enum.Parse(typeof(State), nextState);
     }
 
+    /// <summary>
+    /// Sets the next active state.
+    /// </summary>
+    /// <param name="state">Active next state</param>
     private void SetCurrentState(State state)
     {
         if (Equals(state, State.Length))
         {
-            m_sceneController.loadNextScene();
+            SceneController.loadNextScene();
         } else
         {
-            m_currentState = state;
+            _currentState = state;
         }
     }
 
+    /// <summary>
+    /// Switches to the next state. Executes the RunGameSetup() method.
+    /// </summary>
     public void LoadNextLevel()
     {
         SetCurrentState(GetNextState());
+        
         RunGameSetup();
     }
 
+    /// <summary>
+    /// Public access for UI elements: Starts the RunGameSetup() method.
+    /// </summary>
     public void RetryLevel()
     {
         RunGameSetup();
     }
 
+    /// <summary>
+    /// Public access for UI elements: Loads the main menu scene.
+    /// </summary>
     public void LoadMenu()
     {
         LoadingMainMenuScene();
     }
 
-    public static void ExitGame()
+    /// <summary>
+    /// Handles the application close request. Whether in the editor or in the build, the application closes differently.
+    /// </summary>
+    public static void CloseApplication()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -133,9 +165,9 @@ public class GameController : MonoBehaviour
     }
 
     #region Event Handling
-    private static void OnKeyEscapeDown()
+    private static void InputController_OnKeyEscapeDown()
     {
-        ExitGame();
+        CloseApplication();
     }
 #endregion
 

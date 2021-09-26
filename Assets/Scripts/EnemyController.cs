@@ -29,7 +29,7 @@ public class EnemyController : MonoBehaviour, IHitable
     // Start is called before the first frame update
     private void Start()
     {
-        _gameController = GameController.CurrentGameController;
+        _gameController = GameController.Instance;
 
         // Set Sprite Renderer
         SpriteRenderer = GetComponentInChildren<SpriteRenderer>();

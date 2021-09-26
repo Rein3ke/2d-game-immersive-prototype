@@ -33,7 +33,7 @@ public class MaterialChangeController : MonoBehaviour
     private void Start()
     {
         // Get input controller reference
-        InputController = GameController.CurrentGameController.InputController;
+        InputController = GameController.Instance.InputController;
 
         // Set events
         InputController.onSpacebarDown += OnSpacebarPressed;

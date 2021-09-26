@@ -14,7 +14,7 @@ public class SceneController : MonoBehaviour
     {
         sceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        GameController.CurrentGameController.onLoadingMainMenuScene += loadMenu;
+        GameController.Instance.onLoadingMainMenuScene += loadMenu;
 
         // Event Subscription
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -45,7 +45,7 @@ public class SceneController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameController.CurrentGameController.onLoadingMainMenuScene -= loadMenu;
+        GameController.Instance.onLoadingMainMenuScene -= loadMenu;
 
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }

@@ -35,12 +35,12 @@ public class GunController : MonoBehaviour
 
     private void Start()
     {
-        soundController = GameController.CurrentGameController.SoundController;
+        soundController = GameController.Instance.SoundController;
 
-        GameController.CurrentGameController.InputController.onLeftMouseDown += OnLeftMouseButton;
-        GameController.CurrentGameController.InputController.onKeyRDown += OnRKey;
-        GameController.CurrentGameController.InputController.onSpacebarDown += OnSpacebarDown;
-        GameController.CurrentGameController.InputController.onSpacebarUp += OnSpacebarUp;
+        GameController.Instance.InputController.onLeftMouseDown += OnLeftMouseButton;
+        GameController.Instance.InputController.onKeyRDown += OnRKey;
+        GameController.Instance.InputController.onSpacebarDown += OnSpacebarDown;
+        GameController.Instance.InputController.onSpacebarUp += OnSpacebarUp;
 
     }
 
@@ -149,10 +149,10 @@ public class GunController : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameController.CurrentGameController.InputController.onLeftMouseDown -= OnLeftMouseButton;
-        GameController.CurrentGameController.InputController.onKeyRDown -= OnRKey;
-        GameController.CurrentGameController.InputController.onSpacebarDown -= OnSpacebarDown;
-        GameController.CurrentGameController.InputController.onSpacebarUp -= OnSpacebarUp;
+        GameController.Instance.InputController.onLeftMouseDown -= OnLeftMouseButton;
+        GameController.Instance.InputController.onKeyRDown -= OnRKey;
+        GameController.Instance.InputController.onSpacebarDown -= OnSpacebarDown;
+        GameController.Instance.InputController.onSpacebarUp -= OnSpacebarUp;
     }
 
 }

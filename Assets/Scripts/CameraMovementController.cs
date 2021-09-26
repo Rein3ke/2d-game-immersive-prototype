@@ -40,12 +40,12 @@ public class CameraMovementController : MonoBehaviour
         m_origin = transform.position;
         
         // Event subscription
-        GameController.CurrentGameController.InputController.onSpacebarDown += GoDown;
-        GameController.CurrentGameController.InputController.onSpacebarUp += GoUp;
-        GameController.CurrentGameController.InputController.onLeftDown += GoLeft;
-        GameController.CurrentGameController.InputController.onRightDown += GoRight;
-        GameController.CurrentGameController.InputController.onRightMouseDown += ZoomIn;
-        GameController.CurrentGameController.InputController.onRightMouseUp += ZoomOut;
+        GameController.Instance.InputController.onSpacebarDown += GoDown;
+        GameController.Instance.InputController.onSpacebarUp += GoUp;
+        GameController.Instance.InputController.onLeftDown += GoLeft;
+        GameController.Instance.InputController.onRightDown += GoRight;
+        GameController.Instance.InputController.onRightMouseDown += ZoomIn;
+        GameController.Instance.InputController.onRightMouseUp += ZoomOut;
     }
 
     /// <summary>
@@ -202,11 +202,11 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        GameController.CurrentGameController.InputController.onSpacebarDown  -= GoDown;
-        GameController.CurrentGameController.InputController.onSpacebarUp     -= GoUp;
-        GameController.CurrentGameController.InputController.onLeftDown      -= GoLeft;
-        GameController.CurrentGameController.InputController.onRightDown     -= GoRight;
-        GameController.CurrentGameController.InputController.onRightMouseDown -= ZoomIn;
-        GameController.CurrentGameController.InputController.onRightMouseUp -= ZoomOut;
+        GameController.Instance.InputController.onSpacebarDown  -= GoDown;
+        GameController.Instance.InputController.onSpacebarUp     -= GoUp;
+        GameController.Instance.InputController.onLeftDown      -= GoLeft;
+        GameController.Instance.InputController.onRightDown     -= GoRight;
+        GameController.Instance.InputController.onRightMouseDown -= ZoomIn;
+        GameController.Instance.InputController.onRightMouseUp -= ZoomOut;
     }
 }
