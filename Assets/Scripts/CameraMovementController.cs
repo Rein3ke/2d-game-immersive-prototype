@@ -14,9 +14,9 @@ public class CameraMovementController : MonoBehaviour
     // Value that determines how fast the camera can move horizontally.
     [SerializeField] private float movementSpeed = 4.0f;
 
-    private Vector3 m_origin;
-    private bool m_isDown;
-    private Camera m_mainCamera;
+    private Vector3 _origin;
+    private bool _isDown;
+    private Camera _mainCamera;
 
     private void Awake()
     {
@@ -28,34 +28,34 @@ public class CameraMovementController : MonoBehaviour
     private void Start()
     {
         // Get reference to the main camera
-        m_mainCamera = Camera.main;
+        _mainCamera = Camera.main;
         
-        if (m_mainCamera == null)
+        if (_mainCamera == null)
         {
             Debug.LogError("No main camera found!");
             return;
         }
         
         // Set default position for reset purposes
-        m_origin = transform.position;
+        _origin = transform.position;
         
         // Event subscription
-        GameController.Instance.InputController.onSpaceDown += GoDown;
-        GameController.Instance.InputController.onSpaceUp += GoUp;
-        GameController.Instance.InputController.onLeftDown += GoLeft;
-        GameController.Instance.InputController.onRightDown += GoRight;
-        GameController.Instance.InputController.onRightMouseDown += ZoomIn;
-        GameController.Instance.InputController.onRightMouseUp += ZoomOut;
+        GameController.Instance.InputController.onSpaceDown += InputController_OnSpaceDown;
+        GameController.Instance.InputController.onSpaceUp += InputController_OnSpaceUp;
+        GameController.Instance.InputController.onLeftDown += InputController_OnLeftDown;
+        GameController.Instance.InputController.onRightDown += InputController_OnRightDown;
+        GameController.Instance.InputController.onRightMouseDown += InputController_OnRightMouseDown;
+        GameController.Instance.InputController.onRightMouseUp += InputController_OnRightMouseUp;
     }
 
     /// <summary>
     /// Starts the Zoom coroutine with the parameters needed to animate zoom in. Works only if game is running.
     /// </summary>
-    private void ZoomIn()
+    private void InputController_OnRightMouseDown()
     {
         if (!Level.i.IsGameRunning) return;
         
-        var fieldOfView = m_mainCamera.fieldOfView;
+        var fieldOfView = _mainCamera.fieldOfView;
         
         StartCoroutine(SmoothFieldOfViewValue(fieldOfView, fieldOfView - 2f, .2f));
     }
@@ -63,11 +63,11 @@ public class CameraMovementController : MonoBehaviour
     /// <summary>
     /// Starts the Zoom coroutine with the parameters needed to animate zoom out. Works only if game is running.
     /// </summary>
-    private void ZoomOut()
+    private void InputController_OnRightMouseUp()
     {
         if (!Level.i.IsGameRunning) return;
         
-        var fieldOfView = m_mainCamera.fieldOfView;
+        var fieldOfView = _mainCamera.fieldOfView;
         
         StartCoroutine(SmoothFieldOfViewValue(fieldOfView, fieldOfView + 2f, .2f));
     }
@@ -85,12 +85,12 @@ public class CameraMovementController : MonoBehaviour
         
         while (elapsed < duration)
         {
-            m_mainCamera.fieldOfView = Mathf.Lerp(vStart, vEnd, elapsed / duration);
+            _mainCamera.fieldOfView = Mathf.Lerp(vStart, vEnd, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
         
-        m_mainCamera.fieldOfView = vEnd;
+        _mainCamera.fieldOfView = vEnd;
         
         yield return null;
     }
@@ -129,44 +129,44 @@ public class CameraMovementController : MonoBehaviour
     /// <summary>
     /// Starts the coroutine to change the transform position.
     /// </summary>
-    private void GoDown()
+    private void InputController_OnSpaceDown()
     {
-        if (!Level.i.IsGameRunning || m_isDown) return;
+        if (!Level.i.IsGameRunning || _isDown) return;
         
         var transformPosition = transform.position;
         
         StartCoroutine(SmoothTransformPositionY(transformPosition.y, transformPosition.y - yOffset, .1f));
         
-        m_isDown = true;
+        _isDown = true;
     }
 
     /// <summary>
     /// Starts the coroutine to change the transform position.
     /// </summary>
-    private void GoUp()
+    private void InputController_OnSpaceUp()
     {
-        if (!Level.i.IsGameRunning || !m_isDown) return;
+        if (!Level.i.IsGameRunning || !_isDown) return;
         
         var transformPosition = transform.position;
         
-        StartCoroutine(SmoothTransformPositionY(transformPosition.y, m_origin.y, .1f));
+        StartCoroutine(SmoothTransformPositionY(transformPosition.y, _origin.y, .1f));
         
-        m_isDown = false;
+        _isDown = false;
     }
 
     /// <summary>
     /// Moves the Main Camera to the left.
     /// </summary>
-    private void GoLeft()
+    private void InputController_OnLeftDown()
     {
         if (!Level.i.IsGameRunning) return;
 
-        if (m_isDown)
+        if (_isDown)
         {
-            transform.position += Vector3.left * (movementSpeed / 3) * Time.deltaTime;
+            transform.position += Vector3.left * ((movementSpeed / 3) * Time.deltaTime);
         } else
         {
-            transform.position += Vector3.left * movementSpeed * Time.deltaTime;
+            transform.position += Vector3.left * (movementSpeed * Time.deltaTime);
         }
 
         var transformPosition = transform.position;
@@ -177,17 +177,17 @@ public class CameraMovementController : MonoBehaviour
     /// <summary>
     /// Moves the Main Camera to the right.
     /// </summary>
-    private void GoRight()
+    private void InputController_OnRightDown()
     {
         if (!Level.i.IsGameRunning) return;
 
-        if (m_isDown)
+        if (_isDown)
         {
-            transform.position += Vector3.right * (movementSpeed / 3) * Time.deltaTime;
+            transform.position += Vector3.right * ((movementSpeed / 3) * Time.deltaTime);
         }
         else
         {
-            transform.position += Vector3.right * movementSpeed * Time.deltaTime;
+            transform.position += Vector3.right * (movementSpeed * Time.deltaTime);
         }
 
         var transformPosition = transform.position;
@@ -202,11 +202,11 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        GameController.Instance.InputController.onSpaceDown  -= GoDown;
-        GameController.Instance.InputController.onSpaceUp     -= GoUp;
-        GameController.Instance.InputController.onLeftDown      -= GoLeft;
-        GameController.Instance.InputController.onRightDown     -= GoRight;
-        GameController.Instance.InputController.onRightMouseDown -= ZoomIn;
-        GameController.Instance.InputController.onRightMouseUp -= ZoomOut;
+        GameController.Instance.InputController.onSpaceDown -= InputController_OnSpaceDown;
+        GameController.Instance.InputController.onSpaceUp -= InputController_OnSpaceUp;
+        GameController.Instance.InputController.onLeftDown -= InputController_OnLeftDown;
+        GameController.Instance.InputController.onRightDown -= InputController_OnRightDown;
+        GameController.Instance.InputController.onRightMouseDown -= InputController_OnRightMouseDown;
+        GameController.Instance.InputController.onRightMouseUp -= InputController_OnRightMouseUp;
     }
 }
