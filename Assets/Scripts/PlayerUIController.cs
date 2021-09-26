@@ -62,7 +62,7 @@ public class PlayerUIController : MonoBehaviour
         Level.i.onGameLost += OnGameLost;
         Level.i.onGameWon += OnGameWon;
         Level.i.onStateChange += OnStateChange;
-        GunController.i.onAmmunitionChange += OnAmmunitionChange;
+        GunController.I.onAmmunitionChange += OnAmmunitionChange;
 
         ResetUI();
     }
@@ -171,7 +171,7 @@ public class PlayerUIController : MonoBehaviour
         Level.i.onGameLost -= OnGameLost;
         Level.i.onGameWon -= OnGameWon;
         Level.i.onStateChange -= OnStateChange;
-        GunController.i.onAmmunitionChange -= OnAmmunitionChange;
+        GunController.I.onAmmunitionChange -= OnAmmunitionChange;
     }
     #endregion
 }

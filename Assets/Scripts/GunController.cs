@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -9,127 +8,161 @@ public class GunController : MonoBehaviour
     [SerializeField]
     private LayerMask layerMask;
 
-    public PlayerSettings PlayerSettings
-    {
-        set => _playerSettings = value;
-    }
-    private PlayerSettings _playerSettings;
+    public PlayerSettings PlayerSettings { get; set; }
 
-    public static GunController i
-    {
-        get => _i;
-    }
-    private static GunController _i;
+    public static GunController I { get; private set; }
 
     private SoundController soundController;
-    private bool isGunReady = true;
-    private bool isGunReloading = false;
-    private bool _isBehindCover = false;
+    private bool _isGunReady = true;
+    private bool _isGunReloading;
+    private bool _isBehindCover;
+    private Camera _mainCamera;
 
     // Start is called before the first frame update
     void Awake()
     {
-        if (_i == null) _i = this;
+        if (I == null) I = this;
         else Debug.LogError("Error: Too many active gun controllers!");
     }
 
+    /// <summary>
+    /// Standard unity method. Set all necessary fields and subscribe to events from the input controller.
+    /// </summary>
     private void Start()
     {
+        _mainCamera = Camera.main;
+        
         soundController = GameController.Instance.SoundController;
 
-        GameController.Instance.InputController.onLeftMouseDown += OnLeftMouseButton;
-        GameController.Instance.InputController.onKeyRDown += OnRKey;
-        GameController.Instance.InputController.onSpaceDown += OnSpaceDown;
-        GameController.Instance.InputController.onSpaceUp += OnSpaceUp;
-
+        // Subscribe to events
+        GameController.Instance.InputController.onLeftMouseDown += InputController_OnLeftMouseDown;
+        GameController.Instance.InputController.onKeyRDown += InputController_OnKeyRDown;
+        GameController.Instance.InputController.onSpaceDown += InputController_OnSpaceDown;
+        GameController.Instance.InputController.onSpaceUp += InputController_OnSpaceUp;
     }
 
+    /// <summary>
+    /// Coroutine: Gradually counts up the current ammunition to the maximum value.
+    /// </summary>
+    /// <returns>Nothing</returns>
     private IEnumerator Reload()
     {
-        isGunReady = false;
-        isGunReloading = true;
+        _isGunReady = false;
+        _isGunReloading = true;
 
-        while (_playerSettings.PlayerAmmunition < _playerSettings.playerMaxAmmunition)
+        while (PlayerSettings.PlayerAmmunition < PlayerSettings.playerMaxAmmunition)
         {
-            _playerSettings.PlayerAmmunition++;
+            PlayerSettings.PlayerAmmunition++;
+            
             AmmunitionChange();
-            soundController.PlayAudio(_playerSettings.gunReloadAudioClip, false);
-            yield return new WaitForSeconds(_playerSettings.playerReloadTime / _playerSettings.playerMaxAmmunition);
+            
+            soundController.PlayAudio(PlayerSettings.gunReloadAudioClip, false);
+            
+            yield return new WaitForSeconds(PlayerSettings.playerReloadTime / PlayerSettings.playerMaxAmmunition);
         }
-        soundController.PlayAudio(_playerSettings.gunPostReloadAudioClip, false);
+        soundController.PlayAudio(PlayerSettings.gunPostReloadAudioClip, false);
 
-        isGunReady = true;
-        isGunReloading = false;
+        _isGunReady = true;
+        _isGunReloading = false;
 
         yield return false;
     }
 
+    /// <summary>
+    /// Coroutine: Sets the status of isGunReady to true after a specified time.
+    /// </summary>
+    /// <param name="cooldown">Duration in seconds</param>
+    /// <returns>Nothing</returns>
     private IEnumerator WaitForCooldown(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
-        isGunReady = true;
+        
+        _isGunReady = true;
     }
 
     #region Event Handling
-    private void OnLeftMouseButton()
+    /// <summary>
+    /// Perform a raycast and execute handleHit() function of the hit object.
+    /// </summary>
+    private void InputController_OnLeftMouseDown()
     {
-        if (!Level.i.IsGameRunning || _isBehindCover || !isGunReady) return;
-        if (_playerSettings.PlayerAmmunition == 0)
+        if (!Level.i.IsGameRunning || _isBehindCover || !_isGunReady) return;
+        if (PlayerSettings.PlayerAmmunition == 0)
         {
-            soundController.PlayAudio(_playerSettings.gunEmptyAudioClip, false);
+            soundController.PlayAudio(PlayerSettings.gunEmptyAudioClip, false);
             return;
         }
 
-        Vector3 mousePosition = Input.mousePosition;
+        // Determines the mouse position and changes it on all axis depending on the spread factor
+        var mousePosition = Input.mousePosition;
 
-        mousePosition.x += Random.Range(-_playerSettings.playerGunSpreadFactor, _playerSettings.playerGunSpreadFactor);
-        mousePosition.y += Random.Range(-_playerSettings.playerGunSpreadFactor, _playerSettings.playerGunSpreadFactor);
-        mousePosition.z += Random.Range(-_playerSettings.playerGunSpreadFactor, _playerSettings.playerGunSpreadFactor);
+        mousePosition.x += Random.Range(-PlayerSettings.playerGunSpreadFactor, PlayerSettings.playerGunSpreadFactor);
+        mousePosition.y += Random.Range(-PlayerSettings.playerGunSpreadFactor, PlayerSettings.playerGunSpreadFactor);
+        mousePosition.z += Random.Range(-PlayerSettings.playerGunSpreadFactor, PlayerSettings.playerGunSpreadFactor);
 
-        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        var ray = _mainCamera.ScreenPointToRay(mousePosition);
+        
+        // Draw a line from ray origin to its direction
         Debug.DrawLine(ray.origin, ray.direction, Color.green, .5f, false);
 
-        soundController.PlayAudio(_playerSettings.gunShotAudioClip, true);
+        // Play shot sound
+        soundController.PlayAudio(PlayerSettings.gunShotAudioClip, true);
 
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
+        // Perform raycast
+        var hit2D = Physics2D.GetRayIntersection(ray, 20.0f, layerMask);
 
-        Collider2D collider = hit2D.collider;
-        IHitable hitable = collider?.GetComponent<IHitable>();
-        if (hitable != null)
+        // If hit object has a collider, continue
+        var hit2DCollider = hit2D.collider;
+        if (hit2DCollider != null)
         {
-            hitable.handleHit();
+            var hitAble = hit2DCollider.GetComponent<IHitable>();
+            hitAble?.handleHit();
         }
 
-        GameObject projectile = Instantiate(Resources.Load("Projectile") as GameObject, transform.position, Quaternion.identity);
+        // Load the projectile prefab from resource folder and run its MoveToPosition() method.
+        var projectile = Instantiate(Resources.Load("Projectile") as GameObject, transform.position, Quaternion.identity);
         if (projectile != null)
         {
-            ProjectileController projectileController = projectile.GetComponentInChildren<ProjectileController>();
+            var projectileController = projectile.GetComponentInChildren<ProjectileController>();
             projectileController.CanHitForegroundCover = false;
             projectileController.MoveToPosition(ray.direction);
         }
 
-        _playerSettings.PlayerAmmunition--;
+        // Reduce ammunition
+        PlayerSettings.PlayerAmmunition--;
+        
+        // Call event
         AmmunitionChange();
 
-        isGunReady = false;
+        _isGunReady = false;
 
         StartCoroutine(WaitForCooldown(.8f));
     }
-
-    private void OnSpaceUp()
+    
+    /// <summary>
+    /// Set isBehindCover boolean to false if Space was left.
+    /// </summary>
+    private void InputController_OnSpaceUp()
     {
         _isBehindCover = false;
     }
 
-    private void OnSpaceDown()
+    /// <summary>
+    /// Set isBehindCover boolean to true if Space was pressed.
+    /// </summary>
+    private void InputController_OnSpaceDown()
     {
         _isBehindCover = true;
     }
 
-    private void OnRKey()
+    /// <summary>
+    /// Start the reload coroutine when the R key is pressed.
+    /// </summary>
+    private void InputController_OnKeyRDown()
     {
         if (!Level.i.IsGameRunning) return;
-        if (_playerSettings.PlayerAmmunition < _playerSettings.playerMaxAmmunition && !isGunReloading)
+        
+        if (PlayerSettings.PlayerAmmunition < PlayerSettings.playerMaxAmmunition && !_isGunReloading)
         {
             StartCoroutine(Reload());
         }
@@ -138,21 +171,24 @@ public class GunController : MonoBehaviour
 
     #region Events
     public event Action onAmmunitionChange;
-    public void AmmunitionChange()
+    /// <summary>
+    /// Invokes the event when the ammunition value has changed.
+    /// </summary>
+    private void AmmunitionChange()
     {
-        if (onAmmunitionChange != null)
-        {
-            onAmmunitionChange();
-        }
+        onAmmunitionChange?.Invoke();
     }
     #endregion
 
+    /// <summary>
+    /// Unsubscribe from all events if destroyed.
+    /// </summary>
     private void OnDestroy()
     {
-        GameController.Instance.InputController.onLeftMouseDown -= OnLeftMouseButton;
-        GameController.Instance.InputController.onKeyRDown -= OnRKey;
-        GameController.Instance.InputController.onSpaceDown -= OnSpaceDown;
-        GameController.Instance.InputController.onSpaceUp -= OnSpaceUp;
+        GameController.Instance.InputController.onLeftMouseDown -= InputController_OnLeftMouseDown;
+        GameController.Instance.InputController.onKeyRDown -= InputController_OnKeyRDown;
+        GameController.Instance.InputController.onSpaceDown -= InputController_OnSpaceDown;
+        GameController.Instance.InputController.onSpaceUp -= InputController_OnSpaceUp;
     }
 
 }

@@ -80,7 +80,7 @@ public class Level : MonoBehaviour
         playerUIController.PlayerSettings = _playerSettings;
         playerUIController.GameSettings = _gameSettings;
 
-        GunController.i.PlayerSettings = _playerSettings;
+        GunController.I.PlayerSettings = _playerSettings;
         GameController.Instance.InputController.PlayerSettings = _playerSettings;
         _materialChangeController.GameSettings = _gameSettings;
 
