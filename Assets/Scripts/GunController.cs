@@ -115,8 +115,8 @@ public class GunController : MonoBehaviour
         var hit2DCollider = hit2D.collider;
         if (hit2DCollider != null)
         {
-            var hitAble = hit2DCollider.GetComponent<IHitable>();
-            hitAble?.handleHit();
+            var hitAble = hit2DCollider.GetComponent<IHitAble>();
+            hitAble?.HandleHit();
         }
 
         // Load the projectile prefab from resource folder and run its MoveToPosition() method.

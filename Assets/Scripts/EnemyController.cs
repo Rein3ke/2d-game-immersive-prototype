@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour, IHitable
+/// <summary>
+/// A controller to control the enemy behavior. A controller to control the enemy behavior. In addition, animation and sound are controlled here, which were previously stored in the enemy settings.
+/// </summary>
+[RequireComponent(typeof(BoxCollider2D))]
+public class EnemyController : MonoBehaviour, IHitAble
 {
-    public static int Count { get; set; } = 0;
+    /// <summary>
+    /// A property to monitor the current number of enemies.
+    /// </summary>
+    public static int Count { get; set; }
 
     public EnemySettings EnemySettings => _enemySettings;
 
@@ -15,96 +22,125 @@ public class EnemyController : MonoBehaviour, IHitable
 
     private GameController _gameController;
 
-    private bool _isHit = false;
+    private bool _isHit;
     private SpriteRenderer SpriteRenderer { get; set; }
 
     private SoundController _soundController;
     private Animator _animator;
     private BoxCollider2D _boxCollider2D;
     private Coroutine _currentShootRoutine;
+    private Camera _mainCamera;
     
     private static readonly int IsDead = Animator.StringToHash("isDead");
     private static readonly int IsRunning = Animator.StringToHash("isRunning");
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Standard unity method. Set all the necessary components.
+    /// </summary>
     private void Start()
     {
+        _mainCamera = Camera.main;
         _gameController = GameController.Instance;
 
-        // Set Sprite Renderer
+        // Set sprite renderer
         SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (SpriteRenderer == null) Debug.LogError("Error: SpriteRenderer not found!");
 
         SpriteRenderer.sprite = _enemySettings.sprite;
         SpriteRenderer.color = _enemySettings.color;
 
+        // Set box collider 2d
         _boxCollider2D = GetComponentInChildren<BoxCollider2D>();
         if (_boxCollider2D == null) Debug.LogError("Error: BoxCollider2D not found!");
 
+        // Set animator
         _animator = GetComponentInChildren<Animator>();
         if (_animator == null) Debug.LogError("Error: Animator not found!");
 
+        // Set sound controller
         _soundController = _gameController.SoundController;
         if (_soundController == null) Debug.LogError("Error: SoundController not found!");
 
         EnemySettingsErrorCheck();
 
+        // Increase global enemy counter
         Count++;
 
         StartCoroutine(EnemyBehaviour());
     }
 
+    /// <summary>
+    /// Used to check the set values in the EnemySettings.
+    /// </summary>
     private void EnemySettingsErrorCheck()
     {
         if (_enemySettings.switchPositionTime <= 0) Debug.LogWarning("Warning: SwitchPositionTime not set!");
     }
 
+    /// <summary>
+    /// Coroutine: Controls the general behaviour in intervals.
+    /// </summary>
+    /// <returns>Nothing</returns>
     private IEnumerator EnemyBehaviour()
     {
-        // Play Spawn Sound (Random)
-        PlayAudio(_enemySettings.spawnSounds, .3f, true);
+        // Play random spawn sound
+        PlayRandomAudioFromList(_enemySettings.spawnSounds, .3f, true);
 
         while (Level.i.IsGameRunning && !_isHit)
         {
             GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
+            
+            // Find cover and start coroutine
             if (covers.Length > 0)
             {
-                int randomCoverIndex = Random.Range(0, covers.Length);
-                Vector3 position = covers[randomCoverIndex].transform.position;
+                var randomCoverIndex = Random.Range(0, covers.Length);
+                var coverPosition = covers[randomCoverIndex].transform.position;
 
-                StartCoroutine(GoToPosition(position));
+                StartCoroutine(MoveToPosition(coverPosition));
             }
             else
             {
                 Debug.LogError("Error: No cover found!");
             }
+            
             yield return new WaitForSeconds(20f);
         }
         yield return null;
     }
 
-    private IEnumerator GoToPosition(Vector3 position)
+    /// <summary>
+    /// Coroutine: A method with logic that stops current behavior, lets the GameObject move to a position, and then resumes the stopped behavior.
+    /// </summary>
+    /// <param name="position">Target position</param>
+    /// <returns>Nothing</returns>
+    private IEnumerator MoveToPosition(Vector3 position)
     {
-        Vector3 currentPosition = transform.position;
+        // Get current position
+        var currentPosition = transform.position;
 
-        Vector3 targetPosition = new Vector3(
+        // Set different x position at target
+        var targetPosition = new Vector3(
             position.x + Random.Range(-1, 1),
             position.y,
             position.z
             );
 
+        // Flip sprite if needed
         FlipSpriteBasedOnDirection(currentPosition, targetPosition);
 
-        float elapsedTime = 0;
-        float switchPositionTime = _enemySettings.switchPositionTime;
-
+        // Stop active shoot coroutine
         if (_currentShootRoutine != null)
         {
             StopCoroutine(_currentShootRoutine);
         }
 
+        // Set animator variable IsRunning to true
         _animator.SetBool(IsRunning, true);
-
+        
+        // Set local time variables
+        var elapsedTime = 0.0f;
+        var switchPositionTime = _enemySettings.switchPositionTime;
+        
         // True as long as the required time is not reached.
         while ((elapsedTime < switchPositionTime) && !_isHit)
         {
@@ -113,19 +149,30 @@ public class EnemyController : MonoBehaviour, IHitable
             yield return null;
         }
 
+        // Set animator variable IsRunning to false
         _animator.SetBool(IsRunning, false);
 
+        // Start shoot coroutine
         _currentShootRoutine = StartCoroutine(Shoot());
+        
         yield return null;
     }
 
-    // Flip sprite based on the x value
-    private void FlipSpriteBasedOnDirection(Vector3 currentPosition, Vector3 targetPosition)
+    /// <summary>
+    /// Flips the sprite based on the x value.
+    /// </summary>
+    /// <param name="originPosition">Origin position (current position)</param>
+    /// <param name="targetPosition">Target position</param>
+    private void FlipSpriteBasedOnDirection(Vector3 originPosition, Vector3 targetPosition)
     {
-        Vector3 localDirection = transform.InverseTransformDirection(currentPosition - targetPosition);
+        var localDirection = transform.InverseTransformDirection(originPosition - targetPosition);
         SpriteRenderer.flipX = localDirection.x < 0;
     }
 
+    /// <summary>
+    /// Coroutine: Stops current behavior and changes transparency of color in SpriteRenderer.
+    /// </summary>
+    /// <returns>Nothing</returns>
     private IEnumerator FadeOut()
     {
         if (_currentShootRoutine != null)
@@ -133,10 +180,9 @@ public class EnemyController : MonoBehaviour, IHitable
             StopCoroutine(_currentShootRoutine);
         }
 
-        Color c;
-        for (float ft = 1f; ft >= 0; ft -= 0.5f * Time.deltaTime)
+        for (var ft = 1f; ft >= 0; ft -= 0.5f * Time.deltaTime)
         {
-            c = SpriteRenderer.color;
+            var c = SpriteRenderer.color;
             c.a = ft;
             SpriteRenderer.color = c;
             yield return null;
@@ -146,30 +192,37 @@ public class EnemyController : MonoBehaviour, IHitable
         yield return null;
     }
 
+    /// <summary>
+    /// Coroutine: Controls the shooting behavior. It runs until it is interrupted.
+    /// </summary>
+    /// <returns>Nothing</returns>
     private IEnumerator Shoot()
     {
         while(!_isHit && Level.i.IsGameRunning)
         {
-            PlayAudio(_enemySettings.shootingSounds, .1f, true);
+            PlayRandomAudioFromList(_enemySettings.shootingSounds, .1f, true);
 
-            GameObject playerGameObject = GameObject.FindGameObjectWithTag("Player");
-            GameObject hitObject = PerformRayCast(playerGameObject.transform.position, true);
+            var playerGameObject = GameObject.FindGameObjectWithTag("Player");
+            var hitObject = PerformRayCast(playerGameObject.transform.position, true);
 
-            Instantiate(Resources.Load("ShootingParticle") as GameObject, new Vector3(transform.position.x, transform.position.y + .75f, transform.position.z), Quaternion.identity);
+            // Instantiate shot particle
+            var transformPosition = transform.position;
+            Instantiate(Resources.Load("ShootingParticle") as GameObject, new Vector3(transformPosition.x, transformPosition.y + .75f, transformPosition.z), Quaternion.identity);
 
             if (hitObject == null)
             {
-                PlayAudio(_enemySettings.hitNothingSounds, .3f, true);
+                PlayRandomAudioFromList(_enemySettings.hitNothingSounds, .3f, true);
             }
             else
             {
+                // Continue based on hit object tag
                 switch (hitObject.tag)
                 {
                     case "Decoration_Foreground":
-                        PlayAudio(_enemySettings.hitObjectSounds, 1.0f, true);
+                        PlayRandomAudioFromList(_enemySettings.hitObjectSounds, 1.0f, true);
                         break;
                     case "Player":
-                        PlayAudio(_enemySettings.hitPlayerSounds, 1.0f, true);
+                        PlayRandomAudioFromList(_enemySettings.hitPlayerSounds, 1.0f, true);
                         PlayerHit(_enemySettings.damage);
                         break;
                 }
@@ -180,9 +233,16 @@ public class EnemyController : MonoBehaviour, IHitable
         yield return null;
     }
 
+    /// <summary>
+    /// Performs a raycast in the direction of the target position and returns the hit object. Plays a shot particle.
+    /// </summary>
+    /// <param name="targetPosition">Target position (player)</param>
+    /// <param name="enableAccuracy">If true, the shot is inaccurate based on the spread factor</param>
+    /// <returns></returns>
     private GameObject PerformRayCast(Vector3 targetPosition, bool enableAccuracy)
     {
-        Vector3 origin = new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z);
+        var transformPosition = transform.position;
+        var origin = new Vector3(transformPosition.x, transformPosition.y + 1.25f, transformPosition.z);
         
         if (enableAccuracy)
         {
@@ -193,32 +253,36 @@ public class EnemyController : MonoBehaviour, IHitable
                 );
         }
         
-        Vector3 direction = targetPosition - origin;
-        Ray ray = new Ray(origin, direction);
+        var direction = targetPosition - origin;
+        var ray = new Ray(origin, direction);
 
         // Projectile Effect
-        GameObject projectile = Instantiate(Resources.Load("Projectile") as GameObject, origin, Quaternion.identity);
+        var projectile = Instantiate(Resources.Load("Projectile") as GameObject, origin, Quaternion.identity);
         if (projectile != null)
         {
-            ProjectileController projectileController = projectile.GetComponentInChildren<ProjectileController>();
+            var projectileController = projectile.GetComponentInChildren<ProjectileController>();
             projectileController.CanHitDecoration = false;
             projectileController.CanHitEnemy = false;
-            Vector3 projectileDirection = Camera.main.transform.position - origin;
+            var projectileDirection = _mainCamera.transform.position - origin;
             projectileController.MoveToPosition(projectileDirection, 5f);
         }
 
         Debug.DrawRay(ray.origin, ray.direction, Color.red, 2f);
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, 50f, _layerMask);
+        
+        // Get ray intersection
+        var hit2D = Physics2D.GetRayIntersection(ray, 50f, _layerMask);
 
-        if (hit2D.collider != null)
-        {
-            Debug.Log(hit2D.collider.name);
-            return hit2D.collider.gameObject;
-        }
-        else return null;
+        // If hit, return game object
+        return hit2D.collider != null ? hit2D.collider.gameObject : null;
     }
 
-    private void PlayAudio(List<AudioClip> audioClipList, float volume, bool pitch)
+    /// <summary>
+    /// Plays a random audio clip from the passed list via the SoundController.
+    /// </summary>
+    /// <param name="audioClipList">List of audio files that should be played</param>
+    /// <param name="volume">Volume between 0.0f and 1.0f</param>
+    /// <param name="pitch">Should the audio file played with a pitch</param>
+    private void PlayRandomAudioFromList(IReadOnlyList<AudioClip> audioClipList, float volume, bool pitch)
     {
         if (audioClipList.Count == 0)
         {
@@ -226,49 +290,60 @@ public class EnemyController : MonoBehaviour, IHitable
             return;
         }
 
-        AudioClip randomAudioClip = audioClipList[Random.Range(0, audioClipList.Count)];
+        var randomAudioClip = audioClipList[Random.Range(0, audioClipList.Count)];
         _soundController.PlayAudio(randomAudioClip, volume, pitch);
     }
 
-    public void handleHit()
+    /// <summary>
+    /// Called after the GameObject has been hit by a raycast. Stops all running coroutines and plays some effects. Calls EnemyDeath() at the end.
+    /// </summary>
+    public void HandleHit()
     {
         if (_isHit) return;
-
+        // Set isHit to prevent getting hit again
         _isHit = true;
+        // Stop all behaviours like shooting or walking
         StopAllCoroutines();
-
+        // Instantiate a particle effect after hit
         Instantiate(Resources.Load("HitParticle") as GameObject, transform.position, Quaternion.identity);
-
+        // Play fade out animation
         StartCoroutine(FadeOut());
+        // Set animator variable "IsDead" to change to death animation
         _animator.SetBool(IsDead, true);
-        
-        PlayAudio(_enemySettings.deathSounds, 1f, true);
-
+        // Play a random death audio clip
+        PlayRandomAudioFromList(_enemySettings.deathSounds, 1f, true);
+        // Run destroy method
         EnemyDeath();
     }
 
     #region Events
+    
     public delegate void EnemyDeathCallback(GameObject gameObject, float score);
     public event EnemyDeathCallback onEnemyDeath;
-    public void EnemyDeath()
+    /// <summary>
+    /// Calls the onEnemyDeath if enemy was hit.
+    /// </summary>
+    private void EnemyDeath()
     {
-        if (onEnemyDeath != null)
-        {
-            onEnemyDeath(gameObject, _enemySettings.scoreForGettingKilled);
-        }
+        onEnemyDeath?.Invoke(gameObject, _enemySettings.scoreForGettingKilled);
     }
 
     public delegate void PlayerHitCallback(float damagePoints);
     public event PlayerHitCallback onPlayerHit;
-    public void PlayerHit(float damagePoints)
+    /// <summary>
+    /// Calls the onPlayerHit event with the Damage value set.
+    /// </summary>
+    /// <param name="damagePoints">Damage dealt</param>
+    private void PlayerHit(float damagePoints)
     {
-        if (onPlayerHit != null)
-        {
-            onPlayerHit(damagePoints);
-        }
+        onPlayerHit?.Invoke(damagePoints);
     }
+    
     #endregion
 
+    /// <summary>
+    /// Decrease global enemy counter if destroyed.
+    /// </summary>
     private void OnDestroy()
     {
         Count--;

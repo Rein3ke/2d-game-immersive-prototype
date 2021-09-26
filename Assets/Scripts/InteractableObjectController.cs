@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class InteractableObjectController : MonoBehaviour, IHitable
+public class InteractableObjectController : MonoBehaviour, IHitAble
 {
     [SerializeField]
     InteractableObjectSettings _interactableObjectSettings;
@@ -56,7 +56,7 @@ public class InteractableObjectController : MonoBehaviour, IHitable
         StartCoroutine(FadeIn());
     }
 
-    public void handleHit()
+    public void HandleHit()
     {
         if (_isHit) return;
 
