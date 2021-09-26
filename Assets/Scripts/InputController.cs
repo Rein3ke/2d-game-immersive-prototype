@@ -5,6 +5,9 @@ public class InputController : MonoBehaviour
 {
     public PlayerSettings PlayerSettings { get; set; }
 
+    /// <summary>
+    /// Standard unity method. Handles all inputs and invokes the corresponding event.
+    /// </summary>
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -47,57 +50,84 @@ public class InputController : MonoBehaviour
 
     #region Events
     public event Action onKeyEscapeDown;
+    /// <summary>
+    /// Call event if escape key was pressed.
+    /// </summary>
     private void KeyEscapeDown()
     {
         onKeyEscapeDown?.Invoke();
     }
 
-    public event Action onSpacebarDown;
-    public void SpaceDown()
+    public event Action onSpaceDown;
+    /// <summary>
+    /// Call event if space bar was pressed. Count up the space bar counter in PlayerSettings.
+    /// </summary>
+    private void SpaceDown()
     {
         PlayerSettings.SpacebarPressedCount++;
-        onSpacebarDown?.Invoke();
+        onSpaceDown?.Invoke();
     }
 
-    public event Action onSpacebarUp;
-    public void SpaceLeft()
+    public event Action onSpaceUp;
+    /// <summary>
+    /// Call event if space bar was left.
+    /// </summary>
+    private void SpaceLeft()
     {
-        onSpacebarUp?.Invoke();
+        onSpaceUp?.Invoke();
     }
 
     public event Action onLeftDown;
-    public void LeftDown()
+    /// <summary>
+    /// Call event if left arrow key or A key was pressed.
+    /// </summary>
+    private void LeftDown()
     {
         onLeftDown?.Invoke();
     }
 
     public event Action onRightDown;
-    public void RightDown()
+    /// <summary>
+    /// Call event if right arrow key or D key was pressed.
+    /// </summary>
+    private void RightDown()
     {
         onRightDown?.Invoke();
     }
 
     public event Action onLeftMouseDown;
-    public void LeftMouseDown()
+    /// <summary>
+    /// Call event if left mouse button was pressed.
+    /// </summary>
+    private void LeftMouseDown()
     {
         onLeftMouseDown?.Invoke();
     }
 
     public event Action onRightMouseDown;
-    public void RightMouseDown()
+    /// <summary>
+    /// Call event if right mouse button was pressed. Count up the right mouse click counter in PlayerSettings.
+    /// </summary>
+    private void RightMouseDown()
     {
         PlayerSettings.RightClickedCount++;
         onRightMouseDown?.Invoke();
     }
 
     public event Action onRightMouseUp;
-    public void RightMouseUp()
+    /// <summary>
+    /// Call event if left mouse button was left.
+    /// </summary>
+    private void RightMouseUp()
     {
         onRightMouseUp?.Invoke();
     }
 
     public event Action onKeyRDown;
-    public void KeyRDown()
+    /// <summary>
+    /// Call event if R key was pressed.
+    /// </summary>
+    private void KeyRDown()
     {
         onKeyRDown?.Invoke();
     }

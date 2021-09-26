@@ -68,19 +68,15 @@ public class GameController : MonoBehaviour
         {
             default:
             case State.DEFAULT:
-                Debug.Log("GameController.RunGameSetup.DEFAULT");
                 Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
             case State.BLUR:
-                Debug.Log("GameController.RunGameSetup.BLUR");
                 Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
             case State.DOODLE:
-                Debug.Log("GameController.RunGameSetup.DOODLE");
                 Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
             case State.VISION:
-                Debug.Log("GameController.RunGameSetup.VISION");
                 Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
                 break;
         }

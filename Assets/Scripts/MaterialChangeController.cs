@@ -36,17 +36,17 @@ public class MaterialChangeController : MonoBehaviour
         InputController = GameController.Instance.InputController;
 
         // Set events
-        InputController.onSpacebarDown += OnSpacebarPressed;
-        InputController.onSpacebarUp += OnSpacebarLeft;
-        InputController.onRightMouseDown += OnRightMouseDown;
-        InputController.onRightMouseUp += OnRightMouseUp;
-        Level.i.onStateChange += OnStateChange;
+        InputController.onSpaceDown += InputController_OnSpaceDown;
+        InputController.onSpaceUp += InputController_OnSpaceUp;
+        InputController.onRightMouseDown += InputController_OnRightMouseDown;
+        InputController.onRightMouseUp += InputController_OnRightMouseUp;
+        Level.i.onStateChange += Level_OnStateChange;
     }
 
     /// <summary>
     /// Used to configure the materials stored under GameAssets. The configuration is defined by the current state.
     /// </summary>
-    private void OnStateChange()
+    private void Level_OnStateChange()
     {
         // Reset the values of all materials to their default values
         ResetMaterialsInScene();
@@ -108,7 +108,7 @@ public class MaterialChangeController : MonoBehaviour
     /// <summary>
     /// Handles the space bar event. Depending on the state, new values are set when the space bar is pressed.
     /// </summary>
-    private void OnSpacebarPressed()
+    private void InputController_OnSpaceDown()
     {
         if (!Level.i.IsGameRunning) return;
 
@@ -129,7 +129,7 @@ public class MaterialChangeController : MonoBehaviour
     /// <summary>
     /// Handles the space bar event. When leaving the space bar, the values of the materials are reset, depending on the state.
     /// </summary>
-    private void OnSpacebarLeft()
+    private void InputController_OnSpaceUp()
     {
         if (!Level.i.IsGameRunning) return;
 
@@ -150,7 +150,7 @@ public class MaterialChangeController : MonoBehaviour
     /// <summary>
     /// Handles the right mouse button event. Here the values of the materials are set, depending on the state.
     /// </summary>
-    private void OnRightMouseDown()
+    private void InputController_OnRightMouseDown()
     {
         if (!Level.i.IsGameRunning) return;
 
@@ -171,7 +171,7 @@ public class MaterialChangeController : MonoBehaviour
     /// <summary>
     /// Handles the right mouse button event. Here the values of the materials are reset, depending on the state.
     /// </summary>
-    private void OnRightMouseUp()
+    private void InputController_OnRightMouseUp()
     {
         if (!Level.i.IsGameRunning) return;
 
@@ -219,11 +219,11 @@ public class MaterialChangeController : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        InputController.onSpacebarDown -= OnSpacebarPressed;
-        InputController.onSpacebarUp -= OnSpacebarLeft;
-        InputController.onRightMouseDown -= OnRightMouseDown;
-        InputController.onRightMouseUp -= OnRightMouseUp;
+        InputController.onSpaceDown -= InputController_OnSpaceDown;
+        InputController.onSpaceUp -= InputController_OnSpaceUp;
+        InputController.onRightMouseDown -= InputController_OnRightMouseDown;
+        InputController.onRightMouseUp -= InputController_OnRightMouseUp;
 
-        Level.i.onStateChange -= OnStateChange;
+        Level.i.onStateChange -= Level_OnStateChange;
     }
 }

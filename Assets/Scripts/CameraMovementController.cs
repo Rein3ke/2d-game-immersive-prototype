@@ -40,8 +40,8 @@ public class CameraMovementController : MonoBehaviour
         m_origin = transform.position;
         
         // Event subscription
-        GameController.Instance.InputController.onSpacebarDown += GoDown;
-        GameController.Instance.InputController.onSpacebarUp += GoUp;
+        GameController.Instance.InputController.onSpaceDown += GoDown;
+        GameController.Instance.InputController.onSpaceUp += GoUp;
         GameController.Instance.InputController.onLeftDown += GoLeft;
         GameController.Instance.InputController.onRightDown += GoRight;
         GameController.Instance.InputController.onRightMouseDown += ZoomIn;
@@ -202,8 +202,8 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        GameController.Instance.InputController.onSpacebarDown  -= GoDown;
-        GameController.Instance.InputController.onSpacebarUp     -= GoUp;
+        GameController.Instance.InputController.onSpaceDown  -= GoDown;
+        GameController.Instance.InputController.onSpaceUp     -= GoUp;
         GameController.Instance.InputController.onLeftDown      -= GoLeft;
         GameController.Instance.InputController.onRightDown     -= GoRight;
         GameController.Instance.InputController.onRightMouseDown -= ZoomIn;

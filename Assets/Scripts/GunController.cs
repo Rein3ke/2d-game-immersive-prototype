@@ -39,8 +39,8 @@ public class GunController : MonoBehaviour
 
         GameController.Instance.InputController.onLeftMouseDown += OnLeftMouseButton;
         GameController.Instance.InputController.onKeyRDown += OnRKey;
-        GameController.Instance.InputController.onSpacebarDown += OnSpacebarDown;
-        GameController.Instance.InputController.onSpacebarUp += OnSpacebarUp;
+        GameController.Instance.InputController.onSpaceDown += OnSpaceDown;
+        GameController.Instance.InputController.onSpaceUp += OnSpaceUp;
 
     }
 
@@ -116,12 +116,12 @@ public class GunController : MonoBehaviour
         StartCoroutine(WaitForCooldown(.8f));
     }
 
-    private void OnSpacebarUp()
+    private void OnSpaceUp()
     {
         _isBehindCover = false;
     }
 
-    private void OnSpacebarDown()
+    private void OnSpaceDown()
     {
         _isBehindCover = true;
     }
@@ -151,8 +151,8 @@ public class GunController : MonoBehaviour
     {
         GameController.Instance.InputController.onLeftMouseDown -= OnLeftMouseButton;
         GameController.Instance.InputController.onKeyRDown -= OnRKey;
-        GameController.Instance.InputController.onSpacebarDown -= OnSpacebarDown;
-        GameController.Instance.InputController.onSpacebarUp -= OnSpacebarUp;
+        GameController.Instance.InputController.onSpaceDown -= OnSpaceDown;
+        GameController.Instance.InputController.onSpaceUp -= OnSpaceUp;
     }
 
 }
