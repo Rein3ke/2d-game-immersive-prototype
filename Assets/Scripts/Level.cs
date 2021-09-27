@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Assets;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -49,27 +50,27 @@ public class Level : MonoBehaviour
         PlayerUIController playerUIController = FindObjectOfType<PlayerUIController>();
         if (FindObjectOfType<PlayerUIController>() == null)
         {
-             playerUIController = Instantiate(GameAssets.i.playerUIPrefab).GetComponentInChildren<PlayerUIController>();
+             playerUIController = Instantiate(GameAssets.I.playerUIPrefab).GetComponentInChildren<PlayerUIController>();
         }
 
         switch (state)
         {
             case GameController.State.DEFAULT:
-                _playerSettings = GameAssets.i.playerSettings_default;
-                _gameSettings = GameAssets.i.gameSettings_default;
+                _playerSettings = GameAssets.I.playerSettings_default;
+                _gameSettings = GameAssets.I.gameSettings_default;
                 InstantiateTutorial(true, true);
                 break;
             case GameController.State.BLUR:
-                _playerSettings = GameAssets.i.playerSettings_default;
-                _gameSettings = GameAssets.i.gameSettings_default;
+                _playerSettings = GameAssets.I.playerSettings_default;
+                _gameSettings = GameAssets.I.gameSettings_default;
                 break;
             case GameController.State.DOODLE:
-                _playerSettings = GameAssets.i.playerSettings_default;
-                _gameSettings = GameAssets.i.gameSettings_default;
+                _playerSettings = GameAssets.I.playerSettings_default;
+                _gameSettings = GameAssets.I.gameSettings_default;
                 break;
             case GameController.State.VISION:
-                _playerSettings = GameAssets.i.playerSettings_default;
-                _gameSettings = GameAssets.i.gameSettings_default;
+                _playerSettings = GameAssets.I.playerSettings_default;
+                _gameSettings = GameAssets.I.gameSettings_default;
                 InstantiateTutorial(true, false);
                 break;
             default:

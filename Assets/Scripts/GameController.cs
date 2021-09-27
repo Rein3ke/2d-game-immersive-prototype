@@ -1,4 +1,5 @@
 using System;
+using Assets;
 using UnityEngine;
 
 [RequireComponent(typeof(InputController), typeof(SoundController), typeof(SceneController))]
@@ -68,16 +69,16 @@ public class GameController : MonoBehaviour
         {
             default:
             case State.DEFAULT:
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
             case State.BLUR:
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
             case State.DOODLE:
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
             case State.VISION:
-                Level.i.BuildLevel(GameAssets.i.levelPrefab_01, _currentState);
+                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
         }
         Level.i.StartLevel();
