@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour
     {
         if (Equals(state, State.Length))
         {
-            SceneController.loadNextScene();
+            SceneController.LoadNextScene();
         } else
         {
             _currentState = state;

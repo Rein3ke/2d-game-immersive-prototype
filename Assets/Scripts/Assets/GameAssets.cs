@@ -2,10 +2,16 @@ using UnityEngine;
 
 namespace Assets
 {
+    /// <summary>
+    /// Stores assets in a file so that other scripts can access them.
+    /// </summary>
     public class GameAssets : MonoBehaviour
     {
         private static GameAssets _i;
 
+        /// <summary>
+        /// Instantiates itself as soon as it is called for the first time and the current instance is null. Otherwise it returns itself.
+        /// </summary>
         public static GameAssets I
         {
             get

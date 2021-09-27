@@ -5,26 +5,21 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
-    [SerializeField]
-    LayerMask layerMask;
+    [SerializeField] LayerMask layerMask;
 
-    ParticleSystem _particleSystem;
-    Rigidbody2D _rigidbody2D;
-    GameObject _parent;
+    private ParticleSystem _particleSystem;
+    private Rigidbody2D _rigidbody2D;
+    private GameObject _parent;
 
-    public bool CanHitDecoration { get => _canHitDecoration; set => _canHitDecoration = value; }
-    private bool _canHitDecoration = true;
+    public bool CanHitDecoration { get; set; } = true;
 
-    public bool CanHitEnemy { get => _canHitEnemy; set => _canHitEnemy = value; }
-    private bool _canHitEnemy = true;
+    public bool CanHitEnemy { get; set; } = true;
 
-    public bool CanHitInteractables { get => _canHitInteractables; set => _canHitInteractables = value; }
-    private bool _canHitInteractables = true;
-    
-    public bool CanHitForegroundCover { get => _canHitForegroundCover; set => _canHitForegroundCover = value; }
-    private bool _canHitForegroundCover = true;
+    public bool CanHitInteractAbles { get; set; } = true;
 
-    enum HitObject
+    public bool CanHitForegroundCover { get; set; } = true;
+
+    private enum HitObject
     {
         DECORATION, ENEMY, PLAYER, INTERACTABLE_OBJECT, FOREGROUND_COVER
     }
@@ -33,9 +28,8 @@ public class ProjectileController : MonoBehaviour
     {
         _parent = gameObject.transform.parent.gameObject;
     }
-
-    // Start is called before the first frame update
-    void Start()
+    
+    private void Start()
     {
         _particleSystem = _parent.GetComponentInChildren<ParticleSystem>();
         if (_particleSystem == null) Debug.LogWarning("Particle System not found!");
@@ -48,22 +42,22 @@ public class ProjectileController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if ((1 << collision.gameObject.layer & layerMask) != 0) {
-            switch (collision.gameObject.tag)
-            {
-                case "Enemy":
-                    HandleHit(HitObject.ENEMY);
-                    break;
-                case "Decoration":
-                    HandleHit(HitObject.DECORATION);
-                    break;
-                case "InteractableObject":
-                    HandleHit(HitObject.INTERACTABLE_OBJECT);
-                    break;
-                case "Decoration_Foreground":
-                    HandleHit(HitObject.FOREGROUND_COVER);
-                    break;
-            }
+        if ((1 << collision.gameObject.layer & layerMask) == 0) return;
+        
+        switch (collision.gameObject.tag)
+        {
+            case "Enemy":
+                HandleHit(HitObject.ENEMY);
+                break;
+            case "Decoration":
+                HandleHit(HitObject.DECORATION);
+                break;
+            case "InteractableObject":
+                HandleHit(HitObject.INTERACTABLE_OBJECT);
+                break;
+            case "Decoration_Foreground":
+                HandleHit(HitObject.FOREGROUND_COVER);
+                break;
         }
     }
 
@@ -72,16 +66,16 @@ public class ProjectileController : MonoBehaviour
         switch (hitObject)
         {
             case HitObject.ENEMY:
-                if (_canHitEnemy) _particleSystem.Stop();
+                if (CanHitEnemy) _particleSystem.Stop();
                 break;
             case HitObject.DECORATION:
-                if (_canHitDecoration) _particleSystem.Stop();
+                if (CanHitDecoration) _particleSystem.Stop();
                 break;
             case HitObject.INTERACTABLE_OBJECT:
-                if (_canHitInteractables) _particleSystem.Stop();
+                if (CanHitInteractAbles) _particleSystem.Stop();
                 break;
             case HitObject.FOREGROUND_COVER:
-                if (_canHitForegroundCover)
+                if (CanHitForegroundCover)
                 {
                     Destroy(_parent);
                     _particleSystem.Stop();

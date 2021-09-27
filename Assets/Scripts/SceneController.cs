@@ -1,52 +1,39 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
-    private int sceneIndex;
+    private int _sceneIndex;
 
-    public Scene CurrentScene { get => SceneManager.GetActiveScene(); }
+    public static Scene CurrentScene => SceneManager.GetActiveScene();
 
     private void Start()
     {
-        sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        _sceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        GameController.Instance.onLoadingMainMenuScene += loadMenu;
+        GameController.Instance.onLoadingMainMenuScene += LoadMenu;
 
         // Event Subscription
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    public void loadNextScene()
+    public void LoadNextScene()
     {
-        Debug.Log("Loading next scene...");
-        if (sceneIndex == (SceneManager.sceneCountInBuildSettings - 1))
+        if (_sceneIndex == (SceneManager.sceneCountInBuildSettings - 1))
         {
-            loadMenu();
+            LoadMenu();
         } else
         {
-            SceneManager.LoadScene(++sceneIndex);
+            SceneManager.LoadScene(++_sceneIndex);
         }
     }
 
-    private void loadMenu()
+    private void LoadMenu()
     {
-        Debug.Log("Loading Main Menu...");
         SceneManager.LoadScene(0);
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Debug.Log("Current scene: " + scene.name);
     }
 
     private void OnDisable()
     {
-        GameController.Instance.onLoadingMainMenuScene -= loadMenu;
-
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        GameController.Instance.onLoadingMainMenuScene -= LoadMenu;
     }
 }

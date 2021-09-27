@@ -32,7 +32,7 @@ public class MainMenuUIController : MonoBehaviour
 
     void StartButtonPressed()
     {
-        GameController.Instance.SceneController.loadNextScene();
+        GameController.Instance.SceneController.LoadNextScene();
     }
 
     void IntroductionButtonPressed()
