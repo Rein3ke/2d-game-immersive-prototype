@@ -36,11 +36,6 @@ public class Level : MonoBehaviour
         if (_materialChangeController == null) Debug.LogError("Error: No MaterialChangeController found!");
     }
 
-    private void Start()
-    {
-        
-    }
-
     public void BuildLevel(GameObject levelPrefab, GameController.State state)
     {
         ResetLevel();

@@ -170,7 +170,7 @@ public class GameController : MonoBehaviour
 
     #region Events
     public event Action onLoadingMainMenuScene;
-    public void LoadingMainMenuScene()
+    private void LoadingMainMenuScene()
     {
         onLoadingMainMenuScene?.Invoke();
     }
