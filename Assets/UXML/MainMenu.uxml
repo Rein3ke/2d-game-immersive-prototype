@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="container.uss" />
-    <ui:VisualElement name="Background" style="background-image: url(&apos;/Assets/Sprites/C4TkyIrWYAADSyy.png&apos;); width: 100%; height: 100%; position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-image-tint-color: rgb(103, 103, 103);" />
+    <Style src="/Assets/USS/MainMenuStyle.uss" />
+    <ui:VisualElement name="Background" style="background-image: url(&apos;/Assets/Sprites/background_forest.png&apos;); width: 100%; height: 100%; position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-image-tint-color: rgb(103, 103, 103);" />
     <ui:VisualElement name="menu-container" class="container align-center-horizontal" style="height: 100%; width: auto; flex-direction: column; display: flex;">
         <ui:Label text="2D IMMERSIVE HIGHLIGHT PROTOTYPE" display-tooltip-when-elided="true" name="title" enable-rich-text="true" style="opacity: 1; color: rgb(255, 255, 255); -unity-text-align: upper-center; font-size: 32px; -unity-font-style: bold; height: 64px;" />
         <ui:Button text="START" tooltip="Run the game" tabindex="1" name="start-button" class="button button-primary button_hover" />
