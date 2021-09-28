@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Assets;
+using Enemy;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,17 +11,16 @@ public class Level : MonoBehaviour
     /// Own instance.
     /// </summary>
     public static Level I { get; private set; }
-    
+
     /// <summary>
     /// Frequently called: Very important property that ensures that processes are interrupted should it be set to false.
     /// </summary>
     public bool IsGameRunning { get; private set; }
-    
+
     private GameSettings _gameSettings;
     private PlayerSettings _playerSettings;
     private MaterialChangeController _materialChangeController;
 
-    
     private GameObject _activeLevelPrefab;
     private Coroutine _currentSpawnEnemiesRoutine;
     private Coroutine _currentSpawnInteractablesRoutine;
@@ -43,7 +43,7 @@ public class Level : MonoBehaviour
         PlayerUIController playerUIController = FindObjectOfType<PlayerUIController>();
         if (FindObjectOfType<PlayerUIController>() == null)
         {
-             playerUIController = Instantiate(GameAssets.I.playerUIPrefab).GetComponentInChildren<PlayerUIController>();
+            playerUIController = Instantiate(GameAssets.I.playerUIPrefab).GetComponentInChildren<PlayerUIController>();
         }
 
         switch (state)
@@ -85,10 +85,10 @@ public class Level : MonoBehaviour
     private void InstantiateTutorial(bool showRightMouseButton, bool showSpacebar)
     {
         var tutorialUI = Instantiate(Resources.Load("TutorialUICanvas") as GameObject);
-        
+
         var tutorialUIController = tutorialUI.GetComponent<TutorialUIController>();
         if (tutorialUIController == null) return;
-        
+
         tutorialUIController.PlayerSettings = _playerSettings;
         if (showRightMouseButton) tutorialUIController.ShowRightMouseButton = true;
         if (showSpacebar) tutorialUIController.ShowSpacebar = true;
@@ -101,6 +101,7 @@ public class Level : MonoBehaviour
             StopCoroutine(_currentSpawnEnemiesRoutine);
             _currentSpawnEnemiesRoutine = null;
         }
+
         if (_currentSpawnInteractablesRoutine != null)
         {
             StopCoroutine(_currentSpawnInteractablesRoutine);
@@ -116,6 +117,7 @@ public class Level : MonoBehaviour
         {
             Destroy(enemy.gameObject);
         }
+
         // Remove all active interactive objects
         InteractableObjectController[] interactables = FindObjectsOfType<InteractableObjectController>();
         foreach (InteractableObjectController interactable in interactables)
@@ -125,7 +127,7 @@ public class Level : MonoBehaviour
 
         // Reset Enemy Counter (used for Enemy Spawning)
         EnemyController.Count = 0;
-        
+
         // Delete Tutorial UI GameObject & Reset Counters
         var tutorialUIGameObject = FindObjectOfType<TutorialUIController>()?.gameObject;
         if (tutorialUIGameObject != null) Destroy(tutorialUIGameObject);
@@ -151,7 +153,10 @@ public class Level : MonoBehaviour
     {
         while (IsGameRunning)
         {
-            float waitForSeconds = Random.Range(_gameSettings.enemySpawnMinimumCooldown, _gameSettings.enemySpawnMaximumCooldown);
+            float waitForSeconds = Random.Range(
+                _gameSettings.enemySpawnMinimumCooldown,
+                _gameSettings.enemySpawnMaximumCooldown
+            );
             yield return new WaitForSeconds(waitForSeconds);
 
             // Do not spawn more enemies once the maximum number of enemies is reached.
@@ -164,6 +169,7 @@ public class Level : MonoBehaviour
                 enemy.GetComponent<EnemyController>().onPlayerHit += OnPlayerHit;
             }
         }
+
         yield return null;
     }
 
@@ -175,15 +181,19 @@ public class Level : MonoBehaviour
     {
         while (IsGameRunning)
         {
-            float waitForSeconds = Random.Range(_gameSettings.objectSpawnMinimumCooldown, _gameSettings.objectSpawnMaximumCooldown);
+            float waitForSeconds = Random.Range(_gameSettings.objectSpawnMinimumCooldown,
+                _gameSettings.objectSpawnMaximumCooldown);
             yield return new WaitForSeconds(waitForSeconds);
 
-            GameObject interactablePrefab = _gameSettings.spawnableGameObjects[Random.Range(0, _gameSettings.spawnableGameObjects.Count)];
-            GameObject interactableGameObject = Instantiate(interactablePrefab, GetRandomInteractableSpawnPosition(), Quaternion.identity, null);
+            GameObject interactablePrefab =
+                _gameSettings.spawnableGameObjects[Random.Range(0, _gameSettings.spawnableGameObjects.Count)];
+            GameObject interactableGameObject = Instantiate(interactablePrefab, GetRandomInteractableSpawnPosition(),
+                Quaternion.identity, null);
 
             Destroy(interactableGameObject, waitForSeconds);
             yield return null;
         }
+
         yield return null;
     }
 
@@ -207,7 +217,8 @@ public class Level : MonoBehaviour
         if (enemySpawns.Length > 0)
         {
             return enemySpawns[Random.Range(0, enemySpawns.Length)].transform.position;
-        } else
+        }
+        else
         {
             Debug.LogError("Error: No enemy spawns found!");
             return Vector3.zero;
@@ -231,7 +242,8 @@ public class Level : MonoBehaviour
         if (_playerSettings.PlayerHealth <= 0.0f)
         {
             return false;
-        } else
+        }
+        else
         {
             return true;
         }
@@ -263,6 +275,7 @@ public class Level : MonoBehaviour
     }
 
     #region Event Handling
+
     private void OnPlayerHit(float damage)
     {
         TakeDamage(damage);
@@ -275,9 +288,11 @@ public class Level : MonoBehaviour
         enemy.GetComponent<EnemyController>().onEnemyDeath -= OnEnemyDeath;
         enemy.GetComponent<EnemyController>().onPlayerHit -= OnPlayerHit;
     }
+
     #endregion
 
     #region Events
+
     public event Action onPlayerHealthChange;
 
     private void PlayerHealthChange()
@@ -312,5 +327,6 @@ public class Level : MonoBehaviour
     {
         onStateChange?.Invoke();
     }
+
     #endregion
 }

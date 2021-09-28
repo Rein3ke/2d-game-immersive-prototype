@@ -19,7 +19,7 @@ public class GunController : MonoBehaviour
     private Camera _mainCamera;
 
     // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
         if (I == null) I = this;
         else Debug.LogError("Error: Too many active gun controllers!");
