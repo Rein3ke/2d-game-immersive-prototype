@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Particles;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,10 +14,19 @@ public class GunController : MonoBehaviour
     public static GunController I { get; private set; }
 
     private SoundController soundController;
-    private bool _isGunReady = true;
+
+    private bool IsGunReady
+    {
+        get => _reloadCoroutine == null && _isGunReady;
+        set => _isGunReady = value;
+    }
+
     private bool _isGunReloading;
     private bool _isBehindCover;
     private Camera _mainCamera;
+
+    private Coroutine _reloadCoroutine;
+    private bool _isGunReady = true;
 
     // Start is called before the first frame update
     private void Awake()
@@ -47,13 +57,12 @@ public class GunController : MonoBehaviour
     /// <returns>Nothing</returns>
     private IEnumerator Reload()
     {
-        _isGunReady = false;
+        IsGunReady = false;
         _isGunReloading = true;
 
         while (PlayerSettings.PlayerAmmunition < PlayerSettings.playerMaxAmmunition)
         {
             PlayerSettings.PlayerAmmunition++;
-            
             AmmunitionChange();
             
             soundController.PlayAudio(PlayerSettings.gunReloadAudioClip, false);
@@ -62,8 +71,9 @@ public class GunController : MonoBehaviour
         }
         soundController.PlayAudio(PlayerSettings.gunPostReloadAudioClip, false);
 
-        _isGunReady = true;
+        IsGunReady = true;
         _isGunReloading = false;
+        _reloadCoroutine = null;
 
         yield return false;
     }
@@ -77,7 +87,7 @@ public class GunController : MonoBehaviour
     {
         yield return new WaitForSeconds(cooldown);
         
-        _isGunReady = true;
+        IsGunReady = true;
     }
 
     #region Event Handling
@@ -86,7 +96,7 @@ public class GunController : MonoBehaviour
     /// </summary>
     private void InputController_OnLeftMouseDown()
     {
-        if (!Level.I.IsGameRunning || _isBehindCover || !_isGunReady) return;
+        if (!Level.I.IsGameRunning || _isBehindCover || !IsGunReady) return;
         if (PlayerSettings.PlayerAmmunition == 0)
         {
             soundController.PlayAudio(PlayerSettings.gunEmptyAudioClip, false);
@@ -134,7 +144,7 @@ public class GunController : MonoBehaviour
         // Call event
         AmmunitionChange();
 
-        _isGunReady = false;
+        IsGunReady = false;
 
         StartCoroutine(WaitForCooldown(.8f));
     }
@@ -164,7 +174,7 @@ public class GunController : MonoBehaviour
         
         if (PlayerSettings.PlayerAmmunition < PlayerSettings.playerMaxAmmunition && !_isGunReloading)
         {
-            StartCoroutine(Reload());
+            _reloadCoroutine = StartCoroutine(Reload());
         }
     }
     #endregion
