@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+/// <summary>
+/// Interface to mark interactive objects as hitable.
+/// </summary>
 public interface IHitAble
 {
     /// <summary>
