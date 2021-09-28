@@ -86,7 +86,7 @@ public class EnemyController : MonoBehaviour, IHitAble
         // Play random spawn sound
         PlayRandomAudioFromList(_enemySettings.spawnSounds, .3f, true);
 
-        while (Level.i.IsGameRunning && !_isHit)
+        while (Level.I.IsGameRunning && !_isHit)
         {
             GameObject[] covers = GameObject.FindGameObjectsWithTag("Position_Cover");
             
@@ -198,7 +198,7 @@ public class EnemyController : MonoBehaviour, IHitAble
     /// <returns>Nothing</returns>
     private IEnumerator Shoot()
     {
-        while(!_isHit && Level.i.IsGameRunning)
+        while(!_isHit && Level.I.IsGameRunning)
         {
             PlayRandomAudioFromList(_enemySettings.shootingSounds, .1f, true);
 

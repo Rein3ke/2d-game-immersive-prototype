@@ -69,19 +69,19 @@ public class GameController : MonoBehaviour
         {
             default:
             case State.DEFAULT:
-                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
+                Level.I.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
             case State.BLUR:
-                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
+                Level.I.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
             case State.DOODLE:
-                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
+                Level.I.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
             case State.VISION:
-                Level.i.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
+                Level.I.BuildLevel(GameAssets.I.levelPrefab_01, _currentState);
                 break;
         }
-        Level.i.StartLevel();
+        Level.I.StartLevel();
     }
 
     /// <summary>

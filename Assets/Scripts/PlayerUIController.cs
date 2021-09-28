@@ -57,11 +57,11 @@ public class PlayerUIController : MonoBehaviour
         }
 
         // Subscribe to events
-        Level.i.onPlayerHealthChange += OnPlayerHealthChange;
-        Level.i.onScoreChange += OnScoreChange;
-        Level.i.onGameLost += OnGameLost;
-        Level.i.onGameWon += OnGameWon;
-        Level.i.onStateChange += OnStateChange;
+        Level.I.onPlayerHealthChange += OnPlayerHealthChange;
+        Level.I.onScoreChange += OnScoreChange;
+        Level.I.onGameLost += OnGameLost;
+        Level.I.onGameWon += OnGameWon;
+        Level.I.onStateChange += OnStateChange;
         GunController.I.onAmmunitionChange += OnAmmunitionChange;
 
         ResetUI();
@@ -166,11 +166,11 @@ public class PlayerUIController : MonoBehaviour
 
     private void OnDisable()
     {
-        Level.i.onPlayerHealthChange -= OnPlayerHealthChange;
-        Level.i.onScoreChange -= OnScoreChange;
-        Level.i.onGameLost -= OnGameLost;
-        Level.i.onGameWon -= OnGameWon;
-        Level.i.onStateChange -= OnStateChange;
+        Level.I.onPlayerHealthChange -= OnPlayerHealthChange;
+        Level.I.onScoreChange -= OnScoreChange;
+        Level.I.onGameLost -= OnGameLost;
+        Level.I.onGameWon -= OnGameWon;
+        Level.I.onStateChange -= OnStateChange;
         GunController.I.onAmmunitionChange -= OnAmmunitionChange;
     }
     #endregion

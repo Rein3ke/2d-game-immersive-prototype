@@ -91,7 +91,7 @@ public class ProjectileController : MonoBehaviour
 
     private IEnumerator MoveTo(Vector3 direction, float movementSpeed)
     {
-        while(Level.i.IsGameRunning)
+        while(Level.I.IsGameRunning)
         {
             _parent.transform.position += direction * movementSpeed * Time.deltaTime;
             yield return null;

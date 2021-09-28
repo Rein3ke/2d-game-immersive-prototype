@@ -41,7 +41,7 @@ public class MaterialChangeController : MonoBehaviour
         InputController.onSpaceUp += InputController_OnSpaceUp;
         InputController.onRightMouseDown += InputController_OnRightMouseDown;
         InputController.onRightMouseUp += InputController_OnRightMouseUp;
-        Level.i.onStateChange += Level_OnStateChange;
+        Level.I.onStateChange += Level_OnStateChange;
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public class MaterialChangeController : MonoBehaviour
     /// </summary>
     private void InputController_OnSpaceDown()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
 
         switch (GameSettings.state)
         {
@@ -132,7 +132,7 @@ public class MaterialChangeController : MonoBehaviour
     /// </summary>
     private void InputController_OnSpaceUp()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
 
         switch (GameSettings.state)
         {
@@ -153,7 +153,7 @@ public class MaterialChangeController : MonoBehaviour
     /// </summary>
     private void InputController_OnRightMouseDown()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
 
         switch (GameSettings.state)
         {
@@ -174,7 +174,7 @@ public class MaterialChangeController : MonoBehaviour
     /// </summary>
     private void InputController_OnRightMouseUp()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
 
         switch (GameSettings.state)
         {
@@ -225,6 +225,6 @@ public class MaterialChangeController : MonoBehaviour
         InputController.onRightMouseDown -= InputController_OnRightMouseDown;
         InputController.onRightMouseUp -= InputController_OnRightMouseUp;
 
-        Level.i.onStateChange -= Level_OnStateChange;
+        Level.I.onStateChange -= Level_OnStateChange;
     }
 }

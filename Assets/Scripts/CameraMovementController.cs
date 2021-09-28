@@ -53,7 +53,7 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void InputController_OnRightMouseDown()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
         
         var fieldOfView = _mainCamera.fieldOfView;
         
@@ -65,7 +65,7 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void InputController_OnRightMouseUp()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
         
         var fieldOfView = _mainCamera.fieldOfView;
         
@@ -131,7 +131,7 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void InputController_OnSpaceDown()
     {
-        if (!Level.i.IsGameRunning || _isDown) return;
+        if (!Level.I.IsGameRunning || _isDown) return;
         
         var transformPosition = transform.position;
         
@@ -145,7 +145,7 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void InputController_OnSpaceUp()
     {
-        if (!Level.i.IsGameRunning || !_isDown) return;
+        if (!Level.I.IsGameRunning || !_isDown) return;
         
         var transformPosition = transform.position;
         
@@ -159,7 +159,7 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void InputController_OnLeftDown()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
 
         if (_isDown)
         {
@@ -179,7 +179,7 @@ public class CameraMovementController : MonoBehaviour
     /// </summary>
     private void InputController_OnRightDown()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
 
         if (_isDown)
         {

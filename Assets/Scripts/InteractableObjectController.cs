@@ -1,63 +1,79 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
+/// <summary>
+/// Controller to manage the behavior of interactive objects. Implements the IHitAble interface.
+/// </summary>
+[RequireComponent(typeof(SpriteRenderer))]
 public class InteractableObjectController : MonoBehaviour, IHitAble
 {
-    [SerializeField]
-    InteractableObjectSettings _interactableObjectSettings;
+    [SerializeField] InteractableObjectSettings _interactableObjectSettings;
 
-    private bool _playAnimatorAnimation = false;
-    private bool _playHitSound = false;
-    private bool _changeTexture = false;
-    private bool _isHit = false;
+    // Boolean fields
+    private bool _playAnimatorAnimation;
+    private bool _playHitSound;
+    private bool _textureIsChangedOnHit;
+    private bool _isHit;
 
     private Animator _animator;
-    public SpriteRenderer SpriteRenderer
-    {
-        get => _spriteRenderer;
-    }
-    private SpriteRenderer _spriteRenderer;
+    public SpriteRenderer SpriteRenderer { get; private set; }
     private SoundController _soundController;
     private Level _level;
+    
+    private static readonly int IsHit = Animator.StringToHash("isHit");
 
-    // Start is called before the first frame update
-    void Start()
+    /// <summary>
+    /// Standard unity method. Sets the corresponding fields depending on the InteractableObjectSettings.
+    /// </summary>
+    private void Start()
     {
-        _level = Level.i;
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-
+        // Get current level instance
+        _level = Level.I;
+        
+        // Get attached sprite renderer of the game object
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+        
+        // When an animation controller is set in the InteractableObjectSettings, attach an animator to the GameObject and set the animation controller to it. 
         if (_interactableObjectSettings.animationController != null)
         {
             _animator = gameObject.AddComponent<Animator>();
             _animator.runtimeAnimatorController = _interactableObjectSettings.animationController;
             _playAnimatorAnimation = true;
         }
+        
+        // Set PlayHitSound to true if a corresponding clip is set in the InteractableObjectSettings.
         if (_interactableObjectSettings.hitSoundClip != null)
         {
+            // Get current sound controller instance
             _soundController = GameController.Instance.SoundController;
+            
             _playHitSound = true;
         }
+        
+        // Set _textureIsChangedOnHit to true if a sprite is set in the InteractableObjectSettings.
         if (_interactableObjectSettings.sprite != null)
         {
-            _changeTexture = true;
+            _textureIsChangedOnHit = true;
         }
+        
+        // Perform a fade-in animation, if the gameObject is set to spawnable in the InteractableObjectSettings.
         if (_interactableObjectSettings.spawnable)
         {
-            PrepareFadeIn();
+            StartFadeInCoroutine();
         }
     }
 
-    private void PrepareFadeIn()
+    /// <summary>
+    /// Executes FadeIn-Coroutine.
+    /// </summary>
+    private void StartFadeInCoroutine()
     {
-        //_spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, 0f);
         StartCoroutine(FadeIn());
     }
 
     public void HandleHit()
     {
+        // If the GameObject is already hit, return
         if (_isHit) return;
 
         _isHit = true;
@@ -66,7 +82,7 @@ public class InteractableObjectController : MonoBehaviour, IHitAble
 
         if (_interactableObjectSettings.lifepointsGainAfterHit < 0.0f || _interactableObjectSettings.lifepointsGainAfterHit > 0.0f)
         {
-            Level.i.TakeDamage(_interactableObjectSettings.lifepointsGainAfterHit * -1);
+            _level.TakeDamage(_interactableObjectSettings.lifepointsGainAfterHit * -1);
         }
         if (_interactableObjectSettings.playFadeOutAnimation)
         {
@@ -74,26 +90,26 @@ public class InteractableObjectController : MonoBehaviour, IHitAble
         }
         if (_playAnimatorAnimation)
         {
-            _animator.SetBool("isHit", true);
+            _animator.SetBool(IsHit, true);
         }
         if (_playHitSound)
         {
             _soundController.PlayAudio(_interactableObjectSettings.hitSoundClip, true);
         }
-        if (_changeTexture)
+        if (_textureIsChangedOnHit)
         {
-            _spriteRenderer.sprite = _interactableObjectSettings.sprite;
+            SpriteRenderer.sprite = _interactableObjectSettings.sprite;
         }
     }
 
-    public IEnumerator FadeOutAndDestroy()
+    private IEnumerator FadeOutAndDestroy()
     {
         Color color;
         for (float alphaValue = 1f; alphaValue >= 0; alphaValue -= 0.5f * Time.deltaTime)
         {
-            color = _spriteRenderer.color;
+            color = SpriteRenderer.color;
             color.a = alphaValue;
-            _spriteRenderer.color = color;
+            SpriteRenderer.color = color;
             yield return null;
         }
 
@@ -101,14 +117,14 @@ public class InteractableObjectController : MonoBehaviour, IHitAble
         yield return null;
     }
 
-    public IEnumerator FadeIn()
+    private IEnumerator FadeIn()
     {
         Color color;
         for (float alphaValue = 0f; alphaValue <= 1f; alphaValue += 0.5f * Time.deltaTime)
         {
-            color = _spriteRenderer.color;
+            color = SpriteRenderer.color;
             color.a = alphaValue;
-            _spriteRenderer.color = color;
+            SpriteRenderer.color = color;
             yield return null;
         }
 

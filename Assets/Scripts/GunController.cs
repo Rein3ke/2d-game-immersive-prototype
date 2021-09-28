@@ -86,7 +86,7 @@ public class GunController : MonoBehaviour
     /// </summary>
     private void InputController_OnLeftMouseDown()
     {
-        if (!Level.i.IsGameRunning || _isBehindCover || !_isGunReady) return;
+        if (!Level.I.IsGameRunning || _isBehindCover || !_isGunReady) return;
         if (PlayerSettings.PlayerAmmunition == 0)
         {
             soundController.PlayAudio(PlayerSettings.gunEmptyAudioClip, false);
@@ -160,7 +160,7 @@ public class GunController : MonoBehaviour
     /// </summary>
     private void InputController_OnKeyRDown()
     {
-        if (!Level.i.IsGameRunning) return;
+        if (!Level.I.IsGameRunning) return;
         
         if (PlayerSettings.PlayerAmmunition < PlayerSettings.playerMaxAmmunition && !_isGunReloading)
         {

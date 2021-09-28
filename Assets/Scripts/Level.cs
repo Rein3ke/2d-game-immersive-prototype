@@ -6,32 +6,30 @@ using Random = UnityEngine.Random;
 
 public class Level : MonoBehaviour
 {
-    public static Level i
-    {
-        get => _i;
-    }
-    private static Level _i;
-
+    /// <summary>
+    /// Own instance.
+    /// </summary>
+    public static Level I { get; private set; }
+    
+    /// <summary>
+    /// Frequently called: Very important property that ensures that processes are interrupted should it be set to false.
+    /// </summary>
+    public bool IsGameRunning { get; private set; }
+    
     private GameSettings _gameSettings;
     private PlayerSettings _playerSettings;
-    private GameController _gameController;
     private MaterialChangeController _materialChangeController;
 
-    public bool IsGameRunning
-    {
-        get => _isGameRunning;
-    }
-    private bool _isGameRunning;
+    
     private GameObject _activeLevelPrefab;
     private Coroutine _currentSpawnEnemiesRoutine;
     private Coroutine _currentSpawnInteractablesRoutine;
 
     private void Awake()
     {
-        if (_i != null) Debug.LogError("Too many level controllers!");
-        else _i = this;
+        if (I != null) Debug.LogError("Too many level controllers!");
+        else I = this;
 
-        _gameController = GameController.Instance;
         _materialChangeController = GetComponent<MaterialChangeController>();
         if (_materialChangeController == null) Debug.LogError("Error: No MaterialChangeController found!");
     }
@@ -140,7 +138,7 @@ public class Level : MonoBehaviour
 
     public void StartLevel()
     {
-        _isGameRunning = true;
+        IsGameRunning = true;
 
         // Player Settings Reset
         _playerSettings.OnEnable();
@@ -151,13 +149,13 @@ public class Level : MonoBehaviour
 
     private IEnumerator SpawnEnemies()
     {
-        while (_isGameRunning)
+        while (IsGameRunning)
         {
             float waitForSeconds = Random.Range(_gameSettings.enemySpawnMinimumCooldown, _gameSettings.enemySpawnMaximumCooldown);
             yield return new WaitForSeconds(waitForSeconds);
 
             // Do not spawn more enemies once the maximum number of enemies is reached.
-            if (EnemyController.Count < _gameSettings.maxEnemies && _isGameRunning)
+            if (EnemyController.Count < _gameSettings.maxEnemies && IsGameRunning)
             {
                 GameObject enemyPrefab = _gameSettings.enemyPrefabs[Random.Range(0, _gameSettings.enemyPrefabs.Count)];
                 GameObject enemy = Instantiate(enemyPrefab, GetRandomEnemySpawnPosition(), Quaternion.identity, null);
@@ -169,9 +167,13 @@ public class Level : MonoBehaviour
         yield return null;
     }
 
+    /// <summary>
+    /// Coroutine: Periodically spawn interactive objects while the game is running.
+    /// </summary>
+    /// <returns>Nothing</returns>
     private IEnumerator SpawnInteractables()
     {
-        while (_isGameRunning)
+        while (IsGameRunning)
         {
             float waitForSeconds = Random.Range(_gameSettings.objectSpawnMinimumCooldown, _gameSettings.objectSpawnMaximumCooldown);
             yield return new WaitForSeconds(waitForSeconds);
@@ -219,7 +221,7 @@ public class Level : MonoBehaviour
 
         if (CheckScoreWinCondition())
         {
-            _isGameRunning = false;
+            IsGameRunning = false;
             GameWon();
         }
     }
@@ -255,11 +257,10 @@ public class Level : MonoBehaviour
 
         if (!CheckIsPlayerAlive())
         {
-            _isGameRunning = false;
+            IsGameRunning = false;
             GameLost();
         }
     }
-
 
     #region Event Handling
     private void OnPlayerHit(float damage)
@@ -278,48 +279,38 @@ public class Level : MonoBehaviour
 
     #region Events
     public event Action onPlayerHealthChange;
-    public void PlayerHealthChange()
+
+    private void PlayerHealthChange()
     {
-        if (onPlayerHealthChange != null)
-        {
-            onPlayerHealthChange();
-        }
+        onPlayerHealthChange?.Invoke();
     }
 
     public event Action onScoreChange;
-    public void ScoreChange()
+
+    private void ScoreChange()
     {
-        if (onScoreChange != null)
-        {
-            onScoreChange();
-        }
+        onScoreChange?.Invoke();
     }
 
     public event Action onGameWon;
-    public void GameWon()
+
+    private void GameWon()
     {
-        if (onGameWon != null)
-        {
-            onGameWon();
-        }
+        onGameWon?.Invoke();
     }
 
     public event Action onGameLost;
-    public void GameLost()
+
+    private void GameLost()
     {
-        if (onGameLost != null)
-        {
-            onGameLost();
-        }
+        onGameLost?.Invoke();
     }
 
     public event Action onStateChange;
-    public void StateChange()
+
+    private void StateChange()
     {
-        if (onStateChange != null)
-        {
-            onStateChange();
-        }
+        onStateChange?.Invoke();
     }
     #endregion
 }

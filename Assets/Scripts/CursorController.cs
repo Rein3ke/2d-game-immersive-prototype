@@ -21,7 +21,7 @@ public class CursorController : MonoBehaviour
         _hotSpot = new Vector2(_currentTexture.width / 2.0f, _currentTexture.height / 2.0f);
 
         // Subscribe to events
-        Level.i.onScoreChange += Level_OnScoreChange;
+        Level.I.onScoreChange += Level_OnScoreChange;
     }
     
     /// <summary>
@@ -61,6 +61,6 @@ public class CursorController : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        Level.i.onScoreChange -= Level_OnScoreChange;
+        Level.I.onScoreChange -= Level_OnScoreChange;
     }
 }
