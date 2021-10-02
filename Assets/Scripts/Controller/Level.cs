@@ -10,6 +10,9 @@ using Random = UnityEngine.Random;
 
 namespace Controller
 {
+    /// <summary>
+    /// Controller to create and control a level.
+    /// </summary>
     public class Level : MonoBehaviour
     {
         private const string SpawnEnemyTag = "Spawn_Enemy";
@@ -42,6 +45,11 @@ namespace Controller
             if (_materialChangeController == null) Debug.LogError("Error: No MaterialChangeController found!");
         }
 
+        /// <summary>
+        /// Places the level prefab in the scene and sets the correct settings for player and game depending on the game state.
+        /// </summary>
+        /// <param name="levelPrefab">Level Prefab that will be instantiate next.</param>
+        /// <param name="state">Current Game State</param>
         public void BuildLevel(GameObject levelPrefab, GameController.State state)
         {
             ResetLevel();
