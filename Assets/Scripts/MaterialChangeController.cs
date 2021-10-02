@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Assets;
 using UnityEngine;
@@ -226,5 +227,10 @@ public class MaterialChangeController : MonoBehaviour
         InputController.onRightMouseUp -= InputController_OnRightMouseUp;
 
         Level.I.onStateChange -= Level_OnStateChange;
+    }
+
+    private void OnApplicationQuit()
+    {
+        ResetMaterialsInScene();
     }
 }

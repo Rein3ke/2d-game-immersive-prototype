@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e19b522cb578742bfc0bf7b4f91839, type: 3}
   m_Name: GameSetting_Default
   m_EditorClassIdentifier: 
-  state: 0
+  state: 1
   EnemiesToKill: 25
   ScoreToBeAchieved: 2000
   maxEnemies: 6

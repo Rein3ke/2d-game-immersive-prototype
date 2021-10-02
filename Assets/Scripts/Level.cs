@@ -239,28 +239,27 @@ public class Level : MonoBehaviour
 
     private bool CheckIsPlayerAlive()
     {
-        if (_playerSettings.PlayerHealth <= 0.0f)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return !(_playerSettings.PlayerHealth <= 0.0f);
     }
 
     private bool CheckScoreWinCondition()
     {
-        if (_playerSettings.Score >= _gameSettings.ScoreToBeAchieved)
+#if UNITY_EDITOR
+        if (_playerSettings.Score >= 200f)
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+#endif
+
+#if UNITY_STANDALONE
+        return _playerSettings.Score >= _gameSettings.ScoreToBeAchieved;
+#endif
     }
 
+    /// <summary>
+    /// Deals damage to the player. Triggers the PlayerHealthChange event. Checks if the player is still alive.
+    /// </summary>
+    /// <param name="damage">Value that describes how much damage the player should receive.</param>
     internal void TakeDamage(float damage)
     {
         _playerSettings.PlayerHealth -= damage;
