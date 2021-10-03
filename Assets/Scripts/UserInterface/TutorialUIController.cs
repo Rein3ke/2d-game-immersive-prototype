@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace UserInterface
 {
+    /// <summary>
+    /// Controller to manage the TutorialUI.
+    /// </summary>
     public class TutorialUIController : MonoBehaviour
     {
         [SerializeField] private Image m_rightMouseClickImage; 
@@ -18,6 +21,10 @@ namespace UserInterface
         public bool ShowRightMouseButton { get; set; }
         public bool ShowSpacebar { get; set; }
 
+        /// <summary>
+        /// Standard unity method. Turns overlays on and off depending on the configuration set externally.
+        /// Also, the number of times a key has been clicked determines whether the current overlay is still needed or not. 
+        /// </summary>
         private void Update()
         {
             if (m_isOnCooldown) return;

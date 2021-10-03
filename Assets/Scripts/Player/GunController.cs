@@ -8,6 +8,9 @@ using Random = UnityEngine.Random;
 
 namespace Player
 {
+    /// <summary>
+    /// A controller for firing raycasts into the scene and controlling weapon behavior.
+    /// </summary>
     public class GunController : MonoBehaviour
     {
         [SerializeField]

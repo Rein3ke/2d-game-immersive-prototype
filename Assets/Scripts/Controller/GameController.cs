@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Controller
 {
+    /// <summary>
+    /// Very important controller that manages references to other components and manages game logic.
+    /// </summary>
     [RequireComponent(typeof(InputController), typeof(SoundController), typeof(SceneController))]
     public class GameController : MonoBehaviour
     {
@@ -31,6 +34,9 @@ namespace Controller
 
         private State _currentState = State.DEFAULT;
 
+        /// <summary>
+        /// Standard unity method. Sets some references to its components.
+        /// </summary>
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -159,7 +165,7 @@ namespace Controller
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
-        Application.Quit();
+            Application.Quit();
 #endif
         }
 

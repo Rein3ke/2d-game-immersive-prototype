@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 
 namespace Controller
 {
+    /// <summary>
+    /// Controller that manages the loading of scenes.
+    /// </summary>
     public class SceneController : MonoBehaviour
     {
         private int _sceneIndex;
@@ -13,9 +16,8 @@ namespace Controller
         {
             _sceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-            GameController.Instance.onLoadingMainMenuScene += LoadMenu;
-
             // Event Subscription
+            GameController.Instance.onLoadingMainMenuScene += LoadMenu;
         }
 
         public void LoadNextScene()
@@ -36,6 +38,7 @@ namespace Controller
 
         private void OnDisable()
         {
+            // Unsubscribe from events
             GameController.Instance.onLoadingMainMenuScene -= LoadMenu;
         }
     }

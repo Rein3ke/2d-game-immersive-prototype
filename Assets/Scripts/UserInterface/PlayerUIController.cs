@@ -8,26 +8,20 @@ using UnityEngine.UI;
 
 namespace UserInterface
 {
+    /// <summary>
+    /// A controller to adjust values in the Player UI at runtime.
+    /// </summary>
     public class PlayerUIController : MonoBehaviour
     {
-        [SerializeField]
-        private Text playerHealthText;
-        [SerializeField]
-        private Text playerAmmoText;
-        [SerializeField]
-        private Text playerScoreText;
-        [SerializeField]
-        private Text activeFeatureText;
-        [SerializeField]
-        private GameObject gameOverPanel;
-        [SerializeField]
-        private GameObject gameWonPanel;
-        [SerializeField]
-        private Image image;
-        [SerializeField]
-        private Color damageColor;
-        [SerializeField]
-        private Color healthColor;
+        [SerializeField] private Text playerHealthText;
+        [SerializeField] private Text playerAmmoText;
+        [SerializeField] private Text playerScoreText;
+        [SerializeField] private Text activeFeatureText;
+        [SerializeField] private GameObject gameOverPanel;
+        [SerializeField] private GameObject gameWonPanel;
+        [SerializeField] private Image image;
+        [SerializeField] private Color damageColor;
+        [SerializeField] private Color healthColor;
 
         private Canvas canvas;
         private Camera mainCamera;
@@ -130,6 +124,9 @@ namespace UserInterface
             SetTextfieldText(playerAmmoText, "Ammo: " + _playerSettings.PlayerAmmunition + "/" + _playerSettings.playerMaxAmmunition);
         }
 
+        /// <summary>
+        /// Called when the Health value changes. Displays an overlay when the value changes.
+        /// </summary>
         private void OnPlayerHealthChange()
         {
             SetTextfieldText(playerHealthText, "Life: " + Mathf.Clamp(_playerSettings.PlayerHealth, 0.0f, _playerSettings.playerMaxHealth) + " HP");
@@ -143,6 +140,12 @@ namespace UserInterface
             _localHealthReference = _playerSettings.PlayerHealth;
         }
 
+        /// <summary>
+        /// Coroutine: Animates the color of the overlay from 0.5f to 0.0f in a given time.
+        /// </summary>
+        /// <param name="color">Color to be used.</param>
+        /// <param name="speed">Animation speed.</param>
+        /// <returns></returns>
         private IEnumerator ShowColorOverlay(Color color, float speed)
         {
             image.color = color;

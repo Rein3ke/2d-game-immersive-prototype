@@ -4,6 +4,9 @@ using UnityEngine.UIElements;
 
 namespace UserInterface
 {
+    /// <summary>
+    /// A controller to be able to exchange panels and handle user input.
+    /// </summary>
     public class MainMenuUIController : MonoBehaviour
     {
         public Button startButton;
@@ -13,8 +16,10 @@ namespace UserInterface
 
         public VisualElement menuContainer;
         public VisualElement introductionContainer;
-
-        // Start is called before the first frame update
+        
+        /// <summary>
+        /// Standard unity method. Sets all necessary references and click events.
+        /// </summary>
         void Start()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;

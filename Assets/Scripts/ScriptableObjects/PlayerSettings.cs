@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace ScriptableObjects
 {
+    /// <summary>
+    /// ScriptableObject to configure values for the player. Also used to let other scripts access the values.
+    /// </summary>
     [CreateAssetMenu(menuName = "Player Setting")]
     public class PlayerSettings : ScriptableObject, ISerializationCallbackReceiver
     {
@@ -38,6 +41,9 @@ namespace ScriptableObjects
         {
         }
 
+        /// <summary>
+        /// Resets all values to their default after a new level.
+        /// </summary>
         public void OnEnable()
         {
             PlayerHealth = playerMaxHealth;

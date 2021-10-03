@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Controller
 {
+    /// <summary>
+    /// A controller that handles any input and invokes it as an event.
+    /// </summary>
     public class InputController : MonoBehaviour
     {
         public PlayerSettings PlayerSettings { get; set; }

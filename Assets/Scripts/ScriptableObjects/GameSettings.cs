@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace ScriptableObjects
 {
+    /// <summary>
+    /// ScriptableObject to configure values for the game. Also used to let other scripts access the values.
+    /// </summary>
     [CreateAssetMenu(menuName = "Game Setting")]
     public class GameSettings : ScriptableObject, ISerializationCallbackReceiver
     {

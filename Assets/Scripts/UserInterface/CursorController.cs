@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace UserInterface
 {
+    /// <summary>
+    /// A controller that customizes the mouse cursor at runtime.
+    /// </summary>
     public class CursorController : MonoBehaviour
     {
         [SerializeField] private Texture2D cursorTexture;

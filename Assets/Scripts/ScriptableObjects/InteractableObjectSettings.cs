@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace ScriptableObjects
 {
+    /// <summary>
+    /// ScriptableObject to configure values for an interactable object. Also used to let other scripts access the values.
+    /// </summary>
     [CreateAssetMenu(menuName = "Interactable Object Setting")]
     public class InteractableObjectSettings : ScriptableObject, ISerializationCallbackReceiver
     {

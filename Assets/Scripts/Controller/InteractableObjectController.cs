@@ -74,6 +74,9 @@ namespace Controller
             StartCoroutine(FadeIn());
         }
 
+        /// <summary>
+        /// Controls how the interactive object should behave after a hit.
+        /// </summary>
         public void HandleHit()
         {
             // If the GameObject is already hit, return
@@ -105,6 +108,10 @@ namespace Controller
             }
         }
 
+        /// <summary>
+        /// Coroutine: Changes the alpha value of the SpriteRender color over time to 0. When complete, the object is destroyed.
+        /// </summary>
+        /// <returns>Nothing</returns>
         private IEnumerator FadeOutAndDestroy()
         {
             Color color;
@@ -120,6 +127,10 @@ namespace Controller
             yield return null;
         }
 
+        /// <summary>
+        /// Coroutine: Changes the alpha value of the SpriteRender color over time from 0 to 1.
+        /// </summary>
+        /// <returns>Nothing</returns>
         private IEnumerator FadeIn()
         {
             Color color;
@@ -134,6 +145,9 @@ namespace Controller
             yield return null;
         }
 
+        /// <summary>
+        /// Standard unity method. Stops all coroutines and also destroys the parent Game Object.
+        /// </summary>
         private void OnDestroy()
         {
             StopAllCoroutines();
